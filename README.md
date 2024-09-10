@@ -2,13 +2,12 @@
 # **Genomics_transcriptomics_analysis** #
 **version 0**
 
-## **Authors** ##
-<p>
-Storm
-Jarno
-Ivar
-Floris
-</p>
+## **Auteurs
+
+* J.J. Duiker - Github: azzipxonraj
+* S. Steller - Github: sstormpie
+* F. Menninga - Github: Fl-ris
+* I. Lottman - Github: Ivarlottman
 
 
 
@@ -18,7 +17,7 @@ Floris
 
 
 ## **Refrences** ##
-
+Ma, F., Cao, Y., Du, H., Braikia, F. Z., Zong, L., Ollikainen, N., ... & Sen, R. (2024). Three-dimensional chromatin reorganization regulates B cell development during ageing. Nature Cell Biology, 1-12.
 
 
 
