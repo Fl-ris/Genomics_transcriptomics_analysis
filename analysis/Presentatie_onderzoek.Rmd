@@ -1,0 +1,63 @@
+---
+title: "Invloed van leeftijd op gen expressie in muizen"
+author: "F.J.A. Menninga"
+date: "2024-09-12"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Het originele onderzoek:
+
+- 3D conformatie van chromatine (Hi-C). </br>
+
+- Verschil in gen expressie tussen jonge en oude muizen (RNA-seq).z
+
+
+
+## Onze wijzigingen:
+**Nieuwe onderzoeksvraag:** Veranderd de gen expressie van ebf1 van muizen met leeftijd?
+- Nieuwer muis referentie genoom
+
+- Geen Hi-C, flow-cytometrie, ChIP-seq
+
+
+
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
+
+##  experimentele opzet:
+- Indeling groepen:
+- Aantal samples:
+- Aantal replicaten per sample:
+- 
+- 
+
+## Achtergrond informatie:
+- Hi-C
+- Ilumia
+
+## Hi-C
+- Cross-linking van DNA gebonden eiwitten.
+
+<img align="right" width="400" height="500" src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Chromosome_Conformation_Capture_Technology.jpg">
+
+## Workflow:
+
+
+## Bronnen:
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11178499/
+https://www.ncbi.nlm.nih.gov/assembly/327618
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE214438
+https://pubmed.ncbi.nlm.nih.gov/38866970/
+
+
+
+## Discussie
