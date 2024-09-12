@@ -14,13 +14,33 @@ output:
     toc_depth: '2'
 ---
 
+```{r libraries, results='hold', message=FALSE, warning=FALSE}
+# Libraries
+library(tidyverse)
+library(ggplot2)
 
-```{r}
-plot(cars)
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+## **Inleiding:** ##
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+<hr>
+
+## **Workflow:** ##
+Net zoals in het originele artikel beschreven was wordt read mapping uitgevoerd met het FASTQ bestand van elk van de samples. Met het .SAM bestand dat verkregen is werd daarna met FeatureCounts en RSEM de gen expressie gekwantificeerd. Deze read mapping was met STAR uitgevoerd maar wij gaan hier HISAT2
+voor gebruiken omdat STAR verouderd is volgens het github repo.
+FeatureCounts gebruikt namelijk het .SAM (of .BAM) bestand en telt hoeveel reads bij elke "feature" (gen/exon) horen. RSEM kan hier ook voor gebruikt worden maar is complexer om te gebruiken dan FeatureCounts.
+Dit kan daarna gevisualiseerd worden met R in een box-plot, viool-plot, heatmap, MA-plot etc.
+Ook was er in het artikel gebruik gemaakt van "Cufflinks", deze gaan we vervangen door "StringTie". Volgens de website van Cufflinks is StringTie accurater en veel efficienter. 
+
+
+<hr>
+
+
+**De volgende R libraries zijn gebruikt voor de analyse:** \
+
+
+## **Visualisatie van de verkregen data:**
+## **Statistische analyse**
+## **Verschillen tussen onze resulaten en die van het originele onderzoek**
+

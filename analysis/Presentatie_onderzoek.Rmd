@@ -11,29 +11,22 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Het originele onderzoek:
 
-- 3D conformatie van chromatine (Hi-C). </br>
-
-- Verschil in gen expressie tussen jonge en oude muizen (RNA-seq).z
-
+- 3D conformatie van chromatine (Hi-C) </br>
+- ChIP–seq
+- Flow cytometry
+- FISH
+- VDJ-seq
+- Verschil in gen expressie tussen jonge en oude muizen (RNA-seq)
 
 
 ## Onze wijzigingen:
 **Nieuwe onderzoeksvraag:** Veranderd de gen expressie van ebf1 van muizen met leeftijd?
 
 - Nieuwer muis referentie genoom \
-- HISAT2 I.P.V. STAR voor read mapping \
-
+- HISAT2 i.p.v. STAR voor read mapping \
+- Stringtie i.p.v. Cufflinks om de RNA-seq alignments naar potentiele transcripts te veranderen.
 
 - Geen Hi-C, flow-cytometrie, ChIP-seq
-
-
-
-
-## Slide with Plot
-
-```{r pressure}
-plot(pressure)
-```
 
 
 ##  experimentele opzet:
@@ -50,7 +43,7 @@ plot(pressure)
 
 
 ## Hi-C
-A/B compartement in nucleus.
+A/B compartement in nucleus. \
 - Cross-linking van DNA gebonden eiwitten.
 
 
@@ -58,6 +51,9 @@ A/B compartement in nucleus.
 
 ## Verwerkingsstappen:
 1. Read mapping met HISAT2 (input fastQ bestand, output: SAM bestand)
+2. FeatureCounts gebruiken om de gen expressie te kwantificeren.
+3. RSEM gebruiken voor uitgebereidere featureCounts (optioneel)
+4. Visualiseren met R. (Box-plot, viool-plot, heatmap, MA-plot etc.)
 
 ## Tijdsverdeling:
 
