@@ -19,7 +19,10 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Onze wijzigingen:
 **Nieuwe onderzoeksvraag:** Veranderd de gen expressie van ebf1 van muizen met leeftijd?
-- Nieuwer muis referentie genoom
+
+- Nieuwer muis referentie genoom \
+- HISAT2 I.P.V. STAR voor read mapping \
+
 
 - Geen Hi-C, flow-cytometrie, ChIP-seq
 
@@ -34,9 +37,9 @@ plot(pressure)
 
 
 ##  experimentele opzet:
-- Indeling groepen:
-- Aantal samples:
-- Aantal replicaten per sample:
+- Indeling groepen: 
+- Aantal samples: 
+- Aantal replicaten per sample: 
 - 
 - 
 
@@ -44,12 +47,19 @@ plot(pressure)
 - Hi-C
 - Ilumia
 
+
+
 ## Hi-C
+A/B compartement in nucleus.
 - Cross-linking van DNA gebonden eiwitten.
+
 
 <img align="right" width="400" height="500" src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Chromosome_Conformation_Capture_Technology.jpg">
 
-## Workflow:
+## Verwerkingsstappen:
+1. Read mapping met HISAT2 (input fastQ bestand, output: SAM bestand)
+
+## Tijdsverdeling:
 
 
 ## Bronnen:
