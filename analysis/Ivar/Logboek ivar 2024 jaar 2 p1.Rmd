@@ -1,0 +1,45 @@
+---
+title: "Logboek Ivar Jaar 2 P1"
+author: "Ivar"
+date: "2024-09-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# lijst
+# project introductie
+
+#opzet
+waarom, wat, uitkomsten 
+
+# Week 1
+
+## Wat en waarom
+In de eerste 2 lessen hebben we als groep gezocht naar potentieel onderzoek dat wij kunnen gebruiken voor het project. het thema hiervoor is aging en we hebben gekozen na overleg met Marcel is "Three-dimensional chromatin 
+reorganization regulates B cell development 
+during ageing".
+De links hiervoor staan bij resultaten.
+hierna hebben wij een taakverdeling gemaakt om het werk eerlijk te verdelen. Mijn taak voor de voorbereiden van de plan van aanpak presentatie is het ontleden en uitleggen van de onderzoeksvraag en het maken van een Gant chart gemaakt
+
+### Uitleg Onderzoeksvraag
+Ondezoeksvraag
+Wat is invloed van chromatine vormverandering op prognater b cellen?
+De verwachting is dat doormiddel van veroudering verandering in de TAD (topologically 
+associated domains) genen die belangrijk zijn voor de regulatie van B cellen verschuiven van het hoog actieve A compartiment naar het onderdrukte B compartiment verschuiven. Dit kan een belangrijke verklaring kunnen zijn waarom er minder is transcriptie op dit gebied in oudere dieren.
+
+### Notitie's
+https://www.youtube.com/watch?v=uakxc0_Dec4 uitleg TAD A/B compartments. de HI-c methode heeft ontdekt dat in het chromatine zich in meer domeinen vormt dan verwacht. op het moment is de er een lopende theorie dat het chromatine zich scheidt in a en b compartementen. 
+A compartement
+het A compertement is het hoogactieve compartiment waar vaak genen zitten die vaak getranscribeerd worden. hieren in veel interactie tussen promoters en de genen in dit compartiment zonder dat dit een ander compartiment beinvloed.
+B compartement.
+het B compartement is het laagactieve compartiment. Hierin zitten vaak de onderdrukte genen en/of unieke/"junk" genen.
+
+## resultaten
+onderzoek links
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11178499/pdf/41556_2024_Article_1424.pdf
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE214438
+Gant chart staat in teams map school.
+Uitleg onderzoeksvraag staat hierboven vermeld en in teams map onderzoek.
