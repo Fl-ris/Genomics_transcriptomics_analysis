@@ -40,7 +40,29 @@ Ook was er in het artikel gebruik gemaakt van "Cufflinks", deze gaan we vervange
 **De volgende R libraries zijn gebruikt voor de analyse:** \
 
 
+## Log:
+**13-09-2024**:
+
+## SRA's downloaden:
+Het onderstaande stuk code is op mijn computer uitgevoerd en de data is op een externe HHD opgeslagen. Dit zelfde is gedaan op de assemblix computer waar de andere groepsleden ook bij kunnen. 
+export om de "prefetch" binairy toe te voegen aan het PATH. 
+Zonder het onderstaande cd commando werden de bestanden in een andere directory gedownload. (output argument werkt niet?)
+
+
+```{bash, eval=FALSE}
+export PATH="/home/floris/Documenten/Applicaties/sratoolkit.3.1.1-ubuntu64/bin/:$PATH"
+
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/SRA/
+
+prefetch $(</run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/SRA/SraAccList.csv) \
+--output-directory "/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/SRA/" --max-size 200G
+```
+
+
 ## **Visualisatie van de verkregen data:**
 ## **Statistische analyse**
-## **Verschillen tussen onze resulaten en die van het originele onderzoek**
+## **Verschillen tussen onze resultaten en die van het originele onderzoek**
+
+
+
 

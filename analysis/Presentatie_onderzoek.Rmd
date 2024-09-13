@@ -18,6 +18,9 @@ knitr::opts_chunk$set(echo = FALSE)
 - VDJ-seq
 - Verschil in gen expressie tussen jonge en oude muizen (RNA-seq)
 
+## Uitkomst van dit onderzoek:
+- Verschil in gen expressie tussen oude en jonge muizen.
+
 
 ## Onze wijzigingen:
 **Nieuwe onderzoeksvraag:** Veranderd de gen expressie van ebf1 van muizen met leeftijd?
