@@ -11,16 +11,17 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Het originele onderzoek:
 
-- 3D conformatie van chromatine (Hi-C) </br>
-- ChIP–seq
+- Hi-C
 - Flow cytometry
 - FISH
+- ChIP–seq
 - VDJ-seq
-- Verschil in gen expressie tussen jonge en oude muizen (RNA-seq)
+- RNA-seq
 
 ## Uitkomst van dit onderzoek:
-- Verschil in gen expressie tussen oude en jonge muizen.
-
+- Verschil in gen expressie ebf1 tussen oude en jonge muizen. (verminderde interactie tussen ebf1 promoter en zijn enhancers)
+- Ebf1 downregulatie niet enige oorzaak.
+- Verplaatsing van het ebf1 gen van compartiment A naar B.
 
 ## Onze wijzigingen:
 **Nieuwe onderzoeksvraag:** Veranderd de gen expressie van ebf1 van muizen met leeftijd?
@@ -29,15 +30,18 @@ knitr::opts_chunk$set(echo = FALSE)
 - HISAT2 i.p.v. STAR voor read mapping \
 - Stringtie i.p.v. Cufflinks om de RNA-seq alignments naar potentiele transcripts te veranderen.
 
-- Geen Hi-C, flow-cytometrie, ChIP-seq
+- Geen Hi-C, flow-cytometrie, ChIP-seq of VDJ-seq
 
 
 ##  experimentele opzet:
-- Indeling groepen: 
-- Aantal samples: 
-- Aantal replicaten per sample: 
-- 
-- 
+### Indeling groepen: \
+<hr>
+**Genomics:** twee groepen (Wt / RAG2-/-) \
+- Aantal replicaten per groep: vier \
+<hr>
+**Transcriptomics:** twee groepen \
+- Aantal replicaten per groep: vier 
+<hr>
 
 ## Achtergrond informatie:
 - Hi-C
@@ -52,13 +56,18 @@ A/B compartement in nucleus. \
 
 <img align="right" width="400" height="500" src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Chromosome_Conformation_Capture_Technology.jpg">
 
-## Verwerkingsstappen:
+## Verwerkingsstappen genomics:
+1. Align DNA seq data met referentiegenoom
+2. Identificeer verschillen tussen de twee.
+
+## Verwerkingsstappen transcriptomics:
 1. Read mapping met HISAT2 (input fastQ bestand, output: SAM bestand)
 2. FeatureCounts gebruiken om de gen expressie te kwantificeren.
-3. RSEM gebruiken voor uitgebereidere featureCounts (optioneel)
+3. RSEM gebruiken voor uitgebreidere featureCounts (optioneel)
 4. Visualiseren met R. (Box-plot, viool-plot, heatmap, MA-plot etc.)
 
 ## Tijdsverdeling:
+<img align="center" width="800" height="400" src=gannt_chart.png>
 
 
 ## Bronnen:
@@ -70,3 +79,4 @@ https://pubmed.ncbi.nlm.nih.gov/38866970/
 
 
 ## Discussie
+....

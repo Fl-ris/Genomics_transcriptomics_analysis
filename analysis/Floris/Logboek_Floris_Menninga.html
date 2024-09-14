@@ -11,7 +11,7 @@
 
 <meta name="author" content="Floris Menninga" />
 
-<meta name="date" content="2024-09-12" />
+<meta name="date" content="2024-09-14" />
 
 <title>R Notebook</title>
 
@@ -352,20 +352,26 @@ display: none;
 
 <h1 class="title toc-ignore">R Notebook</h1>
 <h4 class="author">Floris Menninga</h4>
-<h4 class="date">2024-09-12</h4>
+<h4 class="date">2024-09-14</h4>
 
 </div>
 
 <div id="TOC">
 <ul>
 <li><a href="#inleiding" id="toc-inleiding"><strong>Inleiding:</strong></a></li>
-<li><a href="#workflow" id="toc-workflow"><strong>Workflow:</strong></a></li>
+<li><a href="#workflow-genomics" id="toc-workflow-genomics"><strong>Workflow
+(Genomics):</strong></a></li>
+<li><a href="#workflow-transcriptomics" id="toc-workflow-transcriptomics"><strong>Workflow
+(Transcriptomics):</strong></a></li>
+<li><a href="#log" id="toc-log">Log:</a></li>
+<li><a href="#sras-downloaden" id="toc-sras-downloaden">SRA’s
+downloaden:</a></li>
 <li><a href="#visualisatie-van-de-verkregen-data" id="toc-visualisatie-van-de-verkregen-data"><strong>Visualisatie van de
 verkregen data:</strong></a></li>
 <li><a href="#statistische-analyse" id="toc-statistische-analyse"><strong>Statistische
 analyse</strong></a></li>
-<li><a href="#verschillen-tussen-onze-resulaten-en-die-van-het-originele-onderzoek" id="toc-verschillen-tussen-onze-resulaten-en-die-van-het-originele-onderzoek"><strong>Verschillen
-tussen onze resulaten en die van het originele
+<li><a href="#verschillen-tussen-onze-resultaten-en-die-van-het-originele-onderzoek" id="toc-verschillen-tussen-onze-resultaten-en-die-van-het-originele-onderzoek"><strong>Verschillen
+tussen onze resultaten en die van het originele
 onderzoek</strong></a></li>
 </ul>
 </div>
@@ -377,20 +383,55 @@ library(ggplot2)</code></pre>
 <h2><strong>Inleiding:</strong></h2>
 <hr>
 </div>
-<div id="workflow" class="section level2">
-<h2><strong>Workflow:</strong></h2>
+<div id="workflow-genomics" class="section level2">
+<h2><strong>Workflow (Genomics):</strong></h2>
+</div>
+<div id="workflow-transcriptomics" class="section level2">
+<h2><strong>Workflow (Transcriptomics):</strong></h2>
 <p>Net zoals in het originele artikel beschreven was wordt read mapping
 uitgevoerd met het FASTQ bestand van elk van de samples. Met het .SAM
 bestand dat verkregen is werd daarna met FeatureCounts en RSEM de gen
-expressie gekwantificeerd. FeatureCouns gebruikt namelijk het .SAM (of
-.BAM) bestand en telt hoeveel reads bij elke “feature” (gen/exon) horen.
-RSEM kan hier ook voor gebruikt worden maar is complexer om te gebruiken
-dan FeatureCounts. Dit kan daarna gevisualiseerd worden met R in een
-box-plot, viool-plot, heatmap, MA-plot etc.</p>
+expressie gekwantificeerd. Deze read mapping was met STAR uitgevoerd
+maar wij gaan hier HISAT2 voor gebruiken omdat STAR verouderd is volgens
+het github repo. FeatureCounts gebruikt namelijk het .SAM (of .BAM)
+bestand en telt hoeveel reads bij elke “feature” (gen/exon) horen. RSEM
+kan hier ook voor gebruikt worden maar is complexer om te gebruiken dan
+FeatureCounts. Dit kan daarna gevisualiseerd worden met R in een
+box-plot, viool-plot, heatmap, MA-plot etc. Ook was er in het artikel
+gebruik gemaakt van “Cufflinks”, deze gaan we vervangen door
+“StringTie”. Volgens de website van Cufflinks is StringTie accurater en
+veel efficiënter.</p>
 <hr>
 <p><strong>De volgende R libraries zijn gebruikt voor de
 analyse:</strong><br />
 </p>
+</div>
+<div id="log" class="section level2">
+<h2>Log:</h2>
+<p><strong>13-09-2024</strong>:</p>
+</div>
+<div id="sras-downloaden" class="section level2">
+<h2>SRA’s downloaden:</h2>
+<p>Het onderstaande stuk code is op mijn computer uitgevoerd en de data
+is op een externe HDD opgeslagen. Dit zelfde is gedaan op de assemblix
+computer waar de andere groepsleden ook bij kunnen. export om de
+“prefetch” binairy (tijdelijk) toe te voegen aan het PATH.</p>
+<pre class="bash"><code>export PATH=&quot;/home/floris/Documenten/Applicaties/sratoolkit.3.1.1-ubuntu64/bin/:$PATH&quot;
+
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/
+
+prefetch $(&lt;/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/SraAccList.csv) \
+--output-directory &quot;/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/&quot; --max-size 200G</code></pre>
+<p><strong>.SRA bestanden naar .FASTQ omzetten:</strong><br />
+Met behulp van fastq-dump worden de .SRA bestanden uitgepakt.</p>
+<pre class="bash"><code>fastq-dump </code></pre>
+<p><strong>14-09-2024</strong><br />
+In tegenstelling tot het artikel gaan we gebruik maken van Muis (<em>Mus
+musculus</em>) referentiegenoom: GRCm39 (GCF_000001635.27) gebruik
+maken. Deze is nieuwer dan versie mm10 die gebruikt was. Aangezien het
+onderzoek dit jaar gepubliceerd is en voltooid was in 2022 vraag ik mij
+af waarom ze voor een versie uit 2012 gekozen hebben terwijl er een
+nieuwere beschikbaar was.</p>
 </div>
 <div id="visualisatie-van-de-verkregen-data" class="section level2">
 <h2><strong>Visualisatie van de verkregen data:</strong></h2>
@@ -398,8 +439,8 @@ analyse:</strong><br />
 <div id="statistische-analyse" class="section level2">
 <h2><strong>Statistische analyse</strong></h2>
 </div>
-<div id="verschillen-tussen-onze-resulaten-en-die-van-het-originele-onderzoek" class="section level2">
-<h2><strong>Verschillen tussen onze resulaten en die van het originele
+<div id="verschillen-tussen-onze-resultaten-en-die-van-het-originele-onderzoek" class="section level2">
+<h2><strong>Verschillen tussen onze resultaten en die van het originele
 onderzoek</strong></h2>
 </div>
 

@@ -3147,18 +3147,20 @@ ul.task-list{list-style: none;}
 <slide class=""><hgroup><h2>Het originele onderzoek:</h2></hgroup><article  id="het-originele-onderzoek">
 
 <ul>
-<li>3D conformatie van chromatine (Hi-C) </br></li>
+<li>Hi-C</li>
 <li>ChIP–seq</li>
 <li>Flow cytometry</li>
 <li>FISH</li>
 <li>VDJ-seq</li>
-<li>Verschil in gen expressie tussen jonge en oude muizen (RNA-seq)</li>
+<li>RNA-seq</li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Uitkomst van dit onderzoek:</h2></hgroup><article  id="uitkomst-van-dit-onderzoek">
 
 <ul>
-<li>Verschil in gen expressie tussen oude en jonge muizen.</li>
+<li>Verschil in gen expressie ebf1 tussen oude en jonge muizen. (verminderde interactie tussen ebf1 promoter en zijn enhancers)</li>
+<li>Ebf1 downregulatie niet enige oorzaak.</li>
+<li>Verplaatsing van het ebf1 gen van compartiment A naar B.</li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Onze wijzigingen:</h2></hgroup><article  id="onze-wijzigingen">
@@ -3169,18 +3171,22 @@ ul.task-list{list-style: none;}
 <li><p>Nieuwer muis referentie genoom<br/></p></li>
 <li><p>HISAT2 i.p.v. STAR voor read mapping<br/></p></li>
 <li><p>Stringtie i.p.v. Cufflinks om de RNA-seq alignments naar potentiele transcripts te veranderen.</p></li>
-<li><p>Geen Hi-C, flow-cytometrie, ChIP-seq</p></li>
+<li><p>Geen Hi-C, flow-cytometrie, ChIP-seq of VDJ-seq</p></li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>experimentele opzet:</h2></hgroup><article  id="experimentele-opzet">
 
-<ul>
-<li>Indeling groepen:</li>
-<li>Aantal samples:</li>
-<li>Aantal replicaten per sample:</li>
-<li></li>
-<li></li>
-</ul>
+<h3>Indeling groepen:<br/></h3>
+
+<hr>
+
+<strong>Genomics:</strong> twee groepen (Wt / RAG2-/-)<br/>- Aantal replicaten per groep: vier<br/>
+
+<hr>
+
+<strong>Transcriptomics:</strong> twee groepen<br/>- Aantal replicaten per groep: vier
+
+<hr>
 
 </article></slide><slide class=""><hgroup><h2>Achtergrond informatie:</h2></hgroup><article  id="achtergrond-informatie">
 
@@ -3195,22 +3201,33 @@ ul.task-list{list-style: none;}
 
 <p><img align="right" width="400" height="500" src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Chromosome_Conformation_Capture_Technology.jpg"></p>
 
-</article></slide><slide class=""><hgroup><h2>Verwerkingsstappen:</h2></hgroup><article  id="verwerkingsstappen">
+</article></slide><slide class=""><hgroup><h2>Verwerkingsstappen genomics:</h2></hgroup><article  id="verwerkingsstappen-genomics">
+
+<ol>
+<li>Align DNA seq data met referentiegenoom</li>
+<li>Identificeer verschillen tussen de twee.</li>
+</ol>
+
+</article></slide><slide class=""><hgroup><h2>Verwerkingsstappen transcriptomics:</h2></hgroup><article  id="verwerkingsstappen-transcriptomics">
 
 <ol>
 <li>Read mapping met HISAT2 (input fastQ bestand, output: SAM bestand)</li>
 <li>FeatureCounts gebruiken om de gen expressie te kwantificeren.</li>
-<li>RSEM gebruiken voor uitgebereidere featureCounts (optioneel)</li>
+<li>RSEM gebruiken voor uitgebreidere featureCounts (optioneel)</li>
 <li>Visualiseren met R. (Box-plot, viool-plot, heatmap, MA-plot etc.)</li>
 </ol>
 
 </article></slide><slide class=""><hgroup><h2>Tijdsverdeling:</h2></hgroup><article  id="tijdsverdeling">
 
+<p><img align="center" width="800" height="400" src=gannt_chart.png></p>
+
 </article></slide><slide class=""><hgroup><h2>Bronnen:</h2></hgroup><article  id="bronnen">
 
 <p><a href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11178499/' title=''>https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11178499/</a> <a href='https://www.ncbi.nlm.nih.gov/assembly/327618' title=''>https://www.ncbi.nlm.nih.gov/assembly/327618</a> <a href='https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE214438' title=''>https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE214438</a> <a href='https://pubmed.ncbi.nlm.nih.gov/38866970/' title=''>https://pubmed.ncbi.nlm.nih.gov/38866970/</a></p>
 
-</article></slide><slide class=""><hgroup><h2>Discussie</h2></hgroup><article  id="discussie"></article></slide>
+</article></slide><slide class=""><hgroup><h2>Discussie</h2></hgroup><article  id="discussie">
+
+<p>….</p></article></slide>
 
 
   <slide class="backdrop"></slide>
