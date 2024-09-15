@@ -22,12 +22,14 @@ library(ggplot2)
 ```
 
 ## **Inleiding:** ##
-
+Het gekozen artikel: (https://pubmed.ncbi.nlm.nih.gov/38866970/) heeft betrekking tot de verandering in 3d conformatie van chromatine die leiden tot verminderde expressie van het gen ebf1. Uit het onderzoek bleek de reden voor deze vermindering migratie van genen naar het B compartiment te zijn, hier liggen stukken chromatine die niet op dat moment tot transcriptie hoeven te komen. 
+Het onderzoek is uitgevoerd op voorloper- B-cellen van muizen. Deze cellen hebben het gen Ebf1 nodig om te differentiëren van hematopoetische stamcellen naar uitgerijpte B cellen. Als dit gen minder tot expressie komt kunnen deze B cellen meer eigenschappen van de voorloper cel hebben. 
 
 <hr>
 
 ## **Workflow (Genomics):** ##
-
+Ondanks dat DNA data onderdeel van de dataset was, staat er in de methode/artikel niet wat ze hiermee gedaan hebben. Daarom hebben we besloten een variant analyse hierop uit te voeren. Het referentiegenoom (muis) zal vergeleken worden met DNA seq data. In het onderzoek was een muis genoom versie uit 2012 gebruikt (mm10), deze gaan we vervangen door de nieuwste versie (GRCm39).
+De eerste stap is het alignen van de genen van de DNA seq data met het referentiegenoom. Daarna worden de verschillen gevisualiseerd en mits deze er zijn. 
 
 ## **Workflow (Transcriptomics):** ##
 Net zoals in het originele artikel beschreven was wordt read mapping uitgevoerd met het FASTQ bestand van elk van de samples. Met het .SAM bestand dat verkregen is werd daarna met FeatureCounts en RSEM de gen expressie gekwantificeerd. Deze read mapping was met STAR uitgevoerd maar wij gaan hier HISAT2
@@ -41,10 +43,17 @@ Ook was er in het artikel gebruik gemaakt van "Cufflinks", deze gaan we vervange
 
 
 **De volgende R libraries zijn gebruikt voor de analyse:** \
+....
+
 
 
 ## Log:
-**13-09-2024**:
+**02-09-2024**:
+Het gekozen artikel: https://pubmed.ncbi.nlm.nih.gov/38866970
+Gene expression omnibus: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE211975
+
+
+
 
 ## SRA's downloaden (Genomics):
 Het onderstaande stuk code is op mijn computer uitgevoerd en de data is op een externe HDD opgeslagen. Dit zelfde is gedaan op de assemblix computer waar de andere groepsleden ook bij kunnen. 
