@@ -84,8 +84,61 @@ prefetch $(</run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Trans
 Met behulp van fastq-dump worden de .SRA bestanden uitgepakt. 
 
 ```{bash, eval=FALSE}
-fastq-dump 
+
+# Eerst nieuwe map maken voor fastq
+# 
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
+
+
+find /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA -name "*.sra" | \
+  parallel fasterq-dump -O /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/FASTQ {}
+
+
+# paralel gebruiken: cat accestionlosit.txt | paralel ls -lah SRA/{}/{}.sra
 ```
+
+```{bash, eval=FALSE}
+
+cd /locatie/van/sra
+
+fastqc
+
+```
+
+**16-09-2024**
+Om test data te genereren op basis van twee van de fastq bestanden is de volgende code gebruikt:
+Per sample bestand zitten er 10000 reads in. 
+```{bash, eval=FALSE}
+
+cd /locatie/van/sra
+
+seqkit head -n 10000 SRR26980527_1.fastq > subset_SRR26980527_1.fastq
+seqkit head -n 10000 SRR26980527_2.fastq > subset_SRR26980527_2.fastq
+
+
+```
+
+
+```{bash, eval=FALSE}
+
+fastqc 
+
+multiqc
+
+seqkit (voor maken van subset van test data)
+
+
+```
+
+### 
+    GCF_000001635.27
+
+```{bash, eval=FALSE}
+
+bwa-mem2 
+
+```
+
 
 
 **14-09-2024** \

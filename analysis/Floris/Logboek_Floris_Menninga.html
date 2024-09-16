@@ -11,7 +11,7 @@
 
 <meta name="author" content="Floris Menninga" />
 
-<meta name="date" content="2024-09-14" />
+<meta name="date" content="2024-09-16" />
 
 <title>R Notebook</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">R Notebook</h1>
 <h4 class="author">Floris Menninga</h4>
-<h4 class="date">2024-09-14</h4>
+<h4 class="date">2024-09-16</h4>
 
 </div>
 
@@ -364,8 +364,9 @@ display: none;
 <li><a href="#workflow-transcriptomics" id="toc-workflow-transcriptomics"><strong>Workflow
 (Transcriptomics):</strong></a></li>
 <li><a href="#log" id="toc-log">Log:</a></li>
-<li><a href="#sras-downloaden" id="toc-sras-downloaden">SRA’s
-downloaden:</a></li>
+<li><a href="#sras-downloaden-genomics" id="toc-sras-downloaden-genomics">SRA’s downloaden (Genomics):</a></li>
+<li><a href="#sras-downloaden-transcriptomics" id="toc-sras-downloaden-transcriptomics">SRA’s downloaden
+(Transcriptomics):</a></li>
 <li><a href="#visualisatie-van-de-verkregen-data" id="toc-visualisatie-van-de-verkregen-data"><strong>Visualisatie van de
 verkregen data:</strong></a></li>
 <li><a href="#statistische-analyse" id="toc-statistische-analyse"><strong>Statistische
@@ -381,10 +382,28 @@ library(tidyverse)
 library(ggplot2)</code></pre>
 <div id="inleiding" class="section level2">
 <h2><strong>Inleiding:</strong></h2>
+<p>Het gekozen artikel: (<a href="https://pubmed.ncbi.nlm.nih.gov/38866970/" class="uri">https://pubmed.ncbi.nlm.nih.gov/38866970/</a>) heeft
+betrekking tot de verandering in 3d conformatie van chromatine die
+leiden tot verminderde expressie van het gen ebf1. Uit het onderzoek
+bleek de reden voor deze vermindering migratie van genen naar het B
+compartiment te zijn, hier liggen stukken chromatine die niet op dat
+moment tot transcriptie hoeven te komen. Het onderzoek is uitgevoerd op
+voorloper- B-cellen van muizen. Deze cellen hebben het gen Ebf1 nodig om
+te differentiëren van hematopoetische stamcellen naar uitgerijpte B
+cellen. Als dit gen minder tot expressie komt kunnen deze B cellen meer
+eigenschappen van de voorloper cel hebben.</p>
 <hr>
 </div>
 <div id="workflow-genomics" class="section level2">
 <h2><strong>Workflow (Genomics):</strong></h2>
+<p>Ondanks dat DNA data onderdeel van de dataset was, staat er in de
+methode/artikel niet wat ze hiermee gedaan hebben. Daarom hebben we
+besloten een variant analyse hierop uit te voeren. Het referentiegenoom
+(muis) zal vergeleken worden met DNA seq data. In het onderzoek was een
+muis genoom versie uit 2012 gebruikt (mm10), deze gaan we vervangen door
+de nieuwste versie (GRCm39). De eerste stap is het alignen van de genen
+van de DNA seq data met het referentiegenoom. Daarna worden de
+verschillen gevisualiseerd en mits deze er zijn.</p>
 </div>
 <div id="workflow-transcriptomics" class="section level2">
 <h2><strong>Workflow (Transcriptomics):</strong></h2>
@@ -404,14 +423,15 @@ veel efficiënter.</p>
 <hr>
 <p><strong>De volgende R libraries zijn gebruikt voor de
 analyse:</strong><br />
-</p>
+….</p>
 </div>
 <div id="log" class="section level2">
 <h2>Log:</h2>
-<p><strong>13-09-2024</strong>:</p>
+<p><strong>02-09-2024</strong>: Het gekozen artikel: <a href="https://pubmed.ncbi.nlm.nih.gov/38866970" class="uri">https://pubmed.ncbi.nlm.nih.gov/38866970</a> Gene expression
+omnibus: <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE211975" class="uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE211975</a></p>
 </div>
-<div id="sras-downloaden" class="section level2">
-<h2>SRA’s downloaden:</h2>
+<div id="sras-downloaden-genomics" class="section level2">
+<h2>SRA’s downloaden (Genomics):</h2>
 <p>Het onderstaande stuk code is op mijn computer uitgevoerd en de data
 is op een externe HDD opgeslagen. Dit zelfde is gedaan op de assemblix
 computer waar de andere groepsleden ook bij kunnen. export om de
@@ -422,9 +442,59 @@ cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/
 
 prefetch $(&lt;/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/SraAccList.csv) \
 --output-directory &quot;/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/&quot; --max-size 200G</code></pre>
+</div>
+<div id="sras-downloaden-transcriptomics" class="section level2">
+<h2>SRA’s downloaden (Transcriptomics):</h2>
+<p>De SRA’s van de RNA seq worden gedownload met het onderstaande stuk
+code. De gebruikte accention list staat in de github repository.</p>
+<pre class="bash"><code>export PATH=&quot;/home/floris/Documenten/Applicaties/sratoolkit.3.1.1-ubuntu64/bin/:$PATH&quot;
+ 
+
+
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/
+
+prefetch $(&lt;/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/SRR_Acc_List.txt) \
+--output-directory &quot;/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/&quot; --max-size 200G</code></pre>
 <p><strong>.SRA bestanden naar .FASTQ omzetten:</strong><br />
 Met behulp van fastq-dump worden de .SRA bestanden uitgepakt.</p>
-<pre class="bash"><code>fastq-dump </code></pre>
+<pre class="bash"><code>
+# Eerst nieuwe map maken voor fastq
+# 
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
+
+
+find /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA -name &quot;*.sra&quot; | \
+  parallel fasterq-dump -O /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/FASTQ {}
+
+
+# paralel gebruiken: cat accestionlosit.txt | paralel ls -lah SRA/{}/{}.sra</code></pre>
+<pre class="bash"><code>
+cd /locatie/van/sra
+
+fastqc
+</code></pre>
+<p><strong>16-09-2024</strong> Om test data te genereren op basis van
+twee van de fastq bestanden is de volgende code gebruikt: Per sample
+bestand zitten er 10000 reads in.</p>
+<pre class="bash"><code>
+cd /locatie/van/sra
+
+seqkit head -n 10000 SRR26980527_1.fastq &gt; subset_SRR26980527_1.fastq
+seqkit head -n 10000 SRR26980527_2.fastq &gt; subset_SRR26980527_2.fastq
+</code></pre>
+<pre class="bash"><code>
+fastqc 
+
+multiqc
+
+seqkit (voor maken van subset van test data)
+</code></pre>
+<div id="section" class="section level3">
+<h3></h3>
+<pre><code>GCF_000001635.27</code></pre>
+<pre class="bash"><code>
+bwa-mem2 
+</code></pre>
 <p><strong>14-09-2024</strong><br />
 In tegenstelling tot het artikel gaan we gebruik maken van Muis (<em>Mus
 musculus</em>) referentiegenoom: GRCm39 (GCF_000001635.27) gebruik
@@ -432,6 +502,7 @@ maken. Deze is nieuwer dan versie mm10 die gebruikt was. Aangezien het
 onderzoek dit jaar gepubliceerd is en voltooid was in 2022 vraag ik mij
 af waarom ze voor een versie uit 2012 gekozen hebben terwijl er een
 nieuwere beschikbaar was.</p>
+</div>
 </div>
 <div id="visualisatie-van-de-verkregen-data" class="section level2">
 <h2><strong>Visualisatie van de verkregen data:</strong></h2>
