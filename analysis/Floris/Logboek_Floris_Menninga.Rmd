@@ -110,7 +110,7 @@ Om test data te genereren op basis van twee van de fastq bestanden is de volgend
 Per sample bestand zitten er 10000 reads in. 
 ```{bash, eval=FALSE}
 
-cd /locatie/van/sra
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
 
 seqkit head -n 10000 SRR26980527_1.fastq > subset_SRR26980527_1.fastq
 seqkit head -n 10000 SRR26980527_2.fastq > subset_SRR26980527_2.fastq
