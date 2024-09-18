@@ -130,12 +130,38 @@ seqkit (voor maken van subset van test data)
 
 ```
 
+**17-09-2024**
+Na het controle van de kwaliteit van de fastq bestanden bleek het dat de samples met read lengtes van 250 bp getrimd moeten worden.
+De volgende samples zijn wildtype: (WT C57BL/6J) SRR26980527, SRR26980528, SRR26980529, SRR26980530. 
+En de volgende samples zijn Rag2(-/-) knockout: SRR26980549, SRR26980550, SRR26980551, SRR26980552
+Al deze samples zijn paired end sequenced Primary pro-B cells geselecteerd op CD19+.
+
 ### 
-    GCF_000001635.27
+    
+Samples SRR26980528_1 en _2 zijn gebruikt na het referentiegenoom te indexeren met BWA_MEM2. 
+Het gebruikte referentie genoom is mm39 (GCF_000001635.27).
+
+
+
+
 
 ```{bash, eval=FALSE}
 
-bwa-mem2 
+
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
+
+
+# Het indexeren van het referentiegenoom met bwa-mem2. 
+bwa-mem2 index -p testnaam referentiegenoom
+
+# Voorbeeld aligning:
+bwa-mem2 mem ref.fa read1.fq read2.fq > aln-pe.sam
+
+# Align sample SRR26980549_1.fastq (deel 1 en 2) met het referentiegenoom mm39 muis. 
+./bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -p 60 testnaam fastq/SRR26980549_1.fastq fastq/SRR26980549_2.fastq > aligned_SRR26980549.sam &
+
+# find /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA -name "*.sra" | \
+#   parallel fasterq-dump -O /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/FASTQ {}
 
 ```
 
@@ -145,6 +171,47 @@ bwa-mem2
 In tegenstelling tot het artikel gaan we gebruik maken van Muis (*Mus musculus*) referentiegenoom: GRCm39 (GCF_000001635.27) gebruik maken. 
 Deze is nieuwer dan versie mm10 die gebruikt was.
 Aangezien het onderzoek dit jaar gepubliceerd is en voltooid was in 2022 vraag ik mij af waarom ze voor een versie uit 2012 gekozen hebben terwijl er een nieuwere beschikbaar was. 
+
+
+**17-09-2024**
+Omdat .SAM bestanden niet georderd zijn op positie in het genoom moeten ze eerst met samtools sort omgezet worden naar een .BAM bestand, deze is wel gesorteerd. Daarnaast kan het opvragen van data sneller gemaakt worden als het geïndexeerd is, 
+
+```{bash, eval=FALSE}
+
+samtools sort aligned_SRR26980549.sam > aligned_sorted_SRR26980549.bam & 
+
+
+samtools index aligned_sorted_SRR26980549.bam &
+
+
+```
+
+
+
+```{bash, eval=FALSE}
+
+freebayes -f ref.fa aln.bam >var.vcf
+
+
+```
+
+**18-09-2024**
+
+```{bash, eval=FALSE}
+library(fastqcr)
+
+trimomaticPE? 
+```
+
+Om alle paired read samples te mappen is het onderstaande bash script gebruikt.
+```{bash, eval=FALSE}
+
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 60 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_2.fastq > /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam' &
+
+```
+
+
+
 
 
 
