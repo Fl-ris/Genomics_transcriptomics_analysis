@@ -1,0 +1,148 @@
+---
+title: Invloed van leeftijd op gen expressie van Ebf1 in muizen # Geef je paper een naam die prikkelt, informatief is, en zo kort mogelijk
+
+author: |
+  | F.J.A. Menninga $^1$, I. Lottman $^1$ S, Steller $^1$, J.J Duiker $^1$
+  | $^1$Bio_informatica Hanzehogeschool
+
+lang: nl # dit zorgt er voor dat "abstract" "samenvatting" gaat heten
+
+abstract: | 
+  In dit onderzoek wordt gekeken naar de invloed van leeftijd op gen expressie van Ebf1 in muizen, Ebf1 ook wel "Early B-Cell Factor 1" zijn essentieel in de celdifferentiatie. De leeftijd zou van grote invloed moeten zijn op de gen expressie en in dit onderzoek word de DNA van jonge muizen en oude muizen bekeken voor het antwoord hoe de expressie tussen de twee verschild. 
+
+bibliography: simple_template.bib # naam van je .bib file. Deze moet hetzelfde zijn als je Rmd bestandsnaam
+
+output:
+  bookdown::pdf_document2:
+    keep_tex: false    # set this to true if you want to investigate the generated tex
+    toc: false         # table of contents
+    fig_caption: true  # includes figure captions with numbering in output
+    includes:  
+        in_header: include_tex_header.tex #will include rules for linespacing and figure floating
+
+## Setup *Chunk* {#setup-chunk}
+
+Aan het begin van je paper kan je een zogenaamde *setup chunk* toevoegen. Hierin kan je het gedrag van `knitr` configureren en de bibliotheken laden die je in je code gebruikt. Hieronder is een voorbeeld van zo'n *setup chunk*.
+
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+knitr::opts_chunk$set(out.width = '100%', dpi=300) # configuratie voor figuur grootte en resolutie
+knitr::opts_chunk$set(echo = FALSE) # Deze regel zorgt ervoor GEEN ENKELE chunk getoond wordt! 
+# Laad alle gebruikte bibliotheken hier
+library(ggplot2)
+```
+
+**NB** Gebruik altijd een naam voor iedere chunk. Dat maakt het *debuggen* van problemen bij het *knitten* van je RMarkdown document veel gemakkelijker.
+
+
+# Introductie
+
+Je start altijd met de maatschappelijke drijfveer voor je onderzoek; waarom is het van belang dat dit onderzoek is uitgevoerd?
+Vervolgens bespreek je de achtergronden van je onderzoek. Wat is er al eerder onderzocht op dit vlak en wat mist er juist nog; welke speciale technieken heb je gebruikt? Refereer zorgvuldig naar bronnen die je hebt gebruikt - zie ook paragraaf \@ref(refs).
+
+Je eindigt de introductie met de doelstelling(en) van jouw onderzoek, en hoe je deze doelstellingen denkt te gaan verwezenlijken; de aanpak. Geef hier ook eventuele hypothesen. 
+
+De introductie bevat tussen de 400-800 woorden.
+
+
+
+# Materialen en Methoden
+
+## Materialen.
+
+| Tool          | Referentie                                                                     | Versie | Waarom                                                                                                                                                                                                                                                                                                     |
+|---------------|--------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Featurecounts | https://academic.oup.com/bioinformatics/article/30/7/923/232889?searchresult=1 |        | Featurecounts is een zeer efficiënt algemeen "read" samenvattingsprogramma dat mapped reads telt voor genomische kenmerken zoals genen, exonen, promotor, genlichamen, genomische bins en chromosomale locaties. het kan worden gebruikt om zowel RNA-seq als genomische DNA-seq leesbewerkingen te tellen |
+| HISAT2        | https://daehwankimlab.github.io/hisat2/                                        |        | HISAT2 is een snelle en gevoelige alligner voor mapping NGS reads voor zowel DNA als RNA naar een enkele referentie genoom.                                                                                                                                                                                |
+| FastQC        | https://www.bioinformatics.babraham.ac.uk/projects/fastqc/                     |        | FastQC wordt gebruikt om de kwaliteit te checken van de rauwe data, hier uit is te zien of de data gelijk te gebruiken is of dat deze moet worden getrimmed. De trimmer kan ook afgesteld worden op basis van de fastqc.                                                                                   |
+| Fastqcr       | https://rpkgs.datanovia.com/fastqcr/index.html                                 |        |                                                                                                                                                                                                                                                                                                            |
+| freebayes     | https://github.com/freebayes/freebayes                                         |        | freebayes                                                                                                                                                                                                                                                                                                  |
+| seqtk         | https://github.com/lh3/seqtk                                                   |        | seqtk wordt gebruikt voor het proceseren van sequences in het FASTA of FASTQ formaat. het "seamlessly parses" beide FASTA en FASTQ welke dan ook optimaal compressed wordt door gzip                                                                                                                       |
+| Trimmomatic   | https://github.com/usadellab/Trimmomatic                                       |        | Trimmomatic wordt gebruikt om de data op te schonen nadat dez uit FastQC komt. Deze haalt de slechte kwaliteit paren af van de streng waardoor een hoge kwaliteit RNA- of DNA-streng overblijft die gebruikt kan worden.                                                                                   |
+| bwa mem2      | https://github.com/bwa-mem2/bwa-mem2?tab=readme-ov-file                        |        | Bwa mem2 wordt gebruikt om DNA en RNA reads te alignen tegen een gekozen referentie genoom.                                                                                                                                                                                                                |
+| samtools      | https://www.htslib.org                                                         |        | samtools is een set van "utilities" dat alignments in de SAM, Bam en CRAM formatten kan manipuleren. het kan veranderen tussen de formats, sorteren, samenvoegen en indexen, ook kan het "reads" snel vinden in elke regio                                                                                 |
+
+Materialen en Methoden beschrijft verhalend wat je hebt gebruikt (data, tools) en wat je hebt gedaan (ontwikkelde methodes). **_Het is essentieel dat dit hoofdstuk je onderzoek reproduceerbaar en valideerbaar maakt_**. Verwijs bij de start van dit hoofdstuk naar je code repository (meestal je github link).
+
+Neem referenties op!
+
+De materialen zijn de meetinstrumenten die je hebt gebruikt, maar ook bijvoorbeeld datasets die je hebt gedownload.
+
+Beschrijf de gebruikte software tools, alsmede de bibliotheken/plugins, met naam, versie, referentie en gebruiksdoel (in dit project). Dit kan eventueel in een tabel an als die lang is mag het een online bijlage zijn.
+
+Beschrijf bestaande methodologieën met hun relevantie voor je project. Geef het doel, de toepassing en welke software en parameters er zijn gebruik. Voeg eventueel een flowchart toe.
+Beschrijf de gebruikte statistische methoden.
+
+Beschrijf wat je zelf in het kader van dit onderzoek hebt ontwikkeld aan methodologieën. Geef de naam van scripts/programma’s en waar deze (in je repo) te vinden zijn.
+
+Deze sectie bevat tussen de 400-800 woorden.
+
+# Resultaten
+
+Presenteer je resultaten in een logische volgorde. Beschrijf wat er te zien is en werk toe naar het beantwoorden van je doelstelling. Beschrijf indien mogelijke de logica van de keuze voor opeenvolgende experimenten. In elke paragraaf worden de feitelijke conclusies gegeven (bv ‘de vergelijking laat zien dat het gemiddelde van groep A significant afwijkt van het gemiddelde van groep B, met een p-waarde van … Dit komt niet overeen met de in de literatuur (REF) beschreven waardes.’)
+
+Gebruik zo veel mogelijk figuren om je informatie uit je resultaten over te brengen. Gebruik tabellen wanneer figuren minder geschikt zijn. In de tekst worden figuren en tabellen geïntroduceerd, besproken en de belangrijkste aspecten toegelicht.
+
+Voorzie je figuren van een nummer en een beschrijvende titel. Zorg voor correcte as-labels (eenheid en grootheid), legenda en bijschrift. Hier is een voorbeeldje.
+
+```{r plot-demo, warning=FALSE, fig.cap='Ozon concentraties geplot tegen zonlicht intensiteit, vergeleken over verschillende maanden. Lineaire modellen (blauwe lijnen) en confidence intervals (grijze gebieden) zijn hieraan toegevoegd.'}
+airquality$Month_f = factor(airquality$Month, levels = 5:9, labels = month.abb[5:9])
+ggplot(data = airquality, mapping = aes(x = Solar.R, y = Ozone)) +
+    geom_smooth(method = "lm", formula = y ~ x) +
+    geom_point(aes(color = Month_f), alpha = 0.7) + 
+    facet_wrap(. ~ Month_f) +
+    ylab("Ozone (ppb)") +
+    xlab("Solar radiation (lang)") +
+    theme(legend.title = element_blank())
+```
+
+
+
+
+Geef tabellen bovenaan een titel en bijschrift die de inhoud beschrijft en onderaan voetnoten die kolomnamen of specifieke waardes verklaren.
+
+Deze sectie bevat tussen de 600-1200 woorden.
+
+
+# Discussie en Conclusies
+
+Formuleer je conclusie door eerst in te zoomen op je eigen data en daarna uit te zoomen. Zoom in door je resultaten samen te vatten. Zoom uit om de waarde van je werk te beoordelen, door je bijvoorbeeld de volgende vragen te stellen: 
+
+- Kunnen mijn resultaten gebruikt worden in het werkveld? 
+- Wat betekenen ze voor het werkveld? 
+- Zijn mijn data betrouwbaar? 
+
+Bespreek de resultaten zodanig dat je ze ter discussie stelt, wees kritisch. Vergelijk je resultaten met de literatuur of eerder ontwikkelde data. Geef aanbevelingen voor een vervolg en staaf je aanbevelingen door de impact op wetenschappelijk of maatschappelijk vlak te beschrijven. 
+
+Kom ten slotte altijd terug op de doelstelling (en hypothesen).
+
+Deze sectie bevat tussen de 400-800 woorden.
+
+
+# Online bijlagen
+
+Vaak zijn online bijlagen vele malen groter dan het eigenlijke artikel. Wees nooit bang om te veel aan bijlagen aan te bieden. Je kan hierbij denken aan
+
+- de ruwe data
+- de code voor dataverwerking 
+- de code voor analyse
+- aanvullende figuren en tabellen
+
+Natuurlijk is een git(hub) repo daar de beste plek voor!
+Zorg ervoor de je repo logisch is ingericht met goede Readme document(en). 
+Ook de code zelf is waar nodig natuurlijk goed gedocumenteerd.
+
+
+
+## Wordcount
+
+Voeg aan het eind een woord-telling in:
+
+```{r wordcount, message=FALSE}
+#install.packages(devtools)
+#devtools::install_github("benmarwick/wordcountaddin", type = "source", dependencies = TRUE)
+wordcountaddin:::text_stats()
+```
+
+# Referenties
+
+Een lijst van referenties wordt hier automagisch toegevoegd.
