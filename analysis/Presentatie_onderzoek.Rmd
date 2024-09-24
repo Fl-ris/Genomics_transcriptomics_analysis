@@ -3,8 +3,8 @@ title: "Invloed van leeftijd op gen expressie van Ebf1 in muizen"
 author: "F.J.A. Menninga"
 date: "2024-09-12"
 output:
-  beamer_presentation: default
   ioslides_presentation: default
+  beamer_presentation: default
 ---
 
 ```{r setup, include=FALSE}
