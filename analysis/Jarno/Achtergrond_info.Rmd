@@ -1,0 +1,36 @@
+---
+title: "Achtergrond info"
+author: "Jarno Jacob Duiker"
+date: "2024-09-21"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## A/B compartimenten
+
+Harris, H.L., Gu, H., Olshansky, M. *et al.* Chromatin alternates between A and B compartments at kilobase scale for subgenic organization. *Nat Commun* **14**, 3303 (2023). <https://doi.org/10.1038/s41467-023-38429-1>\
+\
+Asami Oji, Linda Choubani, Hisashi Miura, Ichiro Hiratani, Structure and dynamics of nuclear A/B compartments and subcompartments, Current Opinion in Cell Biology, Volume 90, 2024, 102406, ISSN 0955-0674, <https://doi.org/10.1016/j.ceb.2024.102406>. (<https://www.sciencedirect.com/science/article/pii/S0955067424000851>)
+
+De nucleus van het humane genoom is verdeeld in verschillende ruimtelijke compartimenten. Actief chromatine bevindt zich doorgaans in het A-compartiment, terwijl inactief chromatine eerder geassocieerd is met het B-compartiment. Deze compartimentalisatie is geïdentificeerd met behulp van de Hi-C-methode, een techniek die de chromosomale organisatie in kaart brengt door op nabijheid gebaseerde interacties te combineren met hogedoorvoer sequencing. Het belang van de A- en B-compartimenten in ons onderzoek ligt in het feit dat *Ebf1* (Early B-Cell Factor 1), een cruciale factor voor pro-B-cellen, van positie verandert tussen deze compartimenten naarmate het organisme (de muis) ouder wordt.
+
+Het A compartiment is dus het compartiment waar de expressie actief is en hoge gen transcriptie plaats vindt. Voor zo ver wij weten ligt het A compartiment dicht bij het centrum echter is dit nog wel speculatie. Gen rijk, hoge GC-content, hebben histone markeringen voor actieve transcriptie.
+
+Het B compartiment is de plek waar de expressie non actief is ook wel "silenced", in het B compartimenten zitten niet veel genen, compact, hebben histone markeringen voor silencing en bestaan het meeste uit LADs en bevatten late replication origins.
+
+TADs - Er wordt gesugereerd dat deze een grote invloed hebben op gen regulatie en dat ze belangrijk zijn voor embryonaal ontwikkeling. Ook werd gezien dat lange afstand regulatie van gen expressie niet allen leunt op TADs en hun grenzen.
+
+Sub compartimenten - Er wordt gesuggereerd dat er binnen de twee compartimenten nog kleinere subcompartimenten zitten. Elk compartiment werd geobserveerd met verschillend histone modificatie patronen en RT. wat suggereert dat elke chromatine met gelijke karakteristieken in elkaar wordt gezet om verschillende interactie eenheden binnen de A en B compartimenten. Er is op het moment nog niet gevonden of er een link tussen de subcompartimenten ligt en het feitelijke nucleare oriëntatiepunten.
+
+## Pro B-cell
+
+Pro-B cellen ontstaan in het beenmerg van progenitor cellen naar de B-cell lineage. elke pro-B cell ondergaat onafhankelijke herordening en op bouwing van diverse variabelen, diversiteit en "joining" gen segmenten van de immunoglobuline zware (H)- keten locus.
+
+Kritisch voor de generatie van het verschillend repertoire van b cellen capabel in het herkennen van een wijde varia aan pathogene. De pro-B cell veranderd naar de pre-B cell dit gebeurd wanneer de zware immunoglobuline keten her georganiseerd is.
+
+Nemazee, D. Mechanisms of central tolerance for B cells. *Nat Rev Immunol* **17**, 281–294 (2017). <https://doi.org/10.1038/nri.2017.19>
