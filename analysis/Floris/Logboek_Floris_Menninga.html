@@ -13,7 +13,7 @@
 
 <meta name="date" content="2024-09-26" />
 
-<title>R Notebook</title>
+<title>Genomics en Transcriptomics analyse muis B-cellen</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -350,7 +350,8 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">R Notebook</h1>
+<h1 class="title toc-ignore">Genomics en Transcriptomics analyse muis
+B-cellen</h1>
 <h4 class="author">Floris Menninga</h4>
 <h4 class="date">2024-09-26</h4>
 
@@ -413,11 +414,8 @@ box-plot, viool-plot, heatmap, MA-plot etc. Ook was er in het artikel
 gebruik gemaakt van “Cufflinks”, deze gaan we vervangen door
 “StringTie”. Volgens de website van Cufflinks is StringTie accurater en
 veel efficiënter.</p>
-<hr>
-<p><strong>De volgende R libraries/commandline tools zijn gebruikt voor
-de analyse:</strong><br />
-Samtools: 1.16.1</p>
-<p>….</p>
+<p><strong>De volgende R libraries en commandline tools zijn gebruikt
+voor de analyse:</strong> Samtools: 1.16.1</p>
 </div>
 <div id="log" class="section level3">
 <h3>Log:</h3>
@@ -545,18 +543,20 @@ CD19+.</p>
 <div id="indexeren-en-alignen" class="section level3">
 <h3>Indexeren en alignen:</h3>
 <p>Met enkel een fastq bestand met reads is nog niet duidelijk waar in
-het genoom van het organisme deze reads kwamen. Met gene mapping worden
+het genoom van het organisme deze reads kwamen. Met read mapping worden
 de reads vergeleken met een bekend genoom, in dit geval het mm39 muis
 referentiegenoom en worden de reads er tegen aan gelegd zodat hun
 locatie in het genoom bekend wordt. Aangezien er geannoteerde versies
 van het referentiegenoom zijn, met de namen van de genen kan dan ook
 achterhaald worden van welke genen de reads deel uitmaken.</p>
+<p><a href="https://www.ebi.ac.uk/training/online/courses/functional-genomics-ii-common-technologies-and-data-analysis-methods/rna-sequencing/performing-a-rna-seq-experiment/data-analysis/read-mapping-or-alignment/" class="uri">https://www.ebi.ac.uk/training/online/courses/functional-genomics-ii-common-technologies-and-data-analysis-methods/rna-sequencing/performing-a-rna-seq-experiment/data-analysis/read-mapping-or-alignment/</a></p>
+<p>bron: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3375638/" class="uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3375638/</a></p>
 <p>Omdat het programma dat gebruikt gaat worden voor het alignen,
 BWA-mem2, een geïndexeerde versie van het referentiegenoom nodig heeft
 moet deze eerst gemaakt worden. Dit kan gedaan worden met bwa-mem2
-index. Hierbij</p>
-<p>Samples SRR26980528_1 en _2 zijn gebruikt na het referentiegenoom te
-indexeren met BWA_MEM2. Het gebruikte referentie genoom is mm39
+index. indexeren maakt het align proces veel sneller.</p>
+<p>De samples SRR26980528_1 en _2 zijn gebruikt na het referentiegenoom
+te indexeren met BWA_MEM2. Het gebruikte referentie genoom is mm39
 (GCF_000001635.27).</p>
 <p>In de onderstaande code chunk wordt het geindexeerde muisgenoom
 “testnaam” genoemd. Daarna worden twee samples (forward read en reverse
@@ -586,12 +586,25 @@ maken. Deze is nieuwer dan versie mm10 die gebruikt was. Aangezien het
 onderzoek dit jaar gepubliceerd is en voltooid was in 2022 vraag ik mij
 af waarom ze voor een versie uit 2012 gekozen hebben terwijl er een
 nieuwere beschikbaar was.</p>
-<p><strong>.sam bestanden sorteren:</strong>  
-<strong>17-09-2024</strong><br />
-Omdat .SAM bestanden niet georderd zijn op positie in het genoom moeten
-ze eerst met samtools sort omgezet worden naar een .BAM bestand, deze is
-wel gesorteerd. Daarnaast kan het opvragen van data sneller gemaakt
-worden als het geïndexeerd is,</p>
+<p><strong>.sam bestanden sorteren:</strong>
+<strong>17-09-2024</strong></p>
+<p>Na de vorige read mapping stap zijn er .SAM (Sequence alignment map)
+bestanden verkregen, dit is een tekst gebaseerde manier om sequenties
+die aligned zijn tegen een refrentie sequentie op te slaan. Een .sam
+bestand bestaat uit een header en een alignment deel.</p>
+<p><br />
+Omdat de .SAM bestanden niet georderd zijn op positie in het genoom
+moeten ze eerst met samtools sort omgezet worden naar een .BAM bestand,
+dit is nu wel gesorteerd door samtools. Daarnaast kan het opvragen van
+data sneller gemaakt worden als het geïndexeerd is.</p>
+<p>Na de index stap uit gevoerd te hebben is er ook een .bai bestand,
+dit een index voor het .bam bestand.</p>
+<p>bron: <a href="https://gatk.broadinstitute.org/hc/en-us/articles/360035890791-SAM-or-BAM-or-CRAM-Mapped-sequence-data-formats" class="uri">https://gatk.broadinstitute.org/hc/en-us/articles/360035890791-SAM-or-BAM-or-CRAM-Mapped-sequence-data-formats</a></p>
+<p>Om al deze bewerkingen uit te voeren wordt gebruik gemaakt van
+samtools (versie 1.16.1). Dit is een collectie tools om met
+high-throughput sequence data te werken. Zo kan het bijvoorbeeld fastq
+omzetten naar .bam / .cram bestanden, WGS/WES mapping naar variant calls
+en het filteren van .vcf bestanden.</p>
 <pre class="bash"><code>
 samtools sort aligned_SRR26980549.sam &gt; aligned_sorted_SRR26980549.bam &amp; 
 
@@ -607,7 +620,10 @@ freebayes -f ref.fa aln.bam &gt;var.vcf
 
 trimomaticPE? </code></pre>
 <p>Om alle paired read samples te mappen is het onderstaande bash script
-gebruikt.</p>
+gebruikt. Hier is weer het parallel commando voor gebruikt. De lijst met
+sample namen wordt aan bwa-mem2 gegeven zodat het programma naar input
+bestanden met deze namen kan kijken en de gegenereerde .sam bestanden
+ook deze naam te geven.</p>
 <pre class="bash"><code>
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 60 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_2.fastq &gt; /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam&#39; &amp;
 </code></pre>
@@ -625,7 +641,10 @@ SRR26980529<br />
 SRR26980530<br />
 </p>
 <p>De reden hiervoor is dat het samples van WT muizen zijn, hier gaan we
-het referentiegenoom voor gebruiken.</p>
+het referentiegenoom voor gebruiken. Ook was de kwaliteit van deze
+sequenties volgens fastqc veel slechter dan die van de onderstaande
+samples. Mogelijk komt dit omdat de reads te lang waren en de kwaliteit
+daardoor te snel naar beneden ging.</p>
 <p><strong>De volgende zijn wel gebruikt:</strong><br />
 Primary pro-B cells by CD19+ selection (Rag2-/-) Deze samples zijn
 verkregen met een Illumina NovaSeq 6000. SRR26980549.sam<br />
@@ -647,7 +666,7 @@ cat data/GSE149995_Sra_RunInfo.csv | \
 </code></pre>
 <p><strong>24-09-2024</strong><br />
 Het mappen met behulp van BWA-mem2 is opnieuw uitgevoerd na het trimmen.
-Het referentiegenoom dat in de vorige stap geindexeerd was wordt weer
+Het referentiegenoom dat in de vorige stap geïndexeerd was wordt weer
 opnieuw gebruikt.</p>
 <pre class="bash"><code>
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 50 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_forward_paired.fastq /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_rev_paired.fastq &gt; /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam&#39; &amp;
@@ -656,19 +675,26 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 zijn. Versies toevoegen van alle gebruikte software. Overal nog bronnen
 toevoegen. redenen waarom voor specifieke software gekozen is
 toevoegen.</p>
-<p><strong>Variant calling met Freebayes:</strong> Voordat freebayes
-uitgevoerd kan worden moet het referentiegenoom weer geindexeerd worden,
-net als met BWA-mem2 index maar dan met samtools faidx zoals in de
-onderstaande code chunk beschreven is.</p>
+<p><strong>Variant calling met Freebayes:</strong></p>
+<p>Nu er gemapte reads zijn kan er variant calling op uitgevoerd worden.
+Hiermee kunnen mutaties / varianten gedetecteerd en mits ze statistisch
+significant zijn gerapporteerd worden. Dit zou ook grafisch met IGV
+(Genome browser) kunnen maar zou veel meer tijd kosten.</p>
+<p>Voor variant calling is freebayes uitgekozen. Dit is een genetische
+variant detector gemaakt om kleine polymorfismen zoals: SNPs, inserties,
+deleties en MNPs (multi-nucleotide polymorfismes) te herkennen.</p>
+<p>Voordat freebayes uitgevoerd kan worden moet het referentiegenoom
+weer geïndexeerd worden, net als met BWA-mem2 index maar dan met
+samtools faidx zoals in de onderstaande code chunk beschreven is.</p>
 <pre class="bash"><code>samtools faidx GCA_000001635.9_GRCm39_genomic.fna </code></pre>
-<p>Met het geindexeerde referentiegenoom (GCA_000001635.9_GRCm39) was
+<p>Met het geïndexeerde referentiegenoom (GCA_000001635.9_GRCm39) was
 vervolgens de freebayes variant calling uitgevoerd.</p>
 <pre class="bash"><code>
 /students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static -f GCA_000001635.9_GRCm39_genomic.fna \ /students/2024-2025/Thema05/3dconformatieChromatine/aligned_sorted_SRR26980549.bam &gt; \ /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf</code></pre>
 <p><strong>Gen anotatie</strong> Eerst is er een .bed bestand van het
 niet door mensen leesbare .bam bestand gemaakt, daarna zijn de genen
-geanoteerd zodat ze geen namen hebben zoals: SRR26980549.46263152/2 maar
-….</p>
+geannoteerd zodat ze geen namen hebben zoals: SRR26980549.46263152/2
+maar ….</p>
 <pre class="bash"><code>
 bamToBed -i aligned_sorted_SRR26980549.bam &gt; aligned_sorted_SRR26980549.bed
 </code></pre>
