@@ -11,7 +11,7 @@
 
 <meta name="author" content="Floris Menninga" />
 
-<meta name="date" content="2024-09-16" />
+<meta name="date" content="2024-09-24" />
 
 <title>R Notebook</title>
 
@@ -352,36 +352,30 @@ display: none;
 
 <h1 class="title toc-ignore">R Notebook</h1>
 <h4 class="author">Floris Menninga</h4>
-<h4 class="date">2024-09-16</h4>
+<h4 class="date">2024-09-24</h4>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#inleiding" id="toc-inleiding"><strong>Inleiding:</strong></a></li>
-<li><a href="#workflow-genomics" id="toc-workflow-genomics"><strong>Workflow
-(Genomics):</strong></a></li>
-<li><a href="#workflow-transcriptomics" id="toc-workflow-transcriptomics"><strong>Workflow
-(Transcriptomics):</strong></a></li>
-<li><a href="#log" id="toc-log">Log:</a></li>
-<li><a href="#sras-downloaden-genomics" id="toc-sras-downloaden-genomics">SRA’s downloaden (Genomics):</a></li>
-<li><a href="#sras-downloaden-transcriptomics" id="toc-sras-downloaden-transcriptomics">SRA’s downloaden
-(Transcriptomics):</a></li>
 <li><a href="#visualisatie-van-de-verkregen-data" id="toc-visualisatie-van-de-verkregen-data"><strong>Visualisatie van de
-verkregen data:</strong></a></li>
+verkregen data:</strong><br />
+</a></li>
 <li><a href="#statistische-analyse" id="toc-statistische-analyse"><strong>Statistische
-analyse</strong></a></li>
+analyse</strong><br />
+</a></li>
 <li><a href="#verschillen-tussen-onze-resultaten-en-die-van-het-originele-onderzoek" id="toc-verschillen-tussen-onze-resultaten-en-die-van-het-originele-onderzoek"><strong>Verschillen
-tussen onze resultaten en die van het originele
-onderzoek</strong></a></li>
+tussen onze resultaten en die van het originele onderzoek</strong><br />
+</a></li>
+<li><a href="#referenties" id="toc-referenties"><strong>referenties</strong></a></li>
 </ul>
 </div>
 
 <pre class="r"><code># Libraries
 library(tidyverse)
 library(ggplot2)</code></pre>
-<div id="inleiding" class="section level2">
-<h2><strong>Inleiding:</strong></h2>
+<div id="inleiding" class="section level3">
+<h3><strong>Inleiding:</strong></h3>
 <p>Het gekozen artikel: (<a href="https://pubmed.ncbi.nlm.nih.gov/38866970/" class="uri">https://pubmed.ncbi.nlm.nih.gov/38866970/</a>) heeft
 betrekking tot de verandering in 3d conformatie van chromatine die
 leiden tot verminderde expressie van het gen ebf1. Uit het onderzoek
@@ -394,8 +388,8 @@ cellen. Als dit gen minder tot expressie komt kunnen deze B cellen meer
 eigenschappen van de voorloper cel hebben.</p>
 <hr>
 </div>
-<div id="workflow-genomics" class="section level2">
-<h2><strong>Workflow (Genomics):</strong></h2>
+<div id="workflow-genomics" class="section level3">
+<h3><strong>Workflow (Genomics):</strong></h3>
 <p>Ondanks dat DNA data onderdeel van de dataset was, staat er in de
 methode/artikel niet wat ze hiermee gedaan hebben. Daarom hebben we
 besloten een variant analyse hierop uit te voeren. Het referentiegenoom
@@ -405,8 +399,8 @@ de nieuwste versie (GRCm39). De eerste stap is het alignen van de genen
 van de DNA seq data met het referentiegenoom. Daarna worden de
 verschillen gevisualiseerd en mits deze er zijn.</p>
 </div>
-<div id="workflow-transcriptomics" class="section level2">
-<h2><strong>Workflow (Transcriptomics):</strong></h2>
+<div id="workflow-transcriptomics" class="section level3">
+<h3><strong>Workflow (Transcriptomics):</strong></h3>
 <p>Net zoals in het originele artikel beschreven was wordt read mapping
 uitgevoerd met het FASTQ bestand van elk van de samples. Met het .SAM
 bestand dat verkregen is werd daarna met FeatureCounts en RSEM de gen
@@ -425,13 +419,15 @@ veel efficiënter.</p>
 analyse:</strong><br />
 ….</p>
 </div>
-<div id="log" class="section level2">
-<h2>Log:</h2>
-<p><strong>02-09-2024</strong>: Het gekozen artikel: <a href="https://pubmed.ncbi.nlm.nih.gov/38866970" class="uri">https://pubmed.ncbi.nlm.nih.gov/38866970</a> Gene expression
+<div id="log" class="section level3">
+<h3>Log:</h3>
+<p><strong>02-09-2024</strong>:<br />
+Het gekozen artikel: <a href="https://pubmed.ncbi.nlm.nih.gov/38866970" class="uri">https://pubmed.ncbi.nlm.nih.gov/38866970</a> Gene expression
 omnibus: <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE211975" class="uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE211975</a></p>
 </div>
-<div id="sras-downloaden-genomics" class="section level2">
-<h2>SRA’s downloaden (Genomics):</h2>
+<div id="sras-downloaden-genomics" class="section level3">
+<h3>SRA’s downloaden (Genomics):<br />
+</h3>
 <p>Het onderstaande stuk code is op mijn computer uitgevoerd en de data
 is op een externe HDD opgeslagen. Dit zelfde is gedaan op de assemblix
 computer waar de andere groepsleden ook bij kunnen. export om de
@@ -443,8 +439,9 @@ cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/
 prefetch $(&lt;/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/SraAccList.csv) \
 --output-directory &quot;/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/&quot; --max-size 200G</code></pre>
 </div>
-<div id="sras-downloaden-transcriptomics" class="section level2">
-<h2>SRA’s downloaden (Transcriptomics):</h2>
+<div id="sras-downloaden-transcriptomics" class="section level3">
+<h3>SRA’s downloaden (Transcriptomics):<br />
+</h3>
 <p>De SRA’s van de RNA seq worden gedownload met het onderstaande stuk
 code. De gebruikte accention list staat in de github repository.</p>
 <pre class="bash"><code>export PATH=&quot;/home/floris/Documenten/Applicaties/sratoolkit.3.1.1-ubuntu64/bin/:$PATH&quot;
@@ -467,17 +464,30 @@ find /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA -nam
   parallel fasterq-dump -O /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/FASTQ {}
 
 
-# paralel gebruiken: cat accestionlosit.txt | paralel ls -lah SRA/{}/{}.sra</code></pre>
+# parallel gebruiken: cat accessionlist.txt | parallel ls -lah SRA/{}/{}.sra</code></pre>
 <pre class="bash"><code>
-cd /locatie/van/sra
+#cd /locatie/van/sra
 
-fastqc
+#fastqc
 </code></pre>
-<p><strong>16-09-2024</strong> Om test data te genereren op basis van
-twee van de fastq bestanden is de volgende code gebruikt: Per sample
-bestand zitten er 10000 reads in.</p>
+<p><strong>Onderzoeksvraag Genomics</strong></p>
+<p>Zijn er varianten aanwezig van PAX5 en Ebf1 in het genoom van de rag2
+knockout muizen die gebruikt zijn.</p>
+<p>Het gen Ebf1 (Early B-cell factor 1) is een gen dat bijdraagt aan de
+differentiatie van voorloper b cellen. De reden dat gekozen is voor dit
+gen is dat het resultaat van een verminderde expressie zichtbaar gemaakt
+kan worden door functieverlies van B cellen. Samen met PAX5 werken deze
+genen aan de uitrijping van hematopoetische stam cellen. Als er
+verminderde expressie is van deze genen hebben de voorloper B cellen
+meer eigenschappen van de voorloper B cellen.</p>
+<p><strong>Test data genereren</strong>
+<strong>16-09-2024</strong><br />
+Om test data te genereren op basis van twee van de fastq bestanden is de
+volgende code gebruikt: Per sample bestand zitten er 1000000 reads in.
+Dit commando is ook uitgevoerd op de assemblix server maar dan met een
+ander path naar de data.</p>
 <pre class="bash"><code>
-cd /locatie/van/sra
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
 
 seqkit head -n 10000 SRR26980527_1.fastq &gt; subset_SRR26980527_1.fastq
 seqkit head -n 10000 SRR26980527_2.fastq &gt; subset_SRR26980527_2.fastq
@@ -489,11 +499,36 @@ multiqc
 
 seqkit (voor maken van subset van test data)
 </code></pre>
-<div id="section" class="section level3">
-<h3></h3>
-<pre><code>GCF_000001635.27</code></pre>
+<p><strong>Gebruikte samples</strong> <strong>17-09-2024</strong> Na het
+controle van de kwaliteit van de fastq bestanden bleek het dat de
+samples met read lengtes van 250 bp getrimd moeten worden. De volgende
+samples zijn wildtype: (WT C57BL/6J) SRR26980527, SRR26980528,
+SRR26980529, SRR26980530. En de volgende samples zijn Rag2(-/-)
+knockout: SRR26980549, SRR26980550, SRR26980551, SRR26980552 Al deze
+samples zijn paired end sequenced Primary pro-B cells geselecteerd op
+CD19+.</p>
+</div>
+<div id="indexeren-en-alignen" class="section level3">
+<h3>Indexeren en alignen:</h3>
+<p>Samples SRR26980528_1 en _2 zijn gebruikt na het referentiegenoom te
+indexeren met BWA_MEM2. Het gebruikte referentie genoom is mm39
+(GCF_000001635.27).</p>
 <pre class="bash"><code>
-bwa-mem2 
+
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
+
+
+# Het indexeren van het referentiegenoom met bwa-mem2. 
+bwa-mem2 index -p testnaam referentiegenoom
+
+# Voorbeeld aligning:
+bwa-mem2 mem ref.fa read1.fq read2.fq &gt; aln-pe.sam
+
+# Align sample SRR26980549_1.fastq (deel 1 en 2) met het referentiegenoom mm39 muis. 
+./bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -p 60 testnaam fastq/SRR26980549_1.fastq fastq/SRR26980549_2.fastq &gt; aligned_SRR26980549.sam &amp;
+
+# find /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA -name &quot;*.sra&quot; | \
+#   parallel fasterq-dump -O /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/FASTQ {}
 </code></pre>
 <p><strong>14-09-2024</strong><br />
 In tegenstelling tot het artikel gaan we gebruik maken van Muis (<em>Mus
@@ -502,17 +537,114 @@ maken. Deze is nieuwer dan versie mm10 die gebruikt was. Aangezien het
 onderzoek dit jaar gepubliceerd is en voltooid was in 2022 vraag ik mij
 af waarom ze voor een versie uit 2012 gekozen hebben terwijl er een
 nieuwere beschikbaar was.</p>
-</div>
+<p><strong>.sam bestanden sorteren:</strong>  
+<strong>17-09-2024</strong><br />
+Omdat .SAM bestanden niet georderd zijn op positie in het genoom moeten
+ze eerst met samtools sort omgezet worden naar een .BAM bestand, deze is
+wel gesorteerd. Daarnaast kan het opvragen van data sneller gemaakt
+worden als het geïndexeerd is,</p>
+<pre class="bash"><code>
+samtools sort aligned_SRR26980549.sam &gt; aligned_sorted_SRR26980549.bam &amp; 
+
+
+samtools index aligned_sorted_SRR26980549.bam &amp;
+</code></pre>
+<pre class="bash"><code>
+freebayes -f ref.fa aln.bam &gt;var.vcf
+</code></pre>
+<p><strong>18-09-2024</strong><br />
+</p>
+<pre class="bash"><code>library(fastqcr)
+
+trimomaticPE? </code></pre>
+<p>Om alle paired read samples te mappen is het onderstaande bash script
+gebruikt.</p>
+<pre class="bash"><code>
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 60 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_2.fastq &gt; /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam&#39; &amp;
+</code></pre>
+<p><strong>23-09-2024</strong><br />
+De fastq bestanden zijn met fastqc gecontroleerd en vervolgens getrimmed
+met Trimmomatic met het onderstaande stuk code. Voor Trimmomatic zijn de
+volgende instellingen gebruikt: MINLEN:40 en SLIDINGWINDOW:4:20.</p>
+<p><strong>Ook zijn de volgende samples zijn niet
+gebruikt:</strong><br />
+B220+CD43+IgM- sorted primary pro-B cells.<br />
+Deze samples zijn verkregen met een Illumina MiSeq.</p>
+<p>SRR26980527<br />
+SRR26980528<br />
+SRR26980529<br />
+SRR26980530<br />
+</p>
+<p>De reden hiervoor is dat het samples van WT muizen zijn, hier gaan we
+het referentiegenoom voor gebruiken.</p>
+<p><strong>De volgende zijn wel gebruikt:</strong><br />
+Primary pro-B cells by CD19+ selection (Rag2-/-) Deze samples zijn
+verkregen met een Illumina NovaSeq 6000. SRR26980549.sam<br />
+SRR26980550.sam<br />
+SRR26980551.sam<br />
+SRR26980552.sam<br />
+</p>
+<p>De onnodige samples zijn ook verwijderd uit de lijst (SraAccList.csv)
+omdat deze met de pipe operator aan de parallel opdracht gegeven wordt.
+Als de namen in de accession</p>
+<pre class="bash"><code>
+cat data/GSE149995_Sra_RunInfo.csv | \
+  parallel &#39;TrimmomaticPE -threads 16 &#39; \
+                  &#39;/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}.fastq.gz &#39; \
+                  &#39;/students/2024-2025/Thema05/3dconformatieChromatine/fastq-trimmed/{}.trimmed.fastq.gz &#39; \
+                  &#39;ILLUMINACLIP:/students/2024-2025/Thema05/3dconformatieChromatineTrimmomatic/adapters/TruSeq3-SE.fa:2:30:10 &#39; \
+                  &#39;MINLEN:40 &#39; \
+                  &#39;SLIDINGWINDOW:4:20&#39;
+</code></pre>
+<p><strong>24-09-2024</strong><br />
+Het mappen met behulp van BWA-mem2 is opnieuw uitgevoerd na het trimmen.
+Het referentiegenoom dat in de vorige stap geindexeerd was wordt weer
+opnieuw gebruikt.</p>
+<pre class="bash"><code>
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 50 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_forward_paired.fastq /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_rev_paired.fastq &gt; /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam&#39; &amp;
+</code></pre>
+<p>Feedback: Veel meer uitleg toevoegen, redenen waarom keuzes gemaakt
+zijn. Versies toevoegen van alle gebruikte software.</p>
+<p><strong>Variant calling met Freebayes:</strong> Voordat freebayes
+uitgevoerd kan worden moet het referentiegenoom weer geindexeerd worden,
+net als met BWA-mem2 index maar dan met samtools faidx zoals in de
+onderstaande code chunk beschreven is.</p>
+<pre class="bash"><code>samtools faidx GCA_000001635.9_GRCm39_genomic.fna </code></pre>
+<p>Met het geindexeerde referentiegenoom (GCA_000001635.9_GRCm39) was
+vervolgens de freebayes variant calling uitgevoerd.</p>
+<pre class="bash"><code>
+/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static -f GCA_000001635.9_GRCm39_genomic.fna \ /students/2024-2025/Thema05/3dconformatieChromatine/aligned_sorted_SRR26980549.bam &gt; \ /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf</code></pre>
+<p><strong>Gen anotatie</strong> Eerst is er een .bed bestand van het
+niet door mensen leesbare .bam bestand gemaakt, daarna zijn de genen
+geanoteerd zodat ze geen namen hebben zoals: SRR26980549.46263152/2 maar
+….</p>
+<pre class="bash"><code>
+bamToBed -i aligned_sorted_SRR26980549.bam &gt; aligned_sorted_SRR26980549.bed
+</code></pre>
+<p><strong>Sequence depth vaststellen:</strong> Om te achterhalen wat de
+coverage is, is het volgende bash commando uitgevoerd:</p>
+<pre class="bash"><code>
+samtools depth -a aligned_sorted_SRR26980549.bam &gt; depth_output.txt
+</code></pre>
 </div>
 <div id="visualisatie-van-de-verkregen-data" class="section level2">
-<h2><strong>Visualisatie van de verkregen data:</strong></h2>
+<h2><strong>Visualisatie van de verkregen data:</strong><br />
+</h2>
 </div>
 <div id="statistische-analyse" class="section level2">
-<h2><strong>Statistische analyse</strong></h2>
+<h2><strong>Statistische analyse</strong><br />
+</h2>
 </div>
 <div id="verschillen-tussen-onze-resultaten-en-die-van-het-originele-onderzoek" class="section level2">
 <h2><strong>Verschillen tussen onze resultaten en die van het originele
-onderzoek</strong></h2>
+onderzoek</strong><br />
+</h2>
+</div>
+<div id="referenties" class="section level2">
+<h2><strong>referenties</strong></h2>
+<p>Artikel 3d conformatie chromatine: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10329473/" class="uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10329473/</a>
+Samtools: <a href="http://www.htslib.org/" class="uri">http://www.htslib.org/</a> BWA-MEM2 <a href="https://github.com/bwa-mem2/bwa-mem2" class="uri">https://github.com/bwa-mem2/bwa-mem2</a> Trimmomatic: <a href="http://www.usadellab.org/cms/?page=trimmomatic" class="uri">http://www.usadellab.org/cms/?page=trimmomatic</a> FastQC:
+<a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/" class="uri">https://www.bioinformatics.babraham.ac.uk/projects/fastqc/</a></p>
 </div>
 
 
