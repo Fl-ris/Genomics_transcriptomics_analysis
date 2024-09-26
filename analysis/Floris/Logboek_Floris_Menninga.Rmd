@@ -12,6 +12,9 @@ output:
   word_document:
     toc: yes
     toc_depth: '2'
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 ```{r libraries, results='hold', message=FALSE, warning=FALSE}
@@ -21,43 +24,60 @@ library(ggplot2)
 
 ```
 
-### **Inleiding:** ###
-Het gekozen artikel: (https://pubmed.ncbi.nlm.nih.gov/38866970/) heeft betrekking tot de verandering in 3d conformatie van chromatine die leiden tot verminderde expressie van het gen ebf1. Uit het onderzoek bleek de reden voor deze vermindering migratie van genen naar het B compartiment te zijn, hier liggen stukken chromatine die niet op dat moment tot transcriptie hoeven te komen. 
-Het onderzoek is uitgevoerd op voorloper- B-cellen van muizen. Deze cellen hebben het gen Ebf1 nodig om te differentiëren van hematopoetische stamcellen naar uitgerijpte B cellen. Als dit gen minder tot expressie komt kunnen deze B cellen meer eigenschappen van de voorloper cel hebben. 
+### **Inleiding:**
+
+Het gekozen artikel: (<https://pubmed.ncbi.nlm.nih.gov/38866970/>) heeft betrekking tot de verandering in 3d conformatie van chromatine die leiden tot verminderde expressie van het gen ebf1.
+Uit het onderzoek bleek de reden voor deze vermindering migratie van genen naar het B compartiment te zijn, hier liggen stukken chromatine die niet op dat moment tot transcriptie hoeven te komen.
+Het onderzoek is uitgevoerd op voorloper- B-cellen van muizen.
+Deze cellen hebben het gen Ebf1 nodig om te differentiëren van hematopoetische stamcellen naar uitgerijpte B cellen.
+Als dit gen minder tot expressie komt kunnen deze B cellen meer eigenschappen van de voorloper cel hebben.
 
 <hr>
 
-### **Workflow (Genomics):** ###
-Ondanks dat DNA data onderdeel van de dataset was, staat er in de methode/artikel niet wat ze hiermee gedaan hebben. Daarom hebben we besloten een variant analyse hierop uit te voeren. Het referentiegenoom (muis) zal vergeleken worden met DNA seq data. In het onderzoek was een muis genoom versie uit 2012 gebruikt (mm10), deze gaan we vervangen door de nieuwste versie (GRCm39).
-De eerste stap is het alignen van de genen van de DNA seq data met het referentiegenoom. Daarna worden de verschillen gevisualiseerd en mits deze er zijn. 
+### **Workflow (Genomics):**
 
-### **Workflow (Transcriptomics):** ###
-Net zoals in het originele artikel beschreven was wordt read mapping uitgevoerd met het FASTQ bestand van elk van de samples. Met het .SAM bestand dat verkregen is werd daarna met FeatureCounts en RSEM de gen expressie gekwantificeerd. Deze read mapping was met STAR uitgevoerd maar wij gaan hier HISAT2
-voor gebruiken omdat STAR verouderd is volgens het github repo.
-FeatureCounts gebruikt namelijk het .SAM (of .BAM) bestand en telt hoeveel reads bij elke "feature" (gen/exon) horen. RSEM kan hier ook voor gebruikt worden maar is complexer om te gebruiken dan FeatureCounts.
+Ondanks dat DNA data onderdeel van de dataset was, staat er in de methode/artikel niet wat ze hiermee gedaan hebben.
+Daarom hebben we besloten een variant analyse hierop uit te voeren.
+Het referentiegenoom (muis) zal vergeleken worden met DNA seq data.
+In het onderzoek was een muis genoom versie uit 2012 gebruikt (mm10), deze gaan we vervangen door de nieuwste versie (GRCm39).
+De eerste stap is het alignen van de genen van de DNA seq data met het referentiegenoom.
+Daarna worden de verschillen gevisualiseerd en mits deze er zijn.
+
+### **Workflow (Transcriptomics):**
+
+Net zoals in het originele artikel beschreven was wordt read mapping uitgevoerd met het FASTQ bestand van elk van de samples.
+Met het .SAM bestand dat verkregen is werd daarna met FeatureCounts en RSEM de gen expressie gekwantificeerd.
+Deze read mapping was met STAR uitgevoerd maar wij gaan hier HISAT2 voor gebruiken omdat STAR verouderd is volgens het github repo.
+FeatureCounts gebruikt namelijk het .SAM (of .BAM) bestand en telt hoeveel reads bij elke "feature" (gen/exon) horen.
+RSEM kan hier ook voor gebruikt worden maar is complexer om te gebruiken dan FeatureCounts.
 Dit kan daarna gevisualiseerd worden met R in een box-plot, viool-plot, heatmap, MA-plot etc.
-Ook was er in het artikel gebruik gemaakt van "Cufflinks", deze gaan we vervangen door "StringTie". Volgens de website van Cufflinks is StringTie accurater en veel efficiënter. 
-
+Ook was er in het artikel gebruik gemaakt van "Cufflinks", deze gaan we vervangen door "StringTie".
+Volgens de website van Cufflinks is StringTie accurater en veel efficiënter.
 
 <hr>
 
+**De volgende R libraries/commandline tools zijn gebruikt voor de analyse:**\
+Samtools: 1.16.1
 
-**De volgende R libraries zijn gebruikt voor de analyse:** \
 ....
 
-
-
 ### Log:
-**02-09-2024**: \
-Het gekozen artikel: https://pubmed.ncbi.nlm.nih.gov/38866970
-Gene expression omnibus: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE211975
 
+**02-09-2024**:\
+Het gekozen artikel: <https://pubmed.ncbi.nlm.nih.gov/38866970> Gene expression omnibus: <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE211975>
 
+### SRA's downloaden (Genomics):
 
+De eerste stap om een variant calling analyse uit te voeren is het downloaden van de genetische data die verkregen was door het sequencen van de samples.
+Met behulp van de SRA run selector van NCBI is een selectie van SRA's gemaakt die gedownload moeten worden.
+Een SRA (Sequence Read Archive) is een gecomprimeerd archief dat de sequencing reads bevat.
+Om deze bestanden te downloaden wordt gebruikt gemaakt van "prefetch", deze commandline tool is onderdeel van de SRA toolkit.
 
-### SRA's downloaden (Genomics): \
-Het onderstaande stuk code is op mijn computer uitgevoerd en de data is op een externe HDD opgeslagen. Dit zelfde is gedaan op de assemblix computer waar de andere groepsleden ook bij kunnen. 
-export om de "prefetch" binairy (tijdelijk) toe te voegen aan het PATH. 
+\
+In de volgende stap worden deze bestanden uitgepakt.
+Het onderstaande stuk code is op mijn computer uitgevoerd en de data is op een externe HDD opgeslagen.
+Dit zelfde is gedaan op de assemblix computer waar de andere groepsleden ook bij kunnen.
+export om de "prefetch" binairy (tijdelijk) toe te voegen aan het PATH.
 
 ```{bash, eval=FALSE}
 export PATH="/home/floris/Documenten/Applicaties/sratoolkit.3.1.1-ubuntu64/bin/:$PATH"
@@ -67,26 +87,36 @@ cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/
 prefetch $(</run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/SraAccList.csv) \
 --output-directory "/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/" --max-size 200G
 ```
-### SRA's downloaden (Transcriptomics): \
-De SRA's van de RNA seq worden gedownload met het onderstaande stuk code. De gebruikte accention list staat in de github repository. 
-```{bash, eval=FALSE}
-export PATH="/home/floris/Documenten/Applicaties/sratoolkit.3.1.1-ubuntu64/bin/:$PATH"
- 
 
+**.SRA bestanden naar .FASTQ omzetten:**\
+Met behulp van fasterq-dump worden de .SRA bestanden uitgepakt.
 
-cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/
+fasterq-dump maakt ook onderdeel uit van de SRA toolkit en haalt de data uit het .SRA archief naar het FASTQ format.
 
-prefetch $(</run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/SRR_Acc_List.txt) \
---output-directory "/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/" --max-size 200G
-```
+Een FASTQ bestand bevat tekst met de sequence data, de reads en ook een bijbehorende kwaliteitsscore.
+Deze score wordt aangegeven met een ASCII karakter.
 
-**.SRA bestanden naar .FASTQ omzetten:** \
-Met behulp van fastq-dump worden de .SRA bestanden uitgepakt. 
+Een FASTQ bestand heeft de volgende indeling:
+
+Een header die met "\@" begint gevolgd door een sequentie ID en optioneel een beschrijving wat het bestand bevat.
+Daar onder zitten de sequentie letters.
+
+En daar onder een regel met een "+" karakter.
+Hier onder staat de kwaliteitsscore, deze gaat van ASCII 33 ("!" teken), laagste kwaliteit tot ASCII 126 ("\~" teken).
+
+De kwaliteitsscore wordt ook wel Phred score genoemd.
+Deze score is logaritmisch gerelateerd aan de waarschijnlijkheid dat de "base call" verkeerd is.
+Q = -log(E) waarbij Q de phred score is en E de waarschijnlijkheid van verkeerde base call.
+
+Phred-33 is het meest gebruikt maar Phred-64 bestaat ook.
+Het verschil is dat Phred-33 ge-encodeerd is met met ASCII 33 (!) tot ASCII 126 (\~) terwijl Phred-64 van ASCII 64 (\@) tot ASCII 126 gaat.
+
+Bron: <https://gatk.broadinstitute.org/hc/en-us/articles/360035531872-Phred-scaled-quality-scores>
 
 ```{bash, eval=FALSE}
 
 # Eerst nieuwe map maken voor fastq
-# 
+# Locale test: (niet op de assemblix server) 
 cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
 
 
@@ -97,38 +127,52 @@ find /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA -nam
 # parallel gebruiken: cat accessionlist.txt | parallel ls -lah SRA/{}/{}.sra
 ```
 
-```{bash, eval=FALSE}
+**Onderzoeksvraag Genomics** De volgende onderzoeksvraag is geformuleerd voor het genomics onderzoek:
 
-#cd /locatie/van/sra
+Zijn er varianten aanwezig van PAX5 en Ebf1 in het genoom van de rag2(-/-) muizen die gebruikt zijn?
 
-#fastqc
+Deze vraag is relevant omdat voor het transcriptomics gedeelte van het onderzoek gekeken wordt naar verschillen in expressie van deze genen.
+Als het blijkt dat er variaten van deze genen aanwezig zijn kan het verschil in expressie tussen de muizen die gebruikt zijn in het onderzoek niet alleen toegewezen worden aan de factoren waar naar getest wordt, de invloed van veroudering op de expressie.
+Dan zou het ook kunnen komen door mutaties van deze genen.
 
-```
-**Onderzoeksvraag Genomics**
+Er is DNA sequentie data beschikbaar van rag2(-/-) muizen.
+Daarom kan er niet gekeken worden naar mutaties in het rag2 gen omdat deze niet meer aanwezig is.
 
-Zijn er varianten aanwezig van PAX5 en Ebf1 in het genoom van de rag2 knockout muizen die gebruikt zijn. 
+Rag2 knockout muizen zijn niet in staat om uitgerijpte T en B lymfocyten te maken.
+Bron: <https://pubmed.ncbi.nlm.nih.gov/1547487/>
 
-Het gen Ebf1 (Early B-cell factor 1) is een gen dat bijdraagt aan de differentiatie van voorloper b cellen. De reden dat gekozen is voor dit gen is dat het resultaat van een verminderde expressie zichtbaar gemaakt kan worden door functieverlies van B cellen. Samen met PAX5 werken deze genen aan de uitrijping van hematopoetische stam cellen. Als er verminderde expressie is van deze genen hebben de voorloper B cellen meer eigenschappen van de voorloper B cellen.
+Het gen Ebf1 (Early B-cell factor 1) is een gen dat bijdraagt aan de differentiatie van voorloper b cellen.
+bron: <https://www.nature.com/articles/ni.2641>
 
+De reden dat gekozen is voor dit gen is dat het resultaat van een verminderde expressie zichtbaar gemaakt kan worden door functieverlies van B cellen.
+Samen met PAX5 werken deze genen aan de uitrijping van hematopoetische stam cellen.
+Functieverlies van PAX5 leidt tot accumulatie van snel proliferende lymfoblasten die niet meer normale differentiatie kunnen ondergaan.
+Ook is PAX5 een tumorsuppressor gen maar dat is niet van invloed op dit onderzoek.
 
-**Test data genereren**
-**16-09-2024** \
-Om test data te genereren op basis van twee van de fastq bestanden is de volgende code gebruikt:
-Per sample bestand zitten er 1000000 reads in. 
-Dit commando is ook uitgevoerd op de assemblix server maar dan met een ander path naar de data. 
+bron: <https://www.sciencedirect.com/topics/neuroscience/pax5>
 
+**Test data genereren** **16-09-2024**
+
+Om te voorkomen dat een parallel commando na het uitvoeren van een lange bewerking een fout of onverwacht resultaat geeft moet er eerst een subset van de te gebruiken data gemaakt worden.
+Hiermee kunnen de volgende commando's eerst uitgevoerd worden om te verifieren dat alles goed werkt.
+
+\
+Om test data te genereren op basis van twee van de fastq bestanden is de volgende code gebruikt: Per sample bestand zitten er 1000000 reads in.
+Dit commando is ook uitgevoerd op de assemblix server maar dan met een ander path naar de data.
+Voor het maken van deze test data is seqkit (versie 2.3.0) gebruikt.
+
+Seqkit kan gebruikt worden voor meerdere bewerkingen zoals het filteren van sequenties op lengte / kwaliteit, DNA/RNA translateren naar een aminozuur sequentie.
+bron: [https://bioinf.shenwei.me/seqkit](https://bioinf.shenwei.me/seqkit/){.uri}/
 
 ```{bash, eval=FALSE}
 
 cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
 
-seqkit head -n 10000 SRR26980527_1.fastq > subset_SRR26980527_1.fastq
-seqkit head -n 10000 SRR26980527_2.fastq > subset_SRR26980527_2.fastq
+seqkit head -n 1000000 SRR26980527_1.fastq > subset_SRR26980527_1.fastq
+seqkit head -n 1000000 SRR26980527_2.fastq > subset_SRR26980527_2.fastq
 
 
 ```
-
-
 
 ```{bash, eval=FALSE}
 
@@ -141,18 +185,27 @@ seqkit (voor maken van subset van test data)
 
 ```
 
-**Gebruikte samples**
-**17-09-2024**
-Na het controle van de kwaliteit van de fastq bestanden bleek het dat de samples met read lengtes van 250 bp getrimd moeten worden.
-De volgende samples zijn wildtype: (WT C57BL/6J) SRR26980527, SRR26980528, SRR26980529, SRR26980530. 
-En de volgende samples zijn Rag2(-/-) knockout: SRR26980549, SRR26980550, SRR26980551, SRR26980552
-Al deze samples zijn paired end sequenced Primary pro-B cells geselecteerd op CD19+.
+**Gebruikte samples** **17-09-2024**
 
-### Indexeren en alignen: 
-    
-Samples SRR26980528_1 en _2 zijn gebruikt na het referentiegenoom te indexeren met BWA_MEM2. 
+Na het controle van de kwaliteit van de fastq bestanden bleek het dat de samples met read lengtes van 250 bp getrimd moeten worden.
+De volgende samples zijn wildtype: (WT C57BL/6J) SRR26980527, SRR26980528, SRR26980529, SRR26980530.
+En de volgende samples zijn Rag2(-/-) knockout: SRR26980549, SRR26980550, SRR26980551, SRR26980552 Al deze samples zijn paired end sequenced Primary pro-B cells geselecteerd op CD19+.
+
+### Indexeren en alignen:
+
+Met enkel een fastq bestand met reads is nog niet duidelijk waar in het genoom van het organisme deze reads kwamen.
+Met gene mapping worden de reads vergeleken met een bekend genoom, in dit geval het mm39 muis referentiegenoom en worden de reads er tegen aan gelegd zodat hun locatie in het genoom bekend wordt.
+Aangezien er geannoteerde versies van het referentiegenoom zijn, met de namen van de genen kan dan ook achterhaald worden van welke genen de reads deel uitmaken.
+
+Omdat het programma dat gebruikt gaat worden voor het alignen, BWA-mem2, een geïndexeerde versie van het referentiegenoom nodig heeft moet deze eerst gemaakt worden.
+Dit kan gedaan worden met bwa-mem2 index.
+Hierbij
+
+Samples SRR26980528_1 en \_2 zijn gebruikt na het referentiegenoom te indexeren met BWA_MEM2.
 Het gebruikte referentie genoom is mm39 (GCF_000001635.27).
 
+In de onderstaande code chunk wordt het geindexeerde muisgenoom "testnaam" genoemd.
+Daarna worden twee samples (forward read en reverse read) ge-aligned met het zojuist verkregen geïndexeerde referentiegenoom.
 
 ```{bash, eval=FALSE}
 
@@ -174,16 +227,14 @@ bwa-mem2 mem ref.fa read1.fq read2.fq > aln-pe.sam
 
 ```
 
-
-
-**14-09-2024** \
-In tegenstelling tot het artikel gaan we gebruik maken van Muis (*Mus musculus*) referentiegenoom: GRCm39 (GCF_000001635.27) gebruik maken. 
+**14-09-2024**\
+In tegenstelling tot het artikel gaan we gebruik maken van Muis (*Mus musculus*) referentiegenoom: GRCm39 (GCF_000001635.27) gebruik maken.
 Deze is nieuwer dan versie mm10 die gebruikt was.
-Aangezien het onderzoek dit jaar gepubliceerd is en voltooid was in 2022 vraag ik mij af waarom ze voor een versie uit 2012 gekozen hebben terwijl er een nieuwere beschikbaar was. 
+Aangezien het onderzoek dit jaar gepubliceerd is en voltooid was in 2022 vraag ik mij af waarom ze voor een versie uit 2012 gekozen hebben terwijl er een nieuwere beschikbaar was.
 
-**.sam bestanden sorteren:** \ 
-**17-09-2024** \
-Omdat .SAM bestanden niet georderd zijn op positie in het genoom moeten ze eerst met samtools sort omgezet worden naar een .BAM bestand, deze is wel gesorteerd. Daarnaast kan het opvragen van data sneller gemaakt worden als het geïndexeerd is, 
+**.sam bestanden sorteren:**   **17-09-2024**\
+Omdat .SAM bestanden niet georderd zijn op positie in het genoom moeten ze eerst met samtools sort omgezet worden naar een .BAM bestand, deze is wel gesorteerd.
+Daarnaast kan het opvragen van data sneller gemaakt worden als het geïndexeerd is,
 
 ```{bash, eval=FALSE}
 
@@ -195,8 +246,6 @@ samtools index aligned_sorted_SRR26980549.bam &
 
 ```
 
-
-
 ```{bash, eval=FALSE}
 
 freebayes -f ref.fa aln.bam >var.vcf
@@ -204,7 +253,7 @@ freebayes -f ref.fa aln.bam >var.vcf
 
 ```
 
-**18-09-2024** \
+**18-09-2024**\
 
 ```{bash, eval=FALSE}
 library(fastqcr)
@@ -213,37 +262,37 @@ trimomaticPE?
 ```
 
 Om alle paired read samples te mappen is het onderstaande bash script gebruikt.
+
 ```{bash, eval=FALSE}
 
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 60 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_2.fastq > /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam' &
 
 ```
 
-**23-09-2024** \
+**23-09-2024**\
 De fastq bestanden zijn met fastqc gecontroleerd en vervolgens getrimmed met Trimmomatic met het onderstaande stuk code.
 Voor Trimmomatic zijn de volgende instellingen gebruikt: MINLEN:40 en SLIDINGWINDOW:4:20.
 
-**Ook zijn de volgende samples zijn niet gebruikt:** \
-B220+CD43+IgM- sorted primary pro-B cells. \
+**Ook zijn de volgende samples zijn niet gebruikt:**\
+B220+CD43+IgM- sorted primary pro-B cells.\
 Deze samples zijn verkregen met een Illumina MiSeq.
 
-SRR26980527 \
-SRR26980528 \
-SRR26980529 \
-SRR26980530 \
+SRR26980527\
+SRR26980528\
+SRR26980529\
+SRR26980530\
 
-De reden hiervoor is dat het samples van WT muizen zijn, hier gaan we het referentiegenoom voor gebruiken. 
+De reden hiervoor is dat het samples van WT muizen zijn, hier gaan we het referentiegenoom voor gebruiken.
 
-**De volgende zijn wel gebruikt:** \
-Primary pro-B cells by CD19+ selection (Rag2-/-)
-Deze samples zijn verkregen met een Illumina NovaSeq 6000.
-SRR26980549.sam \
-SRR26980550.sam \
-SRR26980551.sam \
-SRR26980552.sam \
+**De volgende zijn wel gebruikt:**\
+Primary pro-B cells by CD19+ selection (Rag2-/-) Deze samples zijn verkregen met een Illumina NovaSeq 6000.
+SRR26980549.sam\
+SRR26980550.sam\
+SRR26980551.sam\
+SRR26980552.sam\
 
-De onnodige samples zijn ook verwijderd uit de lijst (SraAccList.csv) omdat deze met de pipe operator aan de parallel opdracht gegeven wordt. Als de namen in de accession 
-
+De onnodige samples zijn ook verwijderd uit de lijst (SraAccList.csv) omdat deze met de pipe operator aan de parallel opdracht gegeven wordt.
+Als de namen in de accession
 
 ```{bash, eval=FALSE}
 
@@ -258,8 +307,9 @@ cat data/GSE149995_Sra_RunInfo.csv | \
 
 ```
 
-**24-09-2024** \
-Het mappen met behulp van BWA-mem2 is opnieuw uitgevoerd na het trimmen. Het referentiegenoom dat in de vorige stap geindexeerd was wordt weer opnieuw gebruikt.
+**24-09-2024**\
+Het mappen met behulp van BWA-mem2 is opnieuw uitgevoerd na het trimmen.
+Het referentiegenoom dat in de vorige stap geindexeerd was wordt weer opnieuw gebruikt.
 
 ```{bash, eval=FALSE}
 
@@ -267,26 +317,25 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 ```
 
-Feedback: Veel meer uitleg toevoegen, redenen waarom keuzes gemaakt zijn. 
-Versies toevoegen van alle gebruikte software. 
+Feedback: Veel meer uitleg toevoegen, redenen waarom keuzes gemaakt zijn.
+Versies toevoegen van alle gebruikte software.
+Overal nog bronnen toevoegen.
+redenen waarom voor specifieke software gekozen is toevoegen.
 
-
-**Variant calling met Freebayes:**
-Voordat freebayes uitgevoerd kan worden moet het referentiegenoom weer geindexeerd worden, net als met BWA-mem2 index maar dan met samtools faidx zoals in de onderstaande code chunk beschreven is. 
+**Variant calling met Freebayes:** Voordat freebayes uitgevoerd kan worden moet het referentiegenoom weer geindexeerd worden, net als met BWA-mem2 index maar dan met samtools faidx zoals in de onderstaande code chunk beschreven is.
 
 ```{bash, eval=FALSE}
 samtools faidx GCA_000001635.9_GRCm39_genomic.fna 
 ```
 
-Met het geindexeerde referentiegenoom (GCA_000001635.9_GRCm39) was vervolgens de freebayes variant calling uitgevoerd. 
+Met het geindexeerde referentiegenoom (GCA_000001635.9_GRCm39) was vervolgens de freebayes variant calling uitgevoerd.
+
 ```{bash, eval=FALSE}
 
 /students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static -f GCA_000001635.9_GRCm39_genomic.fna \ /students/2024-2025/Thema05/3dconformatieChromatine/aligned_sorted_SRR26980549.bam > \ /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf
 ```
 
-
-**Gen anotatie**
-Eerst is er een .bed bestand van het niet door mensen leesbare .bam bestand gemaakt, daarna zijn de genen geanoteerd zodat ze geen namen hebben zoals: SRR26980549.46263152/2 maar ....
+**Gen anotatie** Eerst is er een .bed bestand van het niet door mensen leesbare .bam bestand gemaakt, daarna zijn de genen geanoteerd zodat ze geen namen hebben zoals: SRR26980549.46263152/2 maar ....
 
 ```{bash, eval=FALSE}
 
@@ -294,28 +343,38 @@ bamToBed -i aligned_sorted_SRR26980549.bam > aligned_sorted_SRR26980549.bed
 
 ```
 
+**Sequence depth vaststellen:** Om te achterhalen wat de coverage is, is het volgende bash commando uitgevoerd:
 
-**Sequence depth vaststellen:**
-Om te achterhalen wat de coverage is, is het volgende bash commando uitgevoerd:
 ```{bash, eval=FALSE}
 
 samtools depth -a aligned_sorted_SRR26980549.bam > depth_output.txt
 
 ```
 
+## **Visualisatie van de verkregen data:**
 
-## **Visualisatie van de verkregen data:** \
+## **Statistische analyse**
 
-
-## **Statistische analyse** \
-
-
-## **Verschillen tussen onze resultaten en die van het originele onderzoek** \
-
+## **Verschillen tussen onze resultaten en die van het originele onderzoek**
 
 ## **referenties**
-Artikel 3d conformatie chromatine: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10329473/
-Samtools: http://www.htslib.org/
-BWA-MEM2 https://github.com/bwa-mem2/bwa-mem2
-Trimmomatic: http://www.usadellab.org/cms/?page=trimmomatic
-FastQC: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
+
+Artikel 3d conformatie chromatine: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10329473/> Samtools: <http://www.htslib.org/> BWA-MEM2 <https://github.com/bwa-mem2/bwa-mem2> Trimmomatic: <http://www.usadellab.org/cms/?page=trimmomatic> FastQC: <https://www.bioinformatics.babraham.ac.uk/projects/fastqc/>
+
+# Transcriptomics:
+
+### SRA's downloaden (Transcriptomics):
+
+De SRA's van de RNA seq worden gedownload met het onderstaande stuk code.
+De gebruikte accention list staat in de github repository.
+
+```{bash, eval=FALSE}
+export PATH="/home/floris/Documenten/Applicaties/sratoolkit.3.1.1-ubuntu64/bin/:$PATH"
+ 
+
+
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/
+
+prefetch $(</run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/SRR_Acc_List.txt) \
+--output-directory "/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/" --max-size 200G
+```
