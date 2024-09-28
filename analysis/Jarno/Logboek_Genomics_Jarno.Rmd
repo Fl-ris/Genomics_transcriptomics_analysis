@@ -1,12 +1,15 @@
 ---
 title: "Logboek-Genomics"
 author: "Jarno Jacob Duiker"
-date: "2024-09-12"
-output: html_document
+bibliography: Logboek_Genomics_Jarno.bib
+output:
+  html_document:
+    df_print: paged
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+knitr::opts_chunk$set(out.width = '100%', dpi=500) # configuratie voor figuur grootte en resolutie
+library(ggplot2)
 ```
 
 ## Introductie:
@@ -47,17 +50,28 @@ Hier onder is een overzicht te zien van de Tools die wij gaan gebruiken in ons o
 
 ![Planning - Tijd voor onderzoek Genomics & Transcriptomics](images/Scherm­afbeelding%202024-09-24%20om%2015.06.09.png){width="681"}
 
-## 09-09-2024
+# Project Opzet
 
-### Doel van de dag
+## Week 1
+
+### Doelen van de week
 
 **Het maken van een team & Onderzoeken zoeken met potentie**
 
-### Taken lijst
+**Het maken van een samenvatting van de Methoden**
+
+**Het downloaden van de data doormiddel van SRA**
+
+### Taken lijst - Week 1
 
 -   Team maken
 -   Literatuur + data set zoeken
 -   Week planning maken
+-   Afmaken Methoden
+-   Herlezen document
+-   Checken Methoden
+-   Bash script schrijven voor de download
+-   De SRA unpacken en data controleren
 
 In de klas is er een groep gemaakt samen met Floris, Storm en Ivar. Wij vieren hebben als doelstelling een goed en een interessant onderzoek te presenteren. De motivatie in deze groep is dus een goede basis om op te bouwen.
 
@@ -67,13 +81,13 @@ Aan deze query kan aan het einde nog een woord of onderwerp toegevoegd worden. I
 
 #### Onderzoeken
 
--   <https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/33751124/> : MiniCAFE, a CRISPR/Cas9-based compact and potent transcriptional activator, elicits gene expression in vivo. Dit onderzoek gaat over CRISPR-bemiddelde gen activatie. Dit is een belovende gen veranderingstrategie die DNA kan veranderen zonder dat de dubbele helix breekt. Deze is laten controleren door de opdrachtgever en die zei het volgende "Interessant onderzoek en leuk artikel, maar volgens mij zijn er voor het RNA-Seq gedeelte voor de meeste groepen maar 2 replicaten beschikbaar terwijl we daar minimaal 3 willen hebben. Mochten jullie niet iets anders kunnen vinden dan kunnen we dit experiment alsnog gebruiken, maar daar zitten wel wat risico's aan." Hierdoor zijn we gaan kijken naar andere opties.
+-   @Zhang2021 : MiniCAFE, a CRISPR/Cas9-based compact and potent transcriptional activator, elicits gene expression in vivo. Dit onderzoek gaat over CRISPR-bemiddelde gen activatie. Dit is een belovende gen veranderingstrategie die DNA kan veranderen zonder dat de dubbele helix breekt. Deze is laten controleren door de opdrachtgever en die zei het volgende "Interessant onderzoek en leuk artikel, maar volgens mij zijn er voor het RNA-Seq gedeelte voor de meeste groepen maar 2 replicaten beschikbaar terwijl we daar minimaal 3 willen hebben. Mochten jullie niet iets anders kunnen vinden dan kunnen we dit experiment alsnog gebruiken, maar daar zitten wel wat risico's aan." Hierdoor zijn we gaan kijken naar andere opties.
 
--   <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10415134/> : Gene expressions associated with longer lifespan and aging exhibit similarity in mammals. Dit onderzoek hadden wij als tweede optie gevonden, het onderzoek gaat over gen expressie geassocieerd met langere levensspan en veroudering laten gelijkenis zien in zoogdieren. Dit onderzoek is niet gekozen door de onbeschikbaarheid van de DATA.\
+-   @Takasugi2023 : Gene expressions associated with longer lifespan and aging exhibit similarity in mammals. Dit onderzoek hadden wij als tweede optie gevonden, het onderzoek gaat over gen expressie geassocieerd met langere levensspan en veroudering laten gelijkenis zien in zoogdieren. Dit onderzoek is niet gekozen door de onbeschikbaarheid van de DATA.\
 
 #### Gekozen onderzoek
 
--   <https://www.nature.com/articles/s41556-024-01424-9> : Three-dimensional chromatin reorganization regulates B cell development during ageing. Dit is de keuze geworden door de aanwezigheid van veel data. Dit zijn in totaal 76 samples die genomen zijn van de jonge en oudere muizen. Deze samples zijn van meerdere catagorien maar voor ons belangrijk zijn de verschillende RNA samples. Het doel van dit onderzoek is ook erg interresant en wij hebben na het lezen gelijk al nieuwe dingen geleerd. Wat er uit sprong was de A/B compartenment in de nucleus. Dit is een recente ontdekking en zegt dat er een A compartement is waar de genen worden expressed maar in het B compartement worden de genen niet expressed. Deze twee compartementen zitten nouw bij elkaar en laat dus zien dat er wel structuur zit in waar een gen zit en waar het niet zit in de cel.
+-   @Ma2024 : Three-dimensional chromatin reorganization regulates B cell development during ageing. Dit is de keuze geworden door de aanwezigheid van veel data. Dit zijn in totaal 76 samples die genomen zijn van de jonge en oudere muizen. Deze samples zijn van meerdere catagorien maar voor ons belangrijk zijn de verschillende RNA samples. Het doel van dit onderzoek is ook erg interresant en wij hebben na het lezen gelijk al nieuwe dingen geleerd. Wat er uit sprong was de A/B compartenment in de nucleus. Dit is een recente ontdekking en zegt dat er een A compartement is waar de genen worden expressed maar in het B compartement worden de genen niet expressed. Deze twee compartementen zitten nouw bij elkaar en laat dus zien dat er wel structuur zit in waar een gen zit en waar het niet zit in de cel.
 
 #### Week planning
 
@@ -96,18 +110,6 @@ De planning van de week voor mij was dat ik de Methoden moest bekijken en samenv
 De methoden zijn belangrijk omdat hierin de benodigdheden staan voor replicatie van het onderzoek. In de gekozen paper waren verschillende methoden die voor ons niet belangrijk zijn. Dit zijn bijvoorbeeld waar de muizen zijn gekocht of de Hi-C methoden dit omdat onze onderzoeks vraag als volgt gaat "Heeft leeftijd invloed op de expressie van genen" de Hi-C kijkt naar de chromosoomconfiguratie dit is te extreem voor ons in de tijds periode die wij hebben gekregen.
 
 <https://trello.com>
-
-## 10-09-2024
-
-### Doel van de dag
-
-**Het afmaken van de samenvatting van de Methoden**
-
-### Taken lijst
-
--   Afmaken Methoden
--   Herlezen document
--   Checken Methoden
 
 Het weten van de methoden is belangrijk omdat wij moeten weten wat wij kunnen repliceren en wat te ver gegerepen is voor ons onderzoek en dit zou onze onderzoeksvraag kunnen beinvloeden. Als we Hi-C als voorbeeld nemen dit is een hoge doorvoer technique die chromatine conformatie vastlegt. Dit zouden wij niet in onze 5 weken kunnen doen op een goede manier. Dit is waarom wij kiezen voor de genoom analyze voor afwijkingen met het algemene referentie genoom.
 
@@ -135,46 +137,46 @@ Dus wij gaan niet de RNA gebruiken voor deze vraag. De RNA-seq resultaten en all
 
 Wij gaan Hi-C niet gebruiken omdat dit ook niet past bij onze onderzoeks vraag en Hi-C is ook redelijk complex wat dus ook niet in ons tijd schema past.
 
-### Vragen of ronald dit er in moet ja of nee
-
-## 13-09-2024
-
-### Doel van de dag
-
-**Het downloaden van de data doormiddel van SRA**
-
-### Taken lijst
-
--   Bash script schrijven voor de download
--   De SRA unpacken en data controleren
+## Alleen in zetten wat relevant is voor ons onderzoek
 
 Eerst werd ons gevraagd om naar de juiste map te gaan. Dit kan door de terminal te openen naar onze home te gaan en cd naar /students/2024-2025/Thema05/ en hier de map voor ons project aan te maken.\
 Of het kan geworden met de GUI waar je ook begint met het openen van de home folder en dan in de zoekbalk het volgende typen "/students/2024-2025/Thema05/" Hier hebben wij de map aangemaakt genaamd "3dconformatieChomatine" een verkorte benaming van de paper. Hier in moest nog een map gemaakt worden die SRA moest worden genoemd. De data moesten wij van de ncbi geo website afhalen door een SraAccList te downloaden. Deze bevatte de naam-codes die wij dan in het systeem kunnen oproepen om ze vervolgens daar te downloaden en unpacken.
 
 Hieronder is het script te zien die gebruikt is om de SraAccList aan te roepen deze te lezen en daarna wordt —output gebruikt om hem in de goede map te zetten "\\" geeft een new line aan en de - -max-size 200g geeft aan dat de packed files niet meer mogen zijn dan 200 gigabytes
 
-```{bash}
+```{bash, eval=FALSE}
+# Hier wil ik dat prefetch in de map te kijken SRA voor de gedownloade SraAccList deze wordt gebruikt om de files die ik wil te zoeken in de NCBI database
 prefetch $(</students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv) --output-directory \
 /students/2024-2025/Thema05/3dconformatieChromatine/SRA/ --max-size 200G
 
 ```
 
+Prefetch is deel van de SRA toolkit, dit programma downloads Runs (sequence files in het gecompresserde SRA format) en alle bijbehorende data benodigd om de Run van het SRA format naar een meer bruikbare file format om te zetten. Deze file formats kunnen fasta of fastq zijn bijvoorbeeld. Prefetch kan ook worden gebruikt om incomplete Run downloads af temaken en te corrigeren.
+
 SRA Toolkit Release 3.1.1 is gebruikt. in deze toolkit zitten verschillende tools die gebruikt worden. De reden dat wij deze toolkit gebruiken is omdat deze van NCBI komt dit is ook het platform waarvandaan wij onze data halen dit zou dus het makkelijkste moeten werken.
 
-## 16-09-2024
+# Quality control
 
-### Doel van de dag
+## Week 2
+
+### Doelen van de week
 
 **De SRA data uitpakken en de FastQ bekijken**
+
+**Test data maken**
+
+**Reads alignenen aan refentie genoom**
 
 ### Taken lijst
 
 -   Bash script schrijven voor het uitpakken
 -   Fastq quality checken
+-   Test data maken
+-   Reads alignenen
 
-Om de SRA data naar fastq om te zetten gebruiken we fasterq-dump. fasterq-dump is een programma in de SRA toolkit, wij gebruiken Release 3.1.1, De reden voor het gebruik van fasterq-dump is op advies van onze leraar. Fasterq-dump zit ook in de SRA toolkit die dus al op het systeem staat ook is fasterq-dump goed gedocumenteerd en snel.
+Om de SRA data naar fastq om te zetten gebruiken we fasterq-dump. fasterq-dump is een programma in de SRA toolkit, wij gebruiken Release 3.1.1, De reden voor het gebruik van fasterq-dump is de goede documentatie en de link met NCBI waar wij onze files vandaan halen. Fasterq-dump zit ook in de SRA toolkit deze staat geinstalleerd op het systeem dit is makkelijk te doen door naar de git te kijken van Fasterq-dump ook wel de SRA toolkit git.
 
-Fasterq-dump neemt de SRA files en extract de data hiervan naar fastq- of fasta files. in ons geval fasta files.
+Fasterq-dump neemt de SRA files en extract de data hiervan naar fastq- of fasta files. in ons geval fastq files.
 
 De code hieronder zoekt eerst in de SRA map naar files met een filenaam die eindigt op .sra
 
@@ -185,13 +187,13 @@ find /students/2024-2025/Thema05/3dconformatieChromatine/SRA/ -name "*.sra" | \
   parallel fasterq-dump -O /students/2024-2025/Thema05/3dconformatieChromatine/fastq/ {}
 ```
 
-### Fasta eerste check
+### FastaQC eerste check
 
-FastQC wordt gebruikt om de kwaliteit te checken van de rauwe data, hier uit is te zien of de data gelijk te gebruiken is of dat deze moet worden getrimmed. De trimmer kan ook afgesteld worden op basis van de fastqc. <https://www.bioinformatics.babraham.ac.uk/projects/fastqc/>
+FastQC wordt gebruikt om de kwaliteit te checken van de rauwe data, hier uit is te zien of de data gelijk te gebruiken is of dat deze moet worden getrimmed. De trimmer kan ook afgesteld worden op basis van de fastqc. @BabrahamBioinformatics
 
 Waarom wij FastQC gebruiken is omdat voor wij gaan werken met onze data willen wij zien of de data wel geschikt is om mee te werken. Als de kwaliteit heel slecht is dan kunnen er niet betrouwbare resultaten uit worden gehaald, en het is niet goed repliceerbaar.
 
-Er zijn meerdere resultaten die uit een FastQC check komen
+Er zijn meerdere resultaten die uit een FastQC check komen hier is een uitleg wat er uit komt en hoe dit gelezen moet worden.
 
 +------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Catagorie                    | Uitslag                                                                                                                                                                                                                                                                                                                                                                     | Hoe lees je dit                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
@@ -226,11 +228,13 @@ Er zijn meerdere resultaten die uit een FastQC check komen
 | Adapter content              | Een grafiek waar verschillende adapters staan                                                                                                                                                                                                                                                                                                                               | Het geeft aan of de sequenties adapterfragmenten bevatten en van verschillende apparaten. als deze aanwezig zijn is het te zien door af te lezen in de grafiek welke positie er zijn om ze vervolgens weg te trimmen. deze "adaptercontent" is er voor identificatie van de DNA                                                                                                                                                                                                                                                                                         |
 +------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+: Table - 1
+
 ### Referenties voor fastqc uitleg
 
-FastQC. (z.d.). *FastQC*. <https://mugenomicscore.missouri.edu/PDF/FastQC_Manual.pdf>
+\@FastQCManual
 
-Khetani, M. P. R. (2018, 5 september). Quality control: Assessing FASTQC results. *Introduction to RNA-Seq using high-performance computing - ARCHIVED*. <https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon/lessons/qc_fastqc_assessment.html>
+@Khetani2018
 
 Uit onze fastQC resultaten kwamen wat bijzondere resultaten. Er waren reads van verschillende lengten de grootste was 300 base paren wat boven de algemene norm is.
 
@@ -238,17 +242,9 @@ Uit onze fastQC resultaten kwamen wat bijzondere resultaten. Er waren reads van 
 
 [![Figuur 2: Per base sequence content](images/clipboard-308353073.png)](https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon/img/fastqc_per_base_sequence_content.png)
 
+De conclusie uit de analyze van de FastQC resultaten is, Dat de generale statestieken 7 van de bestanden enorm veel duplicates wat een redelijk probleem vormt. Wat ook opvalt is dat alle bestanden met hoge duplicates een gem read lengte van 250 bp wat opmerkelijk lang is + de resultaten met enigzins goede kwaliteit hebben een gem lengte van 150 bp. Verder alle bestanden met veel duplicates bevatten veel minder reads dan de bestanden zonder of met weinig duplicates. Alle bestanden met 250 bp lengte eindigen aan het eind in het rode vlak in de sequentie kwaliteit en er is een dip bij de 110-120 waarna alles dus afzakt, voor de sequenties met 250bp is de kwaliteit goed van 0-110 bp. De sequence duplication levels zijn ook opmerkelijk door veel pieken en een hoog begin van de lijn. Overrepresented sequences vallen ook op want weer de 250bp bestanden hebben erg veel duplicates waar van sommige in de 50% zitten. Er zit ook heel veel adapter content bij 2 files is het zelfs \>50%. Kortom deze files moeten getrimmed of verwijderd worden.
+
 Om een gehele analyze te zien van de FastQC resultaten moet er gekeken worden naar de logboeken van Storm en Ivar
-
-## 17-09-2024
-
-### Doel van de dag
-
-**Test data maken**
-
-### Taken lijst
-
--   Test data maken
 
 **Seqkit -** Is een veelzijdige tool voor het verwerken en analyseren van sequentiebestanden de inputs welke hij accepteert zijn FASTA en FASTQ. Het kan grote datasets efficient doorlopen en biedt meerdere functies zoals filtering, slitsen van sequenties, statistieken genereren, test data sets maken etc. De gebruikte versie op de bio inf assemblix server (waar de Rstudio commands op gerund worden) is op dit moment seqkit V2.3.0
 
@@ -280,23 +276,15 @@ seqkit head -n 10000 SRR26980527_1.fastq > subset_SRR26980527_1.fastq
 
 ```
 
-## 18-09-2024
+# Aligning Data experiment - Optioneel, uitkomst niet verder gebruikt
 
-### Doel van de dag
-
-**Reads alignenen aan refentie genoom**
-
-### Taken lijst
-
--   Reads alignenen
-
-#### **Bwa mem 2 test voor 1 file**
+## **Bwa mem 2 test voor 1 file**
 
 BWA-MEM2 wordt gebruikt om zowel DNA- als RNA-reads te aligneren met een referentiegenoom. Het kan korte en middellange DNA- of RNA-reads alignen. Er zijn verschillende manieren waar dit voor gebruikt kan worden zoals, Whole genome sequencing, Exoomsequencing en RNA-seq. Voor ons is Whole genome sequencing interresant dit is omdat hierbij de genomen worden gescand en dan vergeleken met het gekozen referentie genoom (in ons geval GRCm39 uitgegeven op 22 - 07 -2020) dit om genetische variaties te identificeren.\
 
 Li, H. (2013). Aligning sequence reads, clone sequences and assembly contigs with BWA-MEM. *arXiv: Genomics*. - <https://github.com/lh3/bwa>
 
-```{bash}
+```{bash, eval=FALSE}
 ./bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -p 60 testnaam fastq/SRR26980549_1.fastq fastq/SRR26980549_2.fastq > aligned_SRR26980549.sam &
 ```
 
@@ -313,11 +301,13 @@ parallel /students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2
 
 #### Sam tools sort
 
+geindexeerd en gesorteerd + bam mee maken
+
 ```{bash, eval=FALSE}
 samtools sort aligned_SRR26980549.sam > aligned_sorted_SRR26980549.bam & samtools index aligned_sorted_SRR26980549.bam & 
 ```
 
-## 22-09-2024
+# Achtergrond Info verzameling
 
 ## A/B compartimenten
 
@@ -343,9 +333,23 @@ Kritisch voor de generatie van het verschillend repertoire van b cellen capabel 
 
 Nemazee, D. Mechanisms of central tolerance for B cells. *Nat Rev Immunol* **17**, 281–294 (2017). <https://doi.org/10.1038/nri.2017.19>
 
-## 23-09-2024
+# Data Trimming
 
-Het uitzoeken en script schrijven van freebayes
+## Week 3
+
+### Doelen van de week
+
+**Data trimmen**
+
+**Quality herchecken**
+
+**Variantie detectie**
+
+### Taken lijst
+
+-   Fastq quality checken en kijken hoe de data moet worden getrimd
+-   Data trimmen
+-   Freebayes script schrijven
 
 ## Trimmomatic
 
@@ -361,9 +365,23 @@ cat data/GSE149995_Sra_RunInfo.csv | \
 
 ```
 
-## 24-09-2024
+## Align data 
 
-## Tweede Run trimmomatic
+```{bash, eval=FALSE}
+cd /students/2024-2025/Thema05/3dconformatieChromatine
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | \
+parallel /students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem  testnaam \
+/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq \
+/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_2.fastq > /students/2024-2025/Thema05/3dconformatieChromatine/test_mapping/{}.sam 
+```
+
+# Quality check 2
+
+### Fastqc run 2
+
+Deze tweede FastQC run is gedaan na het mappen van de data.
+
+# Data Trimming Run 2
 
 Voor verdere uitleg ga naar het logboek van Ivar & Storm
 
@@ -377,9 +395,7 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | \
                   '/students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_rev_paired.fastq ' \
                   '/students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/unpaired/{}_rev_unpaired.fastq ' \
                   'ILLUMINACLIP:/students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic/Trimmomatic-0.39/adapters/TruSeq3-SE.fa:2:30:10 ' \
-                  'MINLEN:40 ' \
                   'SLIDINGWINDOW:4:20'
-                  'HEADCROP: 10'
 
 ```
 
