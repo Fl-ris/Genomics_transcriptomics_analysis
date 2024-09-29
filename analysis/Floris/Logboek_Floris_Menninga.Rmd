@@ -4,18 +4,18 @@ author: "Floris Menninga"
 date: "`r Sys.Date()`"
 bibliography: Logboek_Floris_Menninga.bib
 output:
-  html_document:
-    toc: yes
-    toc_depth: 2
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
   bookdown::pdf_document2:
     keep_tex: false    # set this to true if you want to investigate the generated tex
     toc: false         # table of contents
     fig_caption: true  # includes figure captions with numbering in output
     includes:  
         in_header: include_tex_header.tex #will include rules for linespacing and figure floating
+  html_document:
+    toc: yes
+    toc_depth: 2
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
   word_document:
     toc: yes
     toc_depth: '2'
@@ -33,7 +33,7 @@ library(ggplot2)
 
 ### **Inleiding:**
 
-Het gekozen artikel: (<https://pubmed.ncbi.nlm.nih.gov/38866970/>) heeft betrekking tot de verandering in 3d conformatie van chromatine die leiden tot verminderde expressie van het gen ebf1.
+Het gekozen artikel: (<https://pubmed.ncbi.nlm.nih.gov/38866970/>) heeft betrekking tot de verandering in 3d conformatie van chromatine die leiden tot verminderde expressie van het gen Ebf1.
 Uit het onderzoek bleek de reden voor deze vermindering migratie van genen naar het B compartiment te zijn, hier liggen stukken chromatine die niet op dat moment tot transcriptie hoeven te komen.
 Het onderzoek is uitgevoerd op voorloper- B-cellen van muizen.
 Deze cellen hebben het gen Ebf1 nodig om te differentiëren van hematopoetische stamcellen naar uitgerijpte B cellen.
@@ -47,8 +47,10 @@ Ondanks dat DNA data onderdeel van de dataset was, staat er in de methode/artike
 Daarom hebben we besloten een variant analyse hierop uit te voeren.
 Het referentiegenoom (muis) zal vergeleken worden met DNA seq data.
 In het onderzoek was een muis genoom versie uit 2012 gebruikt (mm10), deze gaan we vervangen door de nieuwste versie (GRCm39).
-De eerste stap is het alignen van de genen van de DNA seq data met het referentiegenoom.
-Daarna worden de verschillen gevisualiseerd en mits deze er zijn.
+De eerste stap is het downloaden van de .SRA archieven die de fastq bestanden bevatten, hier wordt prefetch voor gebruikt.
+Daarna worden deze .SRA's uitgepakt met behulp van fasterq-dump.
+De nieuw verkregen fastq bestanden kunnen nu op kwaliteit gecontroleerd worden met fastqc, hierna worden ze getrimmed met trimmomatic en wordt de kwaliteit nogmaals bekeken.
+Duplicaten kunnen verwijderd worden.
 
 ### **Workflow (Transcriptomics):**
 
@@ -61,10 +63,7 @@ Dit kan daarna gevisualiseerd worden met R in een box-plot, viool-plot, heatmap,
 Ook was er in het artikel gebruik gemaakt van "Cufflinks", deze gaan we vervangen door "StringTie".
 Volgens de website van Cufflinks is StringTie accurater en veel efficiënter.
 
-
-**De volgende R libraries en commandline tools zijn gebruikt voor de analyse:**
-Samtools: 1.16.1
-
+**De volgende R libraries en commandline tools zijn gebruikt voor de analyse:** Samtools: 1.16.1
 
 ### Log:
 
@@ -259,14 +258,55 @@ Dit is een collectie tools om met high-throughput sequence data te werken.
 Zo kan het bijvoorbeeld fastq omzetten naar .bam / .cram bestanden, WGS/WES mapping naar variant calls en het filteren van .vcf bestanden.
 
 ```{bash, eval=FALSE}
+# Voor een enkel sample:
+samtools sort -n -O BAM -o aligned_sorted_SRR26980549.bam aligned_SRR26980549.sam
 
-samtools sort aligned_SRR26980549.sam > aligned_sorted_SRR26980549.bam & 
-
-
-samtools index aligned_sorted_SRR26980549.bam &
-
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools sort -n -O BAM -o aligned_sorted_{}.bam aligned_{}.sam ' &
 
 ```
+
+
+fixmate -m (-m voegt mate score tags toe die gebruikt worden door markdup om de beste reads te selecteren om te houden.)
+Bron: http://www.htslib.org/doc/samtools-markdup.html
+
+```{bash, eval=FALSE}
+# Voor een enkel sample:
+samtools fixmate -m aligned_sorted_SRR26980549.bam \ fixed_mates_aligned_sorted_SRR26980549.bam
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools fixmate -m aligned_sorted_{}.bam fixed_mates_aligned_sorted_{}.bam' &
+
+```
+
+```{bash, eval=FALSE}
+# Voor een enkel sample:
+samtools sort -o sorted_coordinates_SRR26980549.bam \ fixed_mates_aligned_sorted_SRR26980549.bam
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools sort -o sorted_coordinates_{}.bam fixed_mates_aligned_sorted_{}.bam' &
+
+```
+
+```{bash, eval=FALSE}
+# Voor een enkel sample:
+samtools markdup -r -s sorted_coordinates_SRR26980549.bam dedup_SRR26980549.bam
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools markdup -r -s sorted_coordinates_{}.bam dedup_{}.bam' &
+
+```
+
+
+```{bash, eval=FALSE}
+# Voor een enkel sample:
+samtools index dedup_SRR26980549.bam dedup_SRR26980549.bai  &
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools index dedup_{}.bam dedup_{}.bai' &
+
+```
+
 
 ```{bash, eval=FALSE}
 
@@ -275,12 +315,30 @@ freebayes -f ref.fa aln.bam >var.vcf
 
 ```
 
+Bron: https://github.com/freebayes/freebayes
+Met behulp van het onderstaande stuk code worden de resulaten van de freebayes variant calling direct gefilterd op kwaliteit met vcffilter.
+```{bash, eval=FALSE}
+# Voor een bestand:
+/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_SRR26980549.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 20" > filtered_SRR26980549.vcf
+ 
+# Met parallel: 
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_{}.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 20" > filtered_{}.vcf' &
+```
+
+
+Filteren van varianten:
+```{bash, eval=F}
+/students/2024-2025/Thema05/3dconformatieChromatine/vcffilter
+```
+
+
 **18-09-2024**\
 
 ```{bash, eval=FALSE}
 library(fastqcr)
 
-trimomaticPE? 
 ```
 
 Om alle paired read samples te mappen is het onderstaande bash script gebruikt.
@@ -370,7 +428,10 @@ Met het geïndexeerde referentiegenoom (GCA_000001635.9_GRCm39) was vervolgens d
 /students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static -f GCA_000001635.9_GRCm39_genomic.fna \ /students/2024-2025/Thema05/3dconformatieChromatine/aligned_sorted_SRR26980549.bam > \ /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf
 ```
 
-**Gen anotatie** Eerst is er een .bed bestand van het niet door mensen leesbare .bam bestand gemaakt, daarna zijn de genen geannoteerd zodat ze geen namen hebben zoals: SRR26980549.46263152/2 maar ....
+**Gen annotatie** Eerst is er een .bed bestand van het niet door mensen leesbare .bam bestand gemaakt, daarna zijn de genen geannoteerd zodat ze geen namen hebben zoals: SRR26980549.46263152/2 maar ....
+Met behulp van bamToBed wordt het .bam bestand omgezet naar een .bed (Browser extensible data).
+De eerste kolom van een .bed bevat de naam van het chromosoom, de tweede kolom het start coördinaat van de feature, de derde kolom het eind coördinaat van de feature, 4e kolom de naam, daarna optioneel een score en dan de streng (-/+).
+bron: <https://genome.ucsc.edu/FAQ/FAQformat.html>
 
 ```{bash, eval=FALSE}
 
@@ -378,7 +439,8 @@ bamToBed -i aligned_sorted_SRR26980549.bam > aligned_sorted_SRR26980549.bed
 
 ```
 
-**Sequence depth vaststellen:** Om te achterhalen wat de coverage is, is het volgende bash commando uitgevoerd:
+**Sequence depth vaststellen:**
+Om te achterhalen wat de coverage is, is het volgende bash commando uitgevoerd:
 
 ```{bash, eval=FALSE}
 
@@ -386,9 +448,23 @@ samtools depth -a aligned_sorted_SRR26980549.bam > depth_output.txt
 
 ```
 
-## **Visualisatie van de verkregen data:**
+## **Kwaliteitscontrole vcf bestanden:**
 
-## **Statistische analyse**
+## **Annoteren van de .cvf bestanden:**
+Het onderstaande script was eerst uitgevoerd met mm39 als referentiegenoom voor de annotatie maar dit gaf een foutmelding (Op de github pagina van het programma snpEff waren er meer meldingen van dit gedrag.) dus is het opnieuw uitgevoerd met het oude mm10 referentiegenoom.
+
+```{bash, eval=FALSE}
+# Test:
+/students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 filtered_variants.vcf > annotated_variants.vcf
+
+
+java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants.vcf
+
+```
+
+
+
+## **Visualisatie van de verkregen data:**
 
 ## **Verschillen tussen onze resultaten en die van het originele onderzoek**
 
