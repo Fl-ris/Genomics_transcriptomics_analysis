@@ -79,7 +79,7 @@ De Data set zoeken word gedaan via NCBI in de GEO datasets catagorie met de volg
 
 Aan deze query kan aan het einde nog een woord of onderwerp toegevoegd worden. In onze groep is besproken naar wat onze interesses waren en het hoofd idee was "aging" ook wel veroudering. Dit komt omdat gen expressie veranderd naarmate een organisme ouder word. Dit is anders in elk organisme en daardoor word er veel onderzoek naar gedaan. Wij zijn gekomen op 3 onderzoeken die uit eindelijk interessant waren
 
-#### Niet gekozen Onderzoeken 
+#### Niet gekozen Onderzoeken
 
 -   @Zhang2021 : MiniCAFE, a CRISPR/Cas9-based compact and potent transcriptional activator, elicits gene expression in vivo. Dit onderzoek gaat over CRISPR-bemiddelde gen activatie. Dit is een belovende gen veranderingstrategie die DNA kan veranderen zonder dat de dubbele helix breekt. Deze is laten controleren door de opdrachtgever en die zei het volgende "Interessant onderzoek en leuk artikel, maar volgens mij zijn er voor het RNA-Seq gedeelte voor de meeste groepen maar 2 replicaten beschikbaar terwijl we daar minimaal 3 willen hebben. Mochten jullie niet iets anders kunnen vinden dan kunnen we dit experiment alsnog gebruiken, maar daar zitten wel wat risico's aan." Hierdoor zijn we gaan kijken naar andere opties.
 
@@ -426,16 +426,18 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 ```
 
-De reden waarom wij bwa-mem2 gebruiken en niet STAR is omdat bwa-mem2 beter is voor DNA dit is omdat STAR gespecialiseerd is in RNA-seq ook is bwa-mem2 heel accuraat voor DNA sequences allignment, het gaat goed om met mismatches, kleine indels en langere reads. Het voordeel van bwa-mem2 is ook dat het minderzwaar is op de memory van de pc's.
+De reden waarom wij bwa-mem2 gebruiken en niet STAR is omdat bwa-mem2 beter is voor DNA dit is omdat STAR gespecialiseerd is in RNA-seq ook is bwa-mem2 heel accuraat voor DNA sequences allignment, het gaat goed om met mismatches, kleine indels en langere reads. Het voordeel van bwa-mem2 is ook dat het minder zwaar is op de memory van de pc's.
 
 #### Freebayes
 
-Freebayes is een "Bayesian" genetische variant detector gemaakt om kleine "poylmorphisms" (de aanwezigheid van twee of meer varianten van een specifieke DNA-sequentie), in het specifiek SNPs (single-nucleotide polymorphisms), indels (insersties en vewx
+@BioinformaticsWorkbook
 
- is a [Bayesian](http://en.wikipedia.org/wiki/Bayesian_inference) genetic variant detector designed to find small polymorphisms, specifically SNPs (single-nucleotide polymorphisms), indels (insertions and deletions), MNPs (multi-nucleotide polymorphisms), and complex events (composite insertion and substitution events) smaller than the length of a short-read sequencing alignment.
+Freebayes is een "Bayesian" genetische variant detector gemaakt om kleine "poylmorphisms" (de aanwezigheid van twee of meer varianten van een specifieke DNA-sequentie), in het specifiek SNPs (single-nucleotide polymorphisms), indels (insersties en verwijderingen), MNPs (multi-nucleotide polymorphisms), en complexe evenementen (composite insertion and substitution events) kleiner dan de lenghte van een short-red sequencing alignment.
 
-*freebayes* is haplotype-based, in the sense that it calls variants based on the literal sequences of reads aligned to a particular target, not their precise alignment. This model is a straightforward generalization of previous ones (e.g. PolyBayes, samtools, GATK) which detect or report variants based on alignments. This method avoids one of the core problems with alignment-based variant detection--- that identical sequences may have multiple possible alignments:
+freebayes is een haplotype-gebaseerd, in de manier waarop het varianten called gebaseerd op de leterlijke sequenties van reads ge aligned naar een specifieke target, niet hun exacte alignment. Dit model is een eenvoudige generalisatie van eerdere modellen (bijv. PolyBayes, samtools, GATK) die varianten detecteren of rapporteren op basis van alignments. Deze methode vermijdt een van de kernproblemen met alignment-based variant detection--- dat identieke sequenties meerdere mogelijke alignments kunnen hebben.
 
 ```{bash, eval=FALSE}
 /students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static -f GCA_000001635.9_GRCm39_genomic.fna \ /students/2024-2025/Thema05/3dconformatieChromatine/aligned_sorted_SRR26980549.bam > \ /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf
 ```
+
+De code hier activeert eerst de freebayes door naar het path te gaan waar freebayes is geinstalleerd en deze aan te roepen, -f geeft aan welk referentie genoom freebayes moet gebruiken wij linken hier naar het GCA_000001635.9_GRCm39_genomic.fna ref genoom wat de m39 versie is van het muis genoom. Daarna gaan we naar het aligned_sorted_SRR26980549.bam file, deze file is de ge aligneerde sequence file.
