@@ -1660,6 +1660,25 @@ cellen. In het transcriptomics gedeelte wordt hier ook gebruik van
 gemaakt dus is het goed om te weten of er varianten aanwezig zijn in het
 genoom van de muizen die voor transcriptomics gebruikt worden (Rag2
 knockout).</p>
+<div id="workflow" class="section level3">
+<h3>Workflow</h3>
+<p>DNA was wel een deel van onze dataset echter is er in het referentie
+onderzoek ( <span class="citation">Ma et al. (2024)</span> ) niet wat er
+mee gedaan is. Dit is de reden dat we hebben besloten om een variant
+analyse te doen op de data. Hier gaan we het referentiegenoom van de
+muis vergelijken met DNA seq data. In het onderzoek is het mm10 genoom
+gebruikt, dit genoom komt uit 2012 wat dus redelijk oud is en om deze
+reden vervangen wij dit oude genoom met het nieuwe muis genoom de GRCm39
+deze komt uit 2020. De eerste stap is om de .SRA files te downloaden van
+de archieven, deze bevatten fastq bestamden, prefetch wordt gebruikt
+hiervoor. Dan worden de .SRA files uitgepakt door het gebruiken van
+fasterq-dump. Deze fastq files worden door FastQC gehaald om de
+kwaliteit te checken. De files worden geanalyseerd op kwaliteit en
+worden hierna getrimmed zo nodig. Duplicaten en adapters worden uit de
+DNA-seq gehaald en de data wordt gealiëneerd. Daarna wordt freebayes
+gebruikt om de DNA-seq te vergelijken met het referentie genoom wat dus
+de variant analyse is. Uit deze variant analyse resultaten wordt een
+visualisatie gemaakt en een conclusie of er wat gevonden is.</p>
 <p>Hier onder is een overzicht te zien van de Tools die wij gaan
 gebruiken in ons onderzoek.</p>
 <table style="width:100%;">
@@ -1720,12 +1739,6 @@ deleties in het bijzonder. Dit programma gebruikt .BAM bestanden met een
 Phred+33 encoding.</td>
 </tr>
 <tr class="even">
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td>seqtk</td>
 <td><a href="https://github.com/lh3/seqtk" class="uri">https://github.com/lh3/seqtk</a></td>
 <td></td>
@@ -1733,7 +1746,7 @@ Phred+33 encoding.</td>
 of FASTQ formaat. het “seamlessly parses” beide FASTA en FASTQ welke dan
 ook optimaal compressed wordt door gzip</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Trimmomatic</td>
 <td><a href="https://github.com/usadellab/Trimmomatic" class="uri">https://github.com/usadellab/Trimmomatic</a></td>
 <td>0.39</td>
@@ -1742,14 +1755,14 @@ FastQC komt. Deze haalt de slechte kwaliteit paren af van de streng
 waardoor een hoge kwaliteit RNA- of DNA-streng overblijft die gebruikt
 kan worden.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>bwa mem2</td>
 <td><a href="https://github.com/bwa-mem2/bwa-mem2?tab=readme-ov-file" class="uri">https://github.com/bwa-mem2/bwa-mem2?tab=readme-ov-file</a></td>
 <td></td>
 <td>Bwa mem2 wordt gebruikt om DNA en RNA reads te alignen tegen een
 gekozen referentie genoom.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>samtools</td>
 <td><a href="https://www.htslib.org" class="uri">https://www.htslib.org</a></td>
 <td></td>
@@ -1758,7 +1771,7 @@ CRAM formatten kan manipuleren. het kan veranderen tussen de formats,
 sorteren, samenvoegen en indexen, ook kan het “reads” snel vinden in
 elke regio</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>R</td>
 <td><a href="https://www.r-project.org" class="uri">https://www.r-project.org</a></td>
 <td></td>
@@ -1766,13 +1779,13 @@ elke regio</td>
 doen en tevens de visualisatie van de data die komt uit het
 onderzoek</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>R-studio</td>
 <td><a href="https://posit.co" class="uri">https://posit.co</a></td>
 <td></td>
 <td>R studio is het programma wat wordt gebruikt als IDE voor R</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>NCBI-GEO</td>
 <td><a href="https://www.ncbi.nlm.nih.gov/geo/" class="uri">https://www.ncbi.nlm.nih.gov/geo/</a></td>
 <td></td>
@@ -1786,6 +1799,10 @@ onderzoek inspiratie vanaf neemt</td>
 <div class="figcaption">Planning - Tijd voor onderzoek Genomics &amp;
 Transcriptomics</div>
 </div>
+</div>
+</div>
+<div id="genomics" class="section level1">
+<h1>Genomics</h1>
 </div>
 <div id="project-opzet" class="section level1">
 <h1>Project Opzet</h1>
@@ -1825,8 +1842,8 @@ waren en het hoofd idee was “aging” ook wel veroudering. Dit komt omdat
 gen expressie veranderd naarmate een organisme ouder word. Dit is anders
 in elk organisme en daardoor word er veel onderzoek naar gedaan. Wij
 zijn gekomen op 3 onderzoeken die uit eindelijk interessant waren</p>
-<div id="onderzoeken" class="section level4">
-<h4>Onderzoeken</h4>
+<div id="niet-gekozen-onderzoeken" class="section level4">
+<h4>Niet gekozen Onderzoeken</h4>
 <ul>
 <li><p><span class="citation">Zhang et al. (2021)</span> : MiniCAFE, a
 CRISPR/Cas9-based compact and potent transcriptional activator, elicits
@@ -1900,6 +1917,9 @@ vraag als volgt gaat “Heeft leeftijd invloed op de expressie van genen”
 de Hi-C kijkt naar de chromosoomconfiguratie dit is te extreem voor ons
 in de tijds periode die wij hebben gekregen.</p>
 <p><a href="https://trello.com" class="uri">https://trello.com</a></p>
+</div>
+<div id="methoden" class="section level4">
+<h4>Methoden</h4>
 <p>Het weten van de methoden is belangrijk omdat wij moeten weten wat
 wij kunnen repliceren en wat te ver gegerepen is voor ons onderzoek en
 dit zou onze onderzoeksvraag kunnen beinvloeden. Als we Hi-C als
@@ -1963,21 +1983,50 @@ strategie om rekening te houden voor de “spliced” alignments.</p></li>
 <p>Na alle methoden samengevat te hebben gingen wij als groepje kijken
 naar de materialen en methoden om te beslissen wat wij nodig hadden, wat
 outdated was en wat wij nog extra of anders wilden doen.</p>
+<p><strong>Onze gekozen methoden &amp; materialen</strong></p>
+<ul>
+<li><p><strong>Mouse-Gen:</strong> Wij hebben in ons onderzoek een ander
+muis-gen dan het gen dat gebruikt is in het referentie onderzoek <span class="citation">Ma et al. (2024)</span> , dit is omdat het referentie
+onderzoek een redelijk oud muis-gen gebruikt dit is het mm10 gen deze
+komt uit 2012. Wij gebruiken de GRCm39 ook wel het mm39 gen. Wij gaan
+dit gen gebruiken om te kijken of er variatie in zit tussen onze muizen
+en dit nieuwere referentie gen, dit nieuwere gen kan ons dus nieuw
+inzicht geven op mogelijke variaties / mutaties.</p></li>
+<li><p><strong>FastQC</strong>: Dit programma hebben we gebruikt om de
+kwaliteit van de data te bekijken, FastQC is een programma wat fasta en
+fastq files kan inlezen dit kan via commandline, via galaxy (een website
+met bio informatica tool) en een FastQC programma met GUI. FastQC
+beoordeeld de files via verschillende tests en analyzen. Deze tests en
+analyzen zijn wat dieper uitgelegt in het FastQC hoofdstuk in tabel
+1.</p></li>
+<li><p><strong>Trimmomatic</strong>: Dit programma hebben we gebruikt om
+de data na FastQC hogere kwaliteit te maken. Dit programma gebruikt
+verschillende parameters om de DNA-seq aan te passen zodat de kwaliteit
+goed genoeg wordt om dit te kunnen gebruiken. De reden dat de data wel
+met goeie kwaliteit kan worden gebruikt is omdat het dan betrouwbaar
+is.</p></li>
+<li><p><strong>Bwa-mem2</strong>: Gebruikt om DNA-seq te aligneren met
+ons referentiegenoom. Het kan korte en middellange DNA- of RNA-reads
+alignen. Voor ons is Whole genome sequencing interresant dit is omdat
+hierbij de genomen worden gescand en dan vergeleken met het gekozen
+referentie genoom (in ons geval mm39 - GCF_000001635.27) dit om
+genetische variaties te identificeren.</p></li>
+<li><p><strong>Freebayes</strong>: Dit programma kijkt naar de
+alignement voor afwijkingen met het referentie genoom en geeft deze
+aan.</p></li>
+</ul>
+</div>
+<div id="onderzoeksvraag" class="section level4">
+<h4>Onderzoeksvraag</h4>
 <p>Onze onderzoeks vraag is : <strong>Zijn er varianten aanwezig van
 PAX5 en Ebf1 in het genoom van de rag2 knockout muizen die gebruikt
 zijn?</strong></p>
-<p>Dus wij gaan niet de RNA gebruiken voor deze vraag. De RNA-seq
-resultaten en alle bijbehorende stappen die met de RNA zijn gedaan
-vallen gelijk weg. Dit is omdat het transcriptomics is en niet genomics
-waar onze onderzoeks vraag op is afgestemd.</p>
-<p>Wij gaan Hi-C niet gebruiken omdat dit ook niet past bij onze
-onderzoeks vraag en Hi-C is ook redelijk complex wat dus ook niet in ons
-tijd schema past.</p>
+<p>Als er varianten aanwezig zijn in het gen kan het zorgen voor
+problemen tijdens de volwassen wording van de Pro-B cellen waardoor er
+dus slecht werkende B cellen ontstaan.</p>
 </div>
-</div>
-</div>
-<div id="alleen-in-zetten-wat-relevant-is-voor-ons-onderzoek" class="section level2">
-<h2>Alleen in zetten wat relevant is voor ons onderzoek</h2>
+<div id="download---sra-script-met-prefetch" class="section level4">
+<h4>Download - SRA script met prefetch</h4>
 <p>Eerst werd ons gevraagd om naar de juiste map te gaan. Dit kan door
 de terminal te openen naar onze home te gaan en cd naar
 /students/2024-2025/Thema05/ en hier de map voor ons project aan te
@@ -1994,14 +2043,23 @@ oproepen om ze vervolgens daar te downloaden en unpacken.</p>
 te roepen deze te lezen en daarna wordt —output gebruikt om hem in de
 goede map te zetten “\” geeft een new line aan en de - -max-size 200g
 geeft aan dat de packed files niet meer mogen zijn dan 200 gigabytes</p>
-<pre class="bash"><code>prefetch $(&lt;/students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv) --output-directory \
+<pre class="bash"><code># Hier wil ik dat prefetch in de map te kijken SRA voor de gedownloade SraAccList deze wordt gebruikt om de files die ik wil te zoeken in de NCBI database
+prefetch $(&lt;/students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv) --output-directory \
 /students/2024-2025/Thema05/3dconformatieChromatine/SRA/ --max-size 200G
 </code></pre>
+<p>Prefetch is deel van de SRA toolkit, dit programma downloads Runs
+(sequence files in het gecompresserde SRA format) en alle bijbehorende
+data benodigd om de Run van het SRA format naar een meer bruikbare file
+format om te zetten. Deze file formats kunnen fasta of fastq zijn
+bijvoorbeeld. Prefetch kan ook worden gebruikt om incomplete Run
+downloads af temaken en te corrigeren.</p>
 <p>SRA Toolkit Release 3.1.1 is gebruikt. in deze toolkit zitten
 verschillende tools die gebruikt worden. De reden dat wij deze toolkit
 gebruiken is omdat deze van NCBI komt dit is ook het platform
 waarvandaan wij onze data halen dit zou dus het makkelijkste moeten
 werken.</p>
+</div>
+</div>
 </div>
 </div>
 <div id="quality-control" class="section level1">
@@ -2022,13 +2080,17 @@ werken.</p>
 <li>Test data maken</li>
 <li>Reads alignenen</li>
 </ul>
+<div id="data-uitpakken---fasterq-dump" class="section level4">
+<h4>Data uitpakken - fasterq-dump</h4>
 <p>Om de SRA data naar fastq om te zetten gebruiken we fasterq-dump.
 fasterq-dump is een programma in de SRA toolkit, wij gebruiken Release
-3.1.1, De reden voor het gebruik van fasterq-dump is op advies van onze
-leraar. Fasterq-dump zit ook in de SRA toolkit die dus al op het systeem
-staat ook is fasterq-dump goed gedocumenteerd en snel.</p>
+3.1.1, De reden voor het gebruik van fasterq-dump is de goede
+documentatie en de link met NCBI waar wij onze files vandaan halen.
+Fasterq-dump zit ook in de SRA toolkit deze staat geinstalleerd op het
+systeem dit is makkelijk te doen door naar de git te kijken van
+Fasterq-dump ook wel de SRA toolkit git.</p>
 <p>Fasterq-dump neemt de SRA files en extract de data hiervan naar
-fastq- of fasta files. in ons geval fasta files.</p>
+fastq- of fasta files. in ons geval fastq files.</p>
 <p>De code hieronder zoekt eerst in de SRA map naar files met een
 filenaam die eindigt op .sra</p>
 <p>deze runt hij parallel wat betekent dat hij meerdere processen doet
@@ -2037,8 +2099,8 @@ map en door de {} behoud het de naam waarmee het werd gedownload.</p>
 <pre class="bash"><code>find /students/2024-2025/Thema05/3dconformatieChromatine/SRA/ -name &quot;*.sra&quot; | \
   parallel fasterq-dump -O /students/2024-2025/Thema05/3dconformatieChromatine/fastq/ {}</code></pre>
 </div>
-<div id="fastaqc-eerste-check" class="section level3">
-<h3>FastaQC eerste check</h3>
+<div id="fastaqc---raw-data-run" class="section level4">
+<h4>FastaQC - Raw data run</h4>
 <p>FastQC wordt gebruikt om de kwaliteit te checken van de rauwe data,
 hier uit is te zien of de data gelijk te gebruiken is of dat deze moet
 worden getrimmed. De trimmer kan ook afgesteld worden op basis van de
@@ -2211,10 +2273,9 @@ trimmen. deze “adaptercontent” is er voor identificatie van de DNA</td>
 </tr>
 </tbody>
 </table>
-</div>
-<div id="referenties-voor-fastqc-uitleg" class="section level3">
-<h3>Referenties voor fastqc uitleg</h3>
-<p>@FastQCManual</p>
+<p><strong>Gebruikte bronnen voor uitleg</strong></p>
+<p><span class="citation"><span>“<span>FastQC</span>”</span>
+(n.d.)</span></p>
 <p><span class="citation">Khetani (2018)</span></p>
 <p>Uit onze fastQC resultaten kwamen wat bijzondere resultaten. Er waren
 reads van verschillende lengten de grootste was 300 base paren wat boven
@@ -2236,8 +2297,21 @@ begin van de lijn. Overrepresented sequences vallen ook op want weer de
 250bp bestanden hebben erg veel duplicates waar van sommige in de 50%
 zitten. Er zit ook heel veel adapter content bij 2 files is het zelfs
 &gt;50%. Kortom deze files moeten getrimmed of verwijderd worden.</p>
+<pre class="bash"><code>
+setwd(&quot;/students/2024-2025/Thema05/3dconformatieChromatine/fastq&quot;)
+(x = getwd())
+fastqc(fq.dir = x, qc.dir = &quot;/students/2024-2025/Thema05/3dconformatieChromatine/fastqc_output/&quot;, fastqc.path = &quot;/usr/bin/fastqc&quot;, threads = 100)
+</code></pre>
+<pre class="bash"><code>pwd
+cd ../
+cd fastqc_output
+pwd
+multiqc .</code></pre>
 <p>Om een gehele analyze te zien van de FastQC resultaten moet er
 gekeken worden naar de logboeken van Storm en Ivar</p>
+</div>
+<div id="test-data-maken" class="section level4">
+<h4>Test data maken</h4>
 <p><strong>Seqkit -</strong> Is een veelzijdige tool voor het verwerken
 en analyseren van sequentiebestanden de inputs welke hij accepteert zijn
 FASTA en FASTQ. Het kan grote datasets efficient doorlopen en biedt
@@ -2248,8 +2322,11 @@ moment seqkit V2.3.0</p>
 <p><strong>Testdata -</strong> Test data is een essentieel deel van een
 onderzoek dit is om verschillende redenen, test data kan helpen om tools
 te valideren. Als de test data dezelfde resultaten geeft als de twee of
-meer echte data sets dan kan dit aangeven dat de tool niet goed
-werkt.</p>
+meer echte data sets dan kan dit aangeven dat de tool niet goed werkt.
+Testdata kan ook worden gebruikt om de code in de bashscripts proef te
+runnen, dit omdat niet altijd alles goed gaat met de commando’s en
+inplaats van de echte data te beschadigen kan dit beter met test
+data.</p>
 <p>Dit is dus ook de reden dat wij test data hebben gemaakt om te kijken
 of de resultaten verschillen met de test data of dat deze hetzelfde zijn
 met onze echte data.</p>
@@ -2273,53 +2350,31 @@ seqkit sample -p SRR26980527_1.fastq &gt; subset_SRR26980527_1.fastq
 
 seqkit head -n 10000 SRR26980527_1.fastq &gt; subset_SRR26980527_1.fastq
 </code></pre>
+<p>Seqkit is het aanroepen van het programma wat de testdata maakt, de
+reden om seqkit te gebruiken is omdat het een super snel programma is.
+Sneller dan een programma zoals pigz wat multi-threaded is.</p>
+<p>head selecteerd het deel van de originele data waarop de test-data
+moet worden gebaseerd, het gebruiken van head inplaats van sample is
+voor repliceerbaarheid en reproductie omdat het heel erg lijkt op de
+originele data.</p>
+<p>-n geeft de lengthe aan van hoeveel reads in de test data moet
+zitten.</p>
 </div>
-</div>
-</div>
-<div id="aligning-data-experiment---optioneel-uitkomst-niet-verder-gebruikt" class="section level1">
-<h1>Aligning Data experiment - Optioneel, uitkomst niet verder
-gebruikt</h1>
-<div id="bwa-mem-2-test-voor-1-file" class="section level2">
-<h2><strong>Bwa mem 2 test voor 1 file</strong></h2>
-<p>BWA-MEM2 wordt gebruikt om zowel DNA- als RNA-reads te aligneren met
-een referentiegenoom. Het kan korte en middellange DNA- of RNA-reads
-alignen. Er zijn verschillende manieren waar dit voor gebruikt kan
-worden zoals, Whole genome sequencing, Exoomsequencing en RNA-seq. Voor
-ons is Whole genome sequencing interresant dit is omdat hierbij de
-genomen worden gescand en dan vergeleken met het gekozen referentie
-genoom (in ons geval GRCm39 uitgegeven op 22 - 07 -2020) dit om
-genetische variaties te identificeren.<br />
-</p>
-<p>Li, H. (2013). Aligning sequence reads, clone sequences and assembly
-contigs with BWA-MEM. <em>arXiv: Genomics</em>. - <a href="https://github.com/lh3/bwa" class="uri">https://github.com/lh3/bwa</a></p>
-<pre class="bash"><code>./bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -p 60 testnaam fastq/SRR26980549_1.fastq fastq/SRR26980549_2.fastq &gt; aligned_SRR26980549.sam &amp;</code></pre>
-<div id="ge-automatiseert-voor-alle-files-in-de-map" class="section level4">
-<h4><strong>Ge automatiseert voor alle files in de map</strong></h4>
-<pre class="bash"><code>cd /students/2024-2025/Thema05/3dconformatieChromatine
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | \
-parallel /students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem  testnaam \
-/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq \
-/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_2.fastq &gt; /students/2024-2025/Thema05/3dconformatieChromatine/test_mapping/{}.sam 
-</code></pre>
-</div>
-<div id="sam-tools-sort" class="section level4">
-<h4>Sam tools sort</h4>
-<p>geindexeerd en gesorteerd + bam mee maken</p>
-<pre class="bash"><code>samtools sort aligned_SRR26980549.sam &gt; aligned_sorted_SRR26980549.bam &amp; samtools index aligned_sorted_SRR26980549.bam &amp; </code></pre>
-</div>
-</div>
-</div>
-<div id="achtergrond-info-verzameling" class="section level1">
-<h1>Achtergrond Info verzameling</h1>
-<div id="ab-compartimenten" class="section level2">
-<h2>A/B compartimenten</h2>
-<p>Harris, H.L., Gu, H., Olshansky, M. <em>et al.</em> Chromatin
-alternates between A and B compartments at kilobase scale for subgenic
-organization. <em>Nat Commun</em> <strong>14</strong>, 3303 (2023). <a href="https://doi.org/10.1038/s41467-023-38429-1" class="uri">https://doi.org/10.1038/s41467-023-38429-1</a><br />
-<br />
-Asami Oji, Linda Choubani, Hisashi Miura, Ichiro Hiratani, Structure and
-dynamics of nuclear A/B compartments and subcompartments, Current
-Opinion in Cell Biology, Volume 90, 2024, 102406, ISSN 0955-0674, <a href="https://doi.org/10.1016/j.ceb.2024.102406" class="uri">https://doi.org/10.1016/j.ceb.2024.102406</a>. (<a href="https://www.sciencedirect.com/science/article/pii/S0955067424000851" class="uri">https://www.sciencedirect.com/science/article/pii/S0955067424000851</a>)</p>
+<div id="achtergrond-info-verzameling" class="section level4">
+<h4>Achtergrond Info verzameling</h4>
+<p>De reden om achtergrond informatie te verzamelen is om het onderzoek
+beter te kunnen uitleggen. Het referentie onderzoek gaat over
+verschillende dingen die niet vaak worden behandeld. 2 van die dingen
+zijn de A/B compartimenten. Deze hebben invloed op de activatie van het
+genooom. Pro-b cellen zijn ook een belangrijk onderwerp in het
+referentie onderzoek en ze zijn ook belangrijk voor ons onderzoek, dit
+is omdat wij kijken naar de EBF1 want de Pro-B cellen hebben dit nodig
+om te differentiëren van hematopoetische stamcellen naar volwassen B
+cellen. Wanneer dit gen dus minder voorkomt (ook wel tot expressie komt)
+kunnen de B cellen van de voorloper B cellen hebben.</p>
+<p><strong>A/B compartimenten</strong></p>
+<p><span class="citation">Harris et al. (2023)</span><br />
+<span class="citation">Oji et al. (2024)</span></p>
 <p>De nucleus van het humane genoom is verdeeld in verschillende
 ruimtelijke compartimenten. Actief chromatine bevindt zich doorgaans in
 het A-compartiment, terwijl inactief chromatine eerder geassocieerd is
@@ -2351,9 +2406,7 @@ elkaar wordt gezet om verschillende interactie eenheden binnen de A en B
 compartimenten. Er is op het moment nog niet gevonden of er een link
 tussen de subcompartimenten ligt en het feitelijke nucleare
 oriëntatiepunten.</p>
-</div>
-<div id="pro-b-cell" class="section level2">
-<h2>Pro B-cell</h2>
+<p><strong>Pro B-cell</strong></p>
 <p>Pro-B cellen ontstaan in het beenmerg van progenitor cellen naar de
 B-cell lineage. elke pro-B cell ondergaat onafhankelijke herordening en
 op bouwing van diverse variabelen, diversiteit en “joining” gen
@@ -2362,8 +2415,9 @@ segmenten van de immunoglobuline zware (H)- keten locus.</p>
 cellen capabel in het herkennen van een wijde varia aan pathogene. De
 pro-B cell veranderd naar de pre-B cell dit gebeurd wanneer de zware
 immunoglobuline keten her georganiseerd is.</p>
-<p>Nemazee, D. Mechanisms of central tolerance for B cells. <em>Nat Rev
-Immunol</em> <strong>17</strong>, 281–294 (2017). <a href="https://doi.org/10.1038/nri.2017.19" class="uri">https://doi.org/10.1038/nri.2017.19</a></p>
+<p><span class="citation">Nemazee (2017)</span></p>
+</div>
+</div>
 </div>
 </div>
 <div id="data-trimming" class="section level1">
@@ -2383,10 +2437,27 @@ Immunol</em> <strong>17</strong>, 281–294 (2017). <a href="https://doi.org/10
 <li>Data trimmen</li>
 <li>Freebayes script schrijven</li>
 </ul>
-</div>
-</div>
-<div id="trimmomatic" class="section level2">
-<h2>Trimmomatic</h2>
+<div id="trimmomatic" class="section level4">
+<h4>Trimmomatic</h4>
+<p>Trimmomatic is een flexibel trimsoftware voor illumina sequence data,
+het kan zowel paired-end als dsingle ended data aan. Er zijn
+verschillende stappen in het trimmen en verschillende parameters.
+Trimmomatic is een command line gerunde tool. De voordelen van
+trimmomatic zijn dat het goed omgaat met het “collapsing” en “trimming”
+van paired-end en sequencing van fragmenten die korten zijn dan de
+leeslengte, waarbij de leeslengte zich aan het einde van elke leeslengte
+uitstrekt tot in de adapters. Het zorgt ook dat terwijl het de data
+schoonmaakt zijn intergriteit behoud.</p>
+<p>Het trimmen van de data is nodig omdat zoals te zien in het logboek
+van Storm en Ivar de kwaliteit van onze data niet hoog is. Om dit te
+verbeteren moeten wij trimmen, de reden dat wij hogere kwaliteit data
+willen is omdat er geen conclusie kan worden getrokken uit slechte
+kwaliteit data omdat het fout kan zijn. De Trimmomatic is goed aan te
+passen en kan adapters weghalen deze twee dingen zijn essentieel dit
+omdat onze data is gesequenced uit ilumina apparatuur wat dus kan
+betekenen dat het ilumina adapters heeft, en omdat wij specifieke
+aanpassingen willen maken die met trimmomatic goed kunnen worden
+gedaan.</p>
 <pre class="bash"><code>
 cat data/GSE149995_Sra_RunInfo.csv | \
   parallel &#39;TrimmomaticPE -threads 16 &#39; \
@@ -2396,37 +2467,168 @@ cat data/GSE149995_Sra_RunInfo.csv | \
                   &#39;MINLEN:40 &#39; \
                   &#39;SLIDINGWINDOW:4:20&#39;
 </code></pre>
+<p>Hier is het bash script te zien dat wij hebben gebruikt om onze data
+te trimmen. Eerst is de cat command te zien dit is ook wel concatenate
+dit read de file en print zijn content. Het leest de
+GSE149995_Sra_RunInfo deze file is belangrijk omdat het metadata bevat
+over de sequenceing runs die gedowload zijn uit de SRA database, er
+kunen dingen instaan zoals Sample names, Sequencing platform, Run
+accesion numbers en nog andere data.</p>
+<p>parallel is een command dat trimomatic meerdere cores tegelijk moet
+gebruiken, dit doen wij omdat het programma dan sneller de data kan
+verwerken. Met -threads 16 word aangegeven dat het 16 threads mag
+gebruiken. Met TrimmomaticPE wordt trimmomatic aangeroepen, verder zijn
+2 andere belangerijke dingen de { } is om de trimmomatic te
+automatiseren dit doet hij door alle files in de map fastq te nemen die
+eindigen met .fastq.gz en de output van trimmomatic naar de
+fastq-trimmed map te zetten. Het andere belangrijke is de MINLEN en
+Slidingwindow commando’s. Minlen laat de reads vallen wanneer het onder
+een bepaalde lengte is. Slidingwindow het zorgt ervoor dat trimmomatic
+snijdt zodra de gemiddelde kwaliteit binnen het venster onder een
+drempelwaarde komt.</p>
+<p>Er zijn ook een paar samples niet gebruikt. Dit zijn de:
+B220+CD43+IgM- sorted primary pro-B cells. Deze samples zijn verkregen
+met een illumina MiSeq.</p>
+<p>SSR26980527<br />
+SSR26980528<br />
+SSR26980529<br />
+SSR26980530</p>
+<p>De reden dat we deze niet gebruiken is omdat het samples van WT
+muizen zijn, We gaan hier het referentiegenoom voor gebruiken. De
+kwaliteit van deze sequenties was volgens fastQC veel slechter dan de
+onderstaande samples. Dit kan mogelijk komen omdat de reads te lang
+waren waardoor de kwaliteit snel daalde.</p>
+<p>De volgende samples zijn wel gebruikt. Dat zijn: Primary pro-B cells
+by CD19+ selection (RAg2-/-) Deze sa,ples zijn verkregen met een
+illumina NovaSeq 6000</p>
+<p>SRR26980549.sam<br />
+SRR26980550.sam<br />
+SRR26980551.sam<br />
+SRR26980552.sam</p>
+<p>De samples die onnodig waren zijn ook verwijderd uit de
+SraAccList.csv omdat deze met de pipe operator interveren, dit kan voor
+problemen zorgen of overbodige belasting.</p>
+<p>Voor diepere analyse check het logboek van Storm en Ivar</p>
+<p><strong>Flow chart voor Paired End mode.</strong></p>
+<p><a href="http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf"><img src="data:image/png;base64,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" alt="Figuur 3 : Flow of reads in Trimmomatic - Paired End mode" /></a></p>
+<p>Deze flowchart toont hoe Trimmomatic paired-end reads verwerkt. Het
+programma neemt beide reads als input en beoordeelt hun kwaliteit. Als
+zowel de forward als reverse reads voldoen aan de gekozen settings,
+blijven ze “paired” voor verdere analyse. Als één van de twee niet aan
+de kwaliteitsnormen voldoet wordt de slechte read verwijderd en de goede
+read als “unpaired” opgeslagen. Hierdoor onstaan vier mogelijkheden voor
+outputs: forward paired, reverse paired, forward unpaired en reverse
+unpaired. Allemaal afhankelijk van de kwaliteit van elke read.</p>
 </div>
 </div>
-<div id="quality-check-2" class="section level1">
-<h1>Quality check 2</h1>
-<div id="fastqc-run-2" class="section level3">
-<h3>Fastqc run 2</h3>
+</div>
+</div>
+<div id="quality-control---2" class="section level1">
+<h1>Quality control - 2</h1>
+<div id="fastqc-run-2" class="section level4">
+<h4>Fastqc run 2</h4>
 <p>Deze tweede FastQC run is gedaan na het mappen van de data.</p>
 </div>
 </div>
-<div id="data-trimming-run-2" class="section level1">
-<h1>Data Trimming Run 2</h1>
-<p>Voor verdere uitleg ga naar het logboek van Ivar &amp; Storm</p>
-<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | \
-  parallel &#39;TrimmomaticPE -threads 80 &#39; \
-                  &#39;/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq &#39; \
-                  &#39;/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_2.fastq &#39; \
-                  &#39;/students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_forward_paired.fastq &#39; \
-                  &#39;/students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/unpaired/{}_forward_unpaired.fastq &#39; \
-                  &#39;/students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_rev_paired.fastq &#39; \
-                  &#39;/students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/unpaired/{}_rev_unpaired.fastq &#39; \
-                  &#39;ILLUMINACLIP:/students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic/Trimmomatic-0.39/adapters/TruSeq3-SE.fa:2:30:10 &#39; \
-                  &#39;SLIDINGWINDOW:4:20&#39;
+<div id="align-data" class="section level1">
+<h1>Align data</h1>
+<p><strong>Sorteren .sam bestanden</strong></p>
+<div id="bwa-mem2" class="section level4">
+<h4>Bwa-mem2</h4>
+<p>BWA-MEM2 wordt gebruikt om zowel DNA- als RNA-reads te aligneren met
+een referentiegenoom. Het kan korte en middellange DNA- of RNA-reads
+alignen. Er zijn verschillende manieren waar dit voor gebruikt kan
+worden zoals, Whole genome sequencing, Exoomsequencing en RNA-seq. Voor
+ons is Whole genome sequencing interresant dit is omdat hierbij de
+genomen worden gescand en dan vergeleken met het gekozen referentie
+genoom (in ons geval mm39 - GCF_000001635.27) dit om genetische
+variaties te identificeren.</p>
+<p>BWA-MEM2 heeft een geindexeerde versie nodig van ons referentie
+genoom, deze moet dus eerst gemaakt worden. Dit kan gedaan worden met
+bwa-mem2 index, nog een plus punt is het indexeren maakt het align
+proces veel sneller. De samples SRR26980528_1 en _2 zijn gebruikt na het
+referentiegenoom te indexeren. Het gebruikte referentie genoom is mm39 -
+GCF_000001635.27</p>
+<p>In het bash script hieronder wordt het geindexeerde muisgenoom
+hernoemd naar “testnaam”. Daarna worden twee samples forward- en reverse
+read ge-aligned met het verkregen geïndexeerde referentiegenoom</p>
+<p><em>Deze code is geschreven door Floris deze is te vinden in zijn
+logboek. - dit gaat over het indexeren van het referentie
+genoom</em></p>
+<pre class="bash"><code>
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
+# Het indexeren van het referentiegenoom met bwa-mem2. 
+bwa-mem2 index -p testnaam referentiegenoom
 </code></pre>
-<div id="freebayes" class="section level2">
-<h2>Freebayes</h2>
+<p><em>Deze code is voor de aligning van de data.</em></p>
+<p>Eerst is cat te zien ook wel concatenate dit read de file en print
+zijn content, dan is parallel te zien deze runt de workload over
+meerdere cores. Dan is te zien dat we een path aangeven specifiek naar
+bwa-mem2 omdat deze is geinstalleerd in deze speicifieke map, met mem
+roepen we de allignment modus aan welke bwa moet gebruiken deze modus is
+goed voor reads die door illumina machines zijn gesequenced. Het
+volgende wat te zien is is een -t 50 dit geeft aan hoeveel threads bwa
+moet gebruiken, testnaam refereent naar het geindexeerde referentie
+genoom. Dan zijn weer 2 paths te zien, deze referen naar de forward en
+reverse strands en de {} is om te zorgen dat het alle files in de map
+kan lezen zodat het eigenlijk de gehele map automatisch doet. De laatst
+path is voor de output en de laatste character “&amp;” is zodat dit op
+de achtergrond gebeurd.</p>
+<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel /students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 50 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_forward_paired.fastq /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_rev_paired.fastq &gt; /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam &amp;
+</code></pre>
+<p>De reden waarom wij bwa-mem2 gebruiken en niet STAR is omdat bwa-mem2
+beter is voor DNA dit is omdat STAR gespecialiseerd is in RNA-seq ook is
+bwa-mem2 heel accuraat voor DNA sequences allignment, het gaat goed om
+met mismatches, kleine indels en langere reads. Het voordeel van
+bwa-mem2 is ook dat het minder zwaar is op de memory van de pc’s.</p>
+</div>
+<div id="freebayes" class="section level4">
+<h4>Freebayes</h4>
+<p><span class="citation"><span>“FreeBayes DNAseq Workflow”</span>
+(n.d.)</span></p>
+<p>Freebayes is een “Bayesian” genetische variant detector gemaakt om
+kleine “poylmorphisms” (de aanwezigheid van twee of meer varianten van
+een specifieke DNA-sequentie), in het specifiek SNPs (single-nucleotide
+polymorphisms), indels (insersties en verwijderingen), MNPs
+(multi-nucleotide polymorphisms), en complexe evenementen (composite
+insertion and substitution events) kleiner dan de lenghte van een
+short-red sequencing alignment.</p>
+<p>freebayes is een haplotype-gebaseerd, in de manier waarop het
+varianten called gebaseerd op de leterlijke sequenties van reads ge
+aligned naar een specifieke target, niet hun exacte alignment. Dit model
+is een eenvoudige generalisatie van eerdere modellen (bijv. PolyBayes,
+samtools, GATK) die varianten detecteren of rapporteren op basis van
+alignments. Deze methode vermijdt een van de kernproblemen met
+alignment-based variant detection— dat identieke sequenties meerdere
+mogelijke alignments kunnen hebben.</p>
+<p>Voordat de freebayes echt kan</p>
 <pre class="bash"><code>/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static -f GCA_000001635.9_GRCm39_genomic.fna \ /students/2024-2025/Thema05/3dconformatieChromatine/aligned_sorted_SRR26980549.bam &gt; \ /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf</code></pre>
+<p>De code hier activeert eerst de freebayes door naar het path te gaan
+waar freebayes is geinstalleerd en deze aan te roepen, -f geeft aan welk
+referentie genoom freebayes moet gebruiken wij linken hier naar het
+GCA_000001635.9_GRCm39_genomic.fna ref genoom wat de m39 versie is van
+het muis genoom. Daarna gaan we naar het aligned_sorted_SRR26980549.bam
+file, deze file is de ge aligneerde sequence file.</p>
+</div>
+</div>
+<div id="referenties" class="section level1 unnumbered">
+<h1 class="unnumbered">Referenties</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-BabrahamBioinformatics" class="csl-entry">
 Babraham Bioinformatics. n.d. <span>“<span class="nocase">FastQC: A
 Quality Control tool for High Throughput Sequence Data</span>.”</span>
 <a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/" class="uri">https://www.bioinformatics.babraham.ac.uk/projects/fastqc/</a>.
+</div>
+<div id="ref-FastQCManual" class="csl-entry">
+<span>“<span>FastQC</span>.”</span> n.d. <a href="https://mugenomicscore.missouri.edu/PDF/FastQC_Manual.pdf" class="uri">https://mugenomicscore.missouri.edu/PDF/FastQC_Manual.pdf</a>.
+</div>
+<div id="ref-BioinformaticsWorkbook" class="csl-entry">
+<span>“FreeBayes DNAseq Workflow.”</span> n.d. <a href="https://bioinformaticsworkbook.org/dataAnalysis/VariantCalling/freebayes-dnaseq-workflow.html#gsc.tab=0" class="uri">https://bioinformaticsworkbook.org/dataAnalysis/VariantCalling/freebayes-dnaseq-workflow.html#gsc.tab=0</a>.
+</div>
+<div id="ref-Harris2023" class="csl-entry">
+Harris, H. L., H. Gu, M. Olshansky, et al. 2023. <span>“Chromatin
+Alternates Between a and b Compartments at Kilobase Scale for Subgenic
+Organization.”</span> <em>Nature Communications</em> 14: 3303. <a href="https://doi.org/10.1038/s41467-023-38429-1">https://doi.org/10.1038/s41467-023-38429-1</a>.
 </div>
 <div id="ref-Khetani2018" class="csl-entry">
 Khetani, M. P. R. 2018. <span>“Quality Control: Assessing FASTQC
@@ -2436,6 +2638,16 @@ Results.”</span> <a href="https://hbctraining.github.io/Intro-to-rnaseq-hpc-sa
 Ma, Fan, Yifei Cao, Hui Du, et al. 2024. <span>“<span class="nocase">Three-dimensional chromatin reorganization regulates B
 cell development during ageing</span>.”</span> <em>Nature Cell
 Biology</em> 26: 991–1002. <a href="https://doi.org/10.1038/s41556-024-01424-9">https://doi.org/10.1038/s41556-024-01424-9</a>.
+</div>
+<div id="ref-Nemazee2017" class="csl-entry">
+Nemazee, D. 2017. <span>“Mechanisms of Central Tolerance for b
+Cells.”</span> <em>Nature Reviews Immunology</em> 17: 281–94. <a href="https://doi.org/10.1038/nri.2017.19">https://doi.org/10.1038/nri.2017.19</a>.
+</div>
+<div id="ref-Oji2024" class="csl-entry">
+Oji, Asami, Linda Choubani, Hisashi Miura, and Ichiro Hiratani. 2024.
+<span>“Structure and Dynamics of Nuclear a/b Compartments and
+Subcompartments.”</span> <em>Current Opinion in Cell Biology</em> 90:
+102406. <a href="https://doi.org/10.1016/j.ceb.2024.102406">https://doi.org/10.1016/j.ceb.2024.102406</a>.
 </div>
 <div id="ref-Takasugi2023" class="csl-entry">
 Takasugi, Mitsuo, Yuki Yoshida, Yoshinori Nonaka, and Nobuyuki Ohtani.
@@ -2449,7 +2661,6 @@ Shanshan Zhao, et al. 2021. <span>“<span class="nocase">MiniCAFE, a
 CRISPR/Cas9-based compact and potent transcriptional activator, elicits
 gene expression in vivo</span>.”</span> <em>Nucleic Acids Research</em>
 49 (7): 4171–85. <a href="https://doi.org/10.1093/nar/gkab174">https://doi.org/10.1093/nar/gkab174</a>.
-</div>
 </div>
 </div>
 </div>
