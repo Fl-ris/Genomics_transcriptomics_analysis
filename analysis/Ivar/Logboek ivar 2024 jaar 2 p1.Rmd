@@ -65,15 +65,21 @@ SRA files in de map "/students/2024-2025/Thema05/3Dchromatine/SRA"
 ## Maandag 
 Na de groepenpresentaties hebben wij we gezamenlijk de genomics data uitgepakt met de tool fasterqdump via floris zijn laptop.
 # floris zijn code
+```{r EVAL=FALSE}
+
+```
 
 ### seqtk test dataset 
 Met floris zijn code een fastq data set gemaakt met 10 000 lines 
 deze hoeveelhijd lines hebben wij gedaan op advies van ronald 
 
 # floris zijn code
+```{r EVAL=FALSE}
+
+```
 
 ### fastqc en trimmomatic edit uitleg fastqc en trimmotic wat gedaan
-ik en storm hebben wij de taken fastqc en trimmomatic pipeline gekregen omdat wij vorig jaar in een eerder project hiermee hebben gewerkt. Fastqc[2] gebruiken wij om de kwaliteit van de sequentie's te analyseren en Trimmomatic[3] gebruiken wij om de sequenties de van te lage kwaliteit zijn te verwijderen.
+ik en storm hebben wij de taken fastqc en trimmomatic pipeline gekregen omdat wij vorig jaar in een eerder project hiermee hebben gewerkt. Fastqc[1] gebruiken wij om de kwaliteit van de sequentie's te analyseren en Trimmomatic[2] gebruiken wij om de sequenties de van te lage kwaliteit zijn te verwijderen.
 
 ### Resultaten
 Taakverdeling gemaakt
@@ -83,8 +89,24 @@ Geholpen met test dataset in map fastq/test_data
 ## Dinsdag
 fastqc en multiqc vandaag verder uitgewerkt en het commando uitgevoerd zodat wij kunnen kijken wat de kwaliteit van de samples is. Hiervoor hebben wij de R library fastqcr gebruikt, omdat dit de R versie is van fastqc. Nadat dit programma klaar was hebben we multiqc gerund voor een overzicht van al onze data 
 
+### Uitleg FastQC
+FastQC is een kwaliteits controle programma voor sequentie data gegeneerd uit next generation sequencing apparaten. dit programma kan je een indruk geven van de kwaliteit van jouw data en waar eventuele problemen liggen. 
+Het doet dit doormiddel van het analyseren van de fastq file die gegenereerd word door de sequincer. dit bestand bestaad uit een header begginnent met @ gevolgd door een identifier en een optionele input, in de volgende rij komt de sequentie letters. De derde rij begint met een + bevat optioneel de identifier, en de vierde rij bevat een kwaliteit score per base in ASCII caracters aan de hand van hoe zeker de sequencer is per base.
+1 van deze plots die fastqc weergeeft is de "per base sequence quality" dit plot geeft de algemene kwaliteit per nucleotide base weer aan de hand van hoe zeker het sequencer apparaat dit heeft meegegeven in de fastq file.
+Aan de hand hiervan kun je de gemiddelde kwaliteit van jouw sample bestuderen en beslissen of jouw data betrouwbaar is of niet.
+
+#### Uitleg MultiQC
+Het doel van MultiQC is om in 1 bestand een overzicht te krijgen als je meerdere bestanden hebt waarvan je de kwaliteit wil weten, Dit programma maakt hiervoor een overzicht
+
+### Uitleg Trimmomatic
+Trimmomatic is een data procesing programma voor fastq files. Wat trimmomatic doet is aan de hand van de meegegeven opties verwijderd sequentie data dat van eventuele slechte kwaliteit is. voorbeelden van de opties die je mee kunt geven aan dit programme zijn:
+Sliding window(base lengte : kwaliteit score) deze optie scant een opgegeven hoeveelheid basen en verwijderd deze als ze onder de opgegeven kwaliteit komen.
+Iluminaclip verwijderd adapters en andere ilumina specifieke sequenties van de read.
+
+### FastQC en MultiQC run 
 Hieronder het automation script voor fastqc run in de fastq map
-```{bash, EVAL=FALSE, ECHO=FALSE}
+
+```{bash, EVAL=FALSE}
 # getwd
 setwd("/students/2024-2025/Thema05/3dconformatieChromatine/fastq")
 (x = getwd())
@@ -93,7 +115,7 @@ fastqc(fq.dir = x, qc.dir = "/students/2024-2025/Thema05/3dconformatieChromatine
 
 MultiQC command
 
-```{bash, EVAL=FALSE, ECHO=FALSE}
+```{bash, EVAL=FALSE}
 pwd
 cd ../
 cd fastqc_output
@@ -107,49 +129,111 @@ multiqc .
 Uit de general statistics plot kan ik halen dat de download van de eerste sample mislukt is. Ook bevatten de eerste 4 samples en hun reverse componenten ruim 90% duplicaten wat dramatisch slecht is.
 
 ![seq quality](../Logboek_recources/fastqc/multiqc_ruw_seq_quality.png)
+De kwaliteit per base plot laat zien dat de samples met de 90% duplicates ook van best slechte kwaliteit zijn. ook is het biezonder dat de gehighlighte sample een sprong in kwaliteit maakt. de normale verwachting is dat de lijn in de kwaliteit een soort banaan vorm heeft. de samples die minder dan 90% duplicates hebben lijken van voldoende kwaliteit.
 
-![adapter](../Logboek_recources/fastqc/multiqc_ruw_adapter_content.PNG)
+![adapter](../Logboek_recources/fastqc/multiqc_ruw_adapter_content.png)
+De 90% duplicatie samples hebben ook dramatisch hoge adaptercontent score. dit zou mogelijk een verklaring kunnen zijn van de hoeveelheid duplicaties. 
 
-![duplies](../Logboek_recources/fastqc/multiqc_ruw_dupli_lvl.PNG)
+![duplies](../Logboek_recources/fastqc/multiqc_ruw_dupli_lvl.png)
+Dit plot visualiseert de hoeveelheid duplicatie per sequentie. van de eerste 4 samples had ik verwacht dat de piek in duplicaten hoger zou zijn aan het begin vanwege de hoeveelheid adapters. dit zou kunnen hinten naar pcr artefacten.
 
-![overrepresentive](../Logboek_recources/fastqc/multiqc_ruw_overrep_seq.PNG)
+![overrepresentive](../Logboek_recources/fastqc/multiqc_ruw_overrep_seq.png)
 
 
-hieruit kun je zien dat de sample's 527,528,529,530 van zeer slechte kwaliteit zijn. Het meest bijzondere aan deze samples 
-blast seq 4 datasets blasten
+Hieruit kun je zien dat de sample's 527,528,529,530 van zeer slechte kwaliteit zijn. Het meest bijzondere aan deze samples is de absurde hoeveelheid duplicaten hierin.
+Bij de individuele fastqc rapporten van de bovenstaande 4 samples heb ik gekeken naar de overrepresented sequences.
+In deze lijst stonden een paar sequenties die herkent werden als adapters maar de meesten niet. Ik heb 1 van de sequentie op advies van Ronald geblast.
+BLAST is een alignment tool van NCBI en het doel van dit programma is het vergelijkingen van de opgegeven sequentie met de referentie database om te kijken wat opgegeven sequentie is en waarvoor hij misschien zou kunnen zijn. 
+
+Ik heb 1 van de sequentie's die voor 60% verantwoordelijk was voor de duplicatie door 4 blast databasen gehaald en hieruit kwam bij alle 4 geen match.
+
+### Uitkomst Eerste FastQC
+Dit alles bij elkaar vindt ik dat we de eerste 4 samples waarschijnlijk niet bruikbaar zijn voor verder onderzoek vanwege hun slechte kwaliteit. de laatste 4 lijken wel van goed genoege kwaliteit te zijn om te gebruiken.
+Deze samples scoren goed in de algemene kwaliteit plotten na het trimmen moet er nog wel gekeken worden naar de duplicatie plots om te kijken of daar nog eventuele problemen in kunnen zitten
+
+#### Blast settings
 Core nucleotide database
-Nucleotide collections
-refseq genome databse
-refseq Reference genomes
+Nucleotide collections 
+refseq genome databse (Mus Muscus)
+refseq Reference genomes (Mus Muscus)
 
 ### Resultaten
+FastQC + Multiqc analyse gedaan, bestanden staan in /students/2024-2025/Thema05/3dconformatieChromatine/fastqc_output/
 
 ## Woensdag
-Samen met storm en Jarno aan het automatische bwa mem commando gewerkt dit duurde lang vanwege problemen in het automatiseren deze staat in repo 
+Samen met storm en Jarno aan het automatische bwa-mem commando gewerkt dit duurde lang vanwege problemen in het automatiseren. 
+
+### BWA-MEM mapping
+*uitvoering hiervan was na het trimmen van de data
+BWA-MEM code van storm yarno floris en ik.
+```{r}
+
+```
+
 
 ## Vrijdag
+Vandaag is het doel om samen met storm het trimmomatic commando af te maken zodat we daar mee kunnen experimenteren voor onze data analyse.
 
-Trimmomatic
-settings
-minlen 40 standaard
-slidingwindow 4 : 20 standaard
-headcrop error
-
-Results
-niet veel getrimd
-mischien werkt trimmomatic niet goed bij crop lengt zijn er reads van 10 
+### Trimmomatic settings
+minlen 40 
+standaard
+slidingwindow 4 : 20 
+standaard
 
 Trimmomatic command
 
-```{bash, EVAL=FALSE}
- 
+```{bash EVAL=FALSE}
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | \
+  parallel 'TrimmomaticPE -threads 80 ' \
+                  '/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq ' \
+                  '/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_2.fastq ' \
+                  '/students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_forward_paired.fastq ' \
+                  '/students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/unpaired/{}_forward_unpaired.fastq ' \
+                  '/students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_rev_paired.fastq ' \
+                  '/students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/unpaired/{}_rev_unpaired.fastq ' \
+                  'ILLUMINACLIP:/students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic/Trimmomatic-0.39/adapters/TruSeq3-SE.fa:2:30:10 ' \
+                  'MINLEN:40 ' \
+                  'SLIDINGWINDOW:4:20'
+                  'HEADCROP:10'
 ```
+
+### Resultaten
+Functioneel bash script voor trimmen
 
 # Week 3 
 
 ## Maandag
-Trimmomatic 2 pogingen  + fastqc en multiqc
-besluit 527,528,529,530 te verwijderen uit verdere pipeline vanwege slechte kwaliteit en type sample VDJ
+Het doel vandaag is besluiten wat we doen met de samples van dramatisch slechte kwaliteit en met trimmomatic experimenteren. Dit doen we om de data klaar te zetten voor het mappen en alignen.
+
+### Besluit samples
+Als groep hebben we besloten om de samples 527,528,529,530 te verwijderen uit verdere pipeline vanwege slechte kwaliteit score op het fastqc rapport en we hebben het sample type wildtipe niet per se nodig voor ons genetisch onderzoek.
+
+### Trimmomatic en FastQC
+Trimmomatic 2 pogingen met en zonder de optie headcrop + fastqc en multiqc voor controle van de getrimde data.
+verdere opties:
+minlen 40
+
+slidingwindow 4:20
+
+circa 95% van de reads per sample overleven het als gepaarde read.
+In de trimmomatic output stond dat het headcrop argument was gefaald en niet is meegenomen in het trimmen.
+![general stats trimd](../Logboek_recources/fastqc/multiqc_trimd_gen_stats.png)
+Bij de standaard statistieken zie ik dat de CG percentages iets uit elkaar liggen mijn eerste gedachte hierbij was dat de samples misschien gecontamineerd is maar volgens Ronald is het normaal dat CG% 1% of 2% uit elkaar kunnen liggen aan de hand van het type cell dus dit hoeft geen probleem te zijn. 
+Het gemmiddelde CG percentage van een muis is 42% (GRCm39 reffrence genome. https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001635.27/). Het chromosome met het hoogste CG% is 44% op chromosome 11. 
+Dit is ook het chromosome waar het Ebf1 gen op ligt dat gebruikt is in het onderzoek. (https://www.ncbi.nlm.nih.gov/gene/13591)
+Onze samples hebben een gemiddelde CG percentage van 45,75 deze informatie bevestigt ons idee dat dit onderzoek geen whole genome sequencing heeft gedaan maar een selectie heeft gemaakt en dit waarschijnlijk heeft geampliceerd met de aaname dat dit choromosme 11 is met de reden dat hier het Ebf1 gen op ligt dat critiek is bij dit onderzoek.
+De hoeveelheid duplicaties kan hiermee deels verklaart worden.
+
+![general stats](../Logboek_recources/fastqc/multiqc_trimd_seq_quality.png)
+Zoals hier te zien is de gemiddelde kwaliteit van deze samples wel goed het piek omhoog aan het eind is resultaat van het trimmen.
+
+![general stats](../Logboek_recources/fastqc/multiqc_trimd_leng_distri.png)
+Het opvallende hier is dat er een piek aan het begin bij circa 10 readlengt. dit hoort niet te kunnen aangezien hij alle reads onder 40 in lengte had moeten verwijderen. 
+
+![general stats](../Logboek_recources/fastqc/multiqc_trimd_cg_content.png)
+
+Overrepresented sequences
+
 ## Dinsdag
 overleg met ronald over onderzoeksvraag en commentaar op fastq data en logboek
 
@@ -160,16 +244,24 @@ blast gggggggggggggggg overreppentive sequince in alle reverse reads
 Core nucleotide database
 Nucleotide collections geen match
 
-# woensdag
+## woensdag
+logboek review ronald
+
+## Vrijdag
+werken aan logboek
+
+# Week 4
+
+## Maandag 
+werken aan logboek
 
 # bibliografie 
-[1]SRA 
-
-[2]Fastqc
-Versie ?
-FastQC is een kwaliteits controle programma voor sequentie data gegeneerd uit next generation sequencing apparaten. dit programma kan je een indruk geven van de kwaliteit van jouw data en waar eventuele problemen liggen. 
-
+[1]Fastqc
+Versie 0.12
 https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
-[3]Trimmomatic
+
+[2]Trimmomatic
 Versie 0.39
-Trimmomatic 
+http://www.usadellab.org/cms/?page=trimmomatic 
+
+
