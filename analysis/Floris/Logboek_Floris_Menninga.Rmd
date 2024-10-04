@@ -4,15 +4,15 @@ author: "Floris Menninga"
 date: "`r Sys.Date()`"
 bibliography: Logboek_Floris_Menninga.bib
 output:
+  html_document:
+    toc: yes
+    toc_depth: '2'
   bookdown::pdf_document2:
     keep_tex: false    # set this to true if you want to investigate the generated tex
     toc: false         # table of contents
     fig_caption: true  # includes figure captions with numbering in output
     includes:  
         in_header: include_tex_header.tex #will include rules for linespacing and figure floating
-  html_document:
-    toc: yes
-    toc_depth: 2
   pdf_document:
     toc: yes
     toc_depth: '2'
@@ -131,7 +131,9 @@ find /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA -nam
 # parallel gebruiken: cat accessionlist.txt | parallel ls -lah SRA/{}/{}.sra
 ```
 
-**Onderzoeksvraag Genomics** De volgende onderzoeksvraag is geformuleerd voor het genomics onderzoek:
+**Onderzoeksvraag Genomics**
+
+De volgende onderzoeksvraag is geformuleerd voor het genomics onderzoek:
 
 Zijn er varianten aanwezig van PAX5 en Ebf1 in het genoom van de rag2(-/-) muizen die gebruikt zijn?
 
@@ -158,7 +160,7 @@ bron: <https://www.sciencedirect.com/topics/neuroscience/pax5>
 **Test data genereren** **16-09-2024**
 
 Om te voorkomen dat een parallel commando na het uitvoeren van een lange bewerking een fout of onverwacht resultaat geeft moet er eerst een subset van de te gebruiken data gemaakt worden.
-Hiermee kunnen de volgende commando's eerst uitgevoerd worden om te verifieren dat alles goed werkt.
+Hiermee kunnen de volgende commando's eerst uitgevoerd worden om te verifiëren dat alles goed werkt.
 
 \
 Om test data te genereren op basis van twee van de fastq bestanden is de volgende code gebruikt: Per sample bestand zitten er 1000000 reads in.
@@ -212,8 +214,9 @@ indexeren maakt het align proces veel sneller.
 De samples SRR26980528_1 en \_2 zijn gebruikt na het referentiegenoom te indexeren met BWA_MEM2.
 Het gebruikte referentie genoom is mm39 (GCF_000001635.27).
 
-In de onderstaande code chunk wordt het geindexeerde muisgenoom "testnaam" genoemd.
+In de onderstaande code chunk wordt het geïndexeerde muisgenoom "testnaam" genoemd.
 Daarna worden twee samples (forward read en reverse read) ge-aligned met het zojuist verkregen geïndexeerde referentiegenoom.
+Deze twee bewerkingen worden beiden met bwa-mem2 uitgevoerd.
 
 ```{bash, eval=FALSE}
 
@@ -242,20 +245,27 @@ Aangezien het onderzoek dit jaar gepubliceerd is en voltooid was in 2022 vraag i
 
 **.sam bestanden sorteren:** **17-09-2024**
 
-Na de vorige read mapping stap zijn er .SAM (Sequence alignment map) bestanden verkregen, dit is een tekst gebaseerde manier om sequenties die aligned zijn tegen een refrentie sequentie op te slaan.
+Na de vorige read mapping stap zijn er .SAM (Sequence alignment map) bestanden verkregen, dit is een tekst gebaseerde manier om sequenties die aligned zijn tegen een referentie sequentie op te slaan.
 Een .sam bestand bestaat uit een header en een alignment deel.
 
 \
 Omdat de .SAM bestanden niet georderd zijn op positie in het genoom moeten ze eerst met samtools sort omgezet worden naar een .BAM bestand, dit is nu wel gesorteerd door samtools.
 Daarnaast kan het opvragen van data sneller gemaakt worden als het geïndexeerd is.
 
-Na de index stap uit gevoerd te hebben is er ook een .bai bestand, dit een index voor het .bam bestand.
+Na de index stap uit gevoerd te hebben is er ook een .bai bestand, dit is een index voor het .bam bestand waardoor andere tools sneller met het .bam bestand kunnen werken.
 
 bron: <https://gatk.broadinstitute.org/hc/en-us/articles/360035890791-SAM-or-BAM-or-CRAM-Mapped-sequence-data-formats>
 
 Om al deze bewerkingen uit te voeren wordt gebruik gemaakt van samtools (versie 1.16.1).
 Dit is een collectie tools om met high-throughput sequence data te werken.
 Zo kan het bijvoorbeeld fastq omzetten naar .bam / .cram bestanden, WGS/WES mapping naar variant calls en het filteren van .vcf bestanden.
+
+Met samtools sort -n worden de .sam bestanden gesorteerd op read naam (De QNAME kolom in het bestand).
+Ook wordt het bestand geconverteerd van .SAM naar .BAM.
+
+Het format is aangegeven met "-O BAM"
+
+Bron: <http://www.htslib.org/doc/samtools-sort.html>
 
 ```{bash, eval=FALSE}
 # Voor een enkel sample:
@@ -266,18 +276,23 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 ```
 
+"fixmate -m" voegt mate score tags toe die gebruikt worden door markdup om de beste reads te selecteren om te houden.
 
-fixmate -m (-m voegt mate score tags toe die gebruikt worden door markdup om de beste reads te selecteren om te houden.)
-Bron: http://www.htslib.org/doc/samtools-markdup.html
+Met "—Threads" wordt het aantal threads gespecificeerd dat de computer moet gebruiken voor dit commando.
+
+Bron: <http://www.htslib.org/doc/samtools-markdup.html>
 
 ```{bash, eval=FALSE}
 # Voor een enkel sample:
-samtools fixmate -m aligned_sorted_SRR26980549.bam \ fixed_mates_aligned_sorted_SRR26980549.bam
+samtools fixmate -m --threads 16 aligned_sorted_SRR26980549.bam \ fixed_mates_aligned_sorted_SRR26980549.bam
 
 # Met parallel:
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools fixmate -m aligned_sorted_{}.bam fixed_mates_aligned_sorted_{}.bam' &
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools fixmate -m --threads 16 aligned_sorted_{}.bam fixed_mates_aligned_sorted_{}.bam' &
+
 
 ```
+
+Daarna met "samtools sort" op coördinaten gesorteerd. 
 
 ```{bash, eval=FALSE}
 # Voor een enkel sample:
@@ -288,15 +303,21 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 ```
 
+Met samtools markdup worden duplicaten gemarkeerd. Met het "-r" argument worden deze 
+verwijderd en met "-s" worden statistieken over de data en uitgevoerde handelingen. 
+
+Bron: http://www.htslib.org/doc/samtools-markdup.html
+
 ```{bash, eval=FALSE}
 # Voor een enkel sample:
 samtools markdup -r -s sorted_coordinates_SRR26980549.bam dedup_SRR26980549.bam
 
 # Met parallel:
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools markdup -r -s sorted_coordinates_{}.bam dedup_{}.bam' &
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel  'samtools markdup -r -s sorted_coordinates_{}.bam dedup_{}.bam' &
 
 ```
 
+Met samtools index wordt er een index bestand gemaakt.
 
 ```{bash, eval=FALSE}
 # Voor een enkel sample:
@@ -307,6 +328,7 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 ```
 
+.
 
 ```{bash, eval=FALSE}
 
@@ -315,24 +337,23 @@ freebayes -f ref.fa aln.bam >var.vcf
 
 ```
 
-Bron: https://github.com/freebayes/freebayes
-Met behulp van het onderstaande stuk code worden de resulaten van de freebayes variant calling direct gefilterd op kwaliteit met vcffilter.
+Bron: <https://github.com/freebayes/freebayes> Met behulp van het onderstaande stuk code worden de resulaten van de freebayes variant calling direct gefilterd op kwaliteit met vcffilter. Met "QUAL = 20" worden enkel de variants geselecteerd die 99% kans hebben dat er een variant zit op die plaats. 
 ```{bash, eval=FALSE}
 # Voor een bestand:
 /students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
  -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_SRR26980549.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 20" > filtered_SRR26980549.vcf
+ 
  
 # Met parallel: 
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
  -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_{}.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 20" > filtered_{}.vcf' &
 ```
 
-
 Filteren van varianten:
+
 ```{bash, eval=F}
 /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter
 ```
-
 
 **18-09-2024**\
 
@@ -418,7 +439,9 @@ Dit is een genetische variant detector gemaakt om kleine polymorfismen zoals: SN
 Voordat freebayes uitgevoerd kan worden moet het referentiegenoom weer geïndexeerd worden, net als met BWA-mem2 index maar dan met samtools faidx zoals in de onderstaande code chunk beschreven is.
 
 ```{bash, eval=FALSE}
+
 samtools faidx GCA_000001635.9_GRCm39_genomic.fna 
+
 ```
 
 Met het geïndexeerde referentiegenoom (GCA_000001635.9_GRCm39) was vervolgens de freebayes variant calling uitgevoerd.
@@ -426,6 +449,7 @@ Met het geïndexeerde referentiegenoom (GCA_000001635.9_GRCm39) was vervolgens d
 ```{bash, eval=FALSE}
 
 /students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static -f GCA_000001635.9_GRCm39_genomic.fna \ /students/2024-2025/Thema05/3dconformatieChromatine/aligned_sorted_SRR26980549.bam > \ /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf
+
 ```
 
 **Gen annotatie** Eerst is er een .bed bestand van het niet door mensen leesbare .bam bestand gemaakt, daarna zijn de genen geannoteerd zodat ze geen namen hebben zoals: SRR26980549.46263152/2 maar ....
@@ -439,8 +463,7 @@ bamToBed -i aligned_sorted_SRR26980549.bam > aligned_sorted_SRR26980549.bed
 
 ```
 
-**Sequence depth vaststellen:**
-Om te achterhalen wat de coverage is, is het volgende bash commando uitgevoerd:
+**Sequence depth vaststellen:** Om te achterhalen wat de coverage is, is het volgende bash commando uitgevoerd:
 
 ```{bash, eval=FALSE}
 
@@ -450,7 +473,8 @@ samtools depth -a aligned_sorted_SRR26980549.bam > depth_output.txt
 
 ## **Kwaliteitscontrole vcf bestanden:**
 
-## **Annoteren van de .cvf bestanden:**
+## **Annoteren van de .vcf bestanden:**
+
 Het onderstaande script was eerst uitgevoerd met mm39 als referentiegenoom voor de annotatie maar dit gaf een foutmelding (Op de github pagina van het programma snpEff waren er meer meldingen van dit gedrag.) dus is het opnieuw uitgevoerd met het oude mm10 referentiegenoom.
 
 ```{bash, eval=FALSE}
@@ -462,6 +486,10 @@ java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar 
 
 ```
 
+
+```{r, eval=FALSE}
+#samtools isec gebruiken.
+```
 
 
 ## **Visualisatie van de verkregen data:**
@@ -481,7 +509,7 @@ De gebruikte accention list staat in de github repository.
 
 ```{bash, eval=FALSE}
 export PATH="/home/floris/Documenten/Applicaties/sratoolkit.3.1.1-ubuntu64/bin/:$PATH"
- 
+
 
 
 cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/
