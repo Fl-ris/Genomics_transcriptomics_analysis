@@ -14,7 +14,9 @@ library(ggplot2)
 
 ## Introductie:
 
-Dit logboek gaat over Genomics en Transcriptomics, De eerste 5 weken focussen wij op het Genomics gedeelte. In de Genomics kant van dit onderzoek gaan wij kijken naar het volgende: **Zijn er varianten aanwezig van PAX5 en Ebf1 in het genoom van de rag2 knockout muizen die gebruikt zijn?** Dit omdat: De reden dat gekozen is voor PAX5 en Ebf1 is dat deze betrokken zijn bij de ontwikkeling van voorloper B cellen. In het transcriptomics gedeelte wordt hier ook gebruik van gemaakt dus is het goed om te weten of er varianten aanwezig zijn in het genoom van de muizen die voor transcriptomics gebruikt worden (Rag2 knockout).
+Dit logboek gaat over Genomics en Transcriptomics, De eerste 5 weken focussen we op het Genomics gedeelte. In de Genomics kant van dit onderzoek gaan we kijken naar het volgende: **Zijn er varianten aanwezig van PAX5 en Ebf1 in het genoom van de rag2 knockout muizen die gebruikt zijn?** De reden dat gekozen is voor PAX5 en Ebf1 is omdat deze betrokken zijn bij de ontwikkeling van voorloper B cellen. Wanneer er variatie zit in onze DNA-seq kan dat erop wijzen dat de Ebf1 en PAX5 niet goed kunnen ontwikkelen wat er voor zorgt dat de voorloper B cellen nooit goed naar B cellen kunnen transformeren. Dit kan dus zorgen voor fouten in de ontwikkeling van de muis.
+
+In het transcriptomics gedeelte wordt hier ook gebruik van gemaakt dus is het goed om te weten of er varianten aanwezig zijn in het genoom van de muizen die voor transcriptomics gebruikt worden (Rag2 knockout).
 
 ### Workflow
 
@@ -22,39 +24,39 @@ DNA was wel een deel van onze dataset echter is er in het referentie onderzoek (
 
 Hier onder is een overzicht te zien van de Tools die wij gaan gebruiken in ons onderzoek.
 
-+---------------+----------------------------------------------------------------------------------+--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Tool          | Referentie                                                                       | Versie | Waarom                                                                                                                                                                                                                                                                                                     |
-+===============+==================================================================================+========+============================================================================================================================================================================================================================================================================================================+
-| Featurecounts | <https://academic.oup.com/bioinformatics/article/30/7/923/232889?searchresult=1> |        | Featurecounts is een zeer efficiënt algemeen "read" samenvattingsprogramma dat mapped reads telt voor genomische kenmerken zoals genen, exonen, promotor, genlichamen, genomische bins en chromosomale locaties. het kan worden gebruikt om zowel RNA-seq als genomische DNA-seq leesbewerkingen te tellen |
-+---------------+----------------------------------------------------------------------------------+--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| HISAT2        | <https://daehwankimlab.github.io/hisat2/>                                        |        | HISAT2 is een snelle en gevoelige alligner voor mapping NGS reads voor zowel DNA als RNA naar een enkele referentie genoom.                                                                                                                                                                                |
-+---------------+----------------------------------------------------------------------------------+--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| FastQC        | <https://www.bioinformatics.babraham.ac.uk/projects/fastqc/>                     | 0.11.9 | FastQC wordt gebruikt om de kwaliteit te checken van de rauwe data, hier uit is te zien of de data gelijk te gebruiken is of dat deze moet worden getrimmed. De trimmer kan ook afgesteld worden op basis van de fastqc.                                                                                   |
-+---------------+----------------------------------------------------------------------------------+--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Fastqcr       | <https://rpkgs.datanovia.com/fastqcr/index.html>                                 | 0.11.9 |                                                                                                                                                                                                                                                                                                            |
-+---------------+----------------------------------------------------------------------------------+--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| freebayes     | <https://github.com/freebayes/freebayes>                                         |        | freebayes is een haplotype gebaseerde gen variant detector, ontworpen om kleine polymorfismes te detecteren, SNP's, inserties en deleties in het bijzonder. Dit programma gebruikt .BAM bestanden met een Phred+33 encoding.                                                                               |
-+---------------+----------------------------------------------------------------------------------+--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| seqtk         | <https://github.com/lh3/seqtk>                                                   |        | seqtk wordt gebruikt voor het proceseren van sequences in het FASTA of FASTQ formaat. het "seamlessly parses" beide FASTA en FASTQ welke dan ook optimaal compressed wordt door gzip                                                                                                                       |
-+---------------+----------------------------------------------------------------------------------+--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Trimmomatic   | <https://github.com/usadellab/Trimmomatic>                                       | 0.39   | Trimmomatic wordt gebruikt om de data op te schonen nadat dez uit FastQC komt. Deze haalt de slechte kwaliteit paren af van de streng waardoor een hoge kwaliteit RNA- of DNA-streng overblijft die gebruikt kan worden.                                                                                   |
-+---------------+----------------------------------------------------------------------------------+--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| bwa mem2      | <https://github.com/bwa-mem2/bwa-mem2?tab=readme-ov-file>                        |        | Bwa mem2 wordt gebruikt om DNA en RNA reads te alignen tegen een gekozen referentie genoom.                                                                                                                                                                                                                |
-+---------------+----------------------------------------------------------------------------------+--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| samtools      | <https://www.htslib.org>                                                         |        | samtools is een set van "utilities" dat alignments in de SAM, Bam en CRAM formatten kan manipuleren. het kan veranderen tussen de formats, sorteren, samenvoegen en indexen, ook kan het "reads" snel vinden in elke regio                                                                                 |
-+---------------+----------------------------------------------------------------------------------+--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| R             | <https://www.r-project.org>                                                      |        | R is de code taal die gebruikt wordt om alle statistieken testen te doen en tevens de visualisatie van de data die komt uit het onderzoek                                                                                                                                                                  |
-+---------------+----------------------------------------------------------------------------------+--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| R-studio      | <https://posit.co>                                                               |        | R studio is het programma wat wordt gebruikt als IDE voor R                                                                                                                                                                                                                                                |
-+---------------+----------------------------------------------------------------------------------+--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| NCBI-GEO      | <https://www.ncbi.nlm.nih.gov/geo/>                                              |        | NCBI-GEO is gebruikt om het originele onderzoek te vinden waar dit onderzoek inspiratie vanaf neemt                                                                                                                                                                                                        |
-+---------------+----------------------------------------------------------------------------------+--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++---------------+----------------------------------------------------------------------------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Tool          | Referentie                                                                       | Versie        | Waarom                                                                                                                                                                                                                                                                                                     |
++===============+==================================================================================+===============+============================================================================================================================================================================================================================================================================================================+
+| Featurecounts | <https://academic.oup.com/bioinformatics/article/30/7/923/232889?searchresult=1> |               | Featurecounts is een zeer efficiënt algemeen "read" samenvattingsprogramma dat mapped reads telt voor genomische kenmerken zoals genen, exonen, promotor, genlichamen, genomische bins en chromosomale locaties. het kan worden gebruikt om zowel RNA-seq als genomische DNA-seq leesbewerkingen te tellen |
++---------------+----------------------------------------------------------------------------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| HISAT2        | <https://daehwankimlab.github.io/hisat2/>                                        |               | HISAT2 is een snelle en gevoelige alligner voor mapping NGS reads voor zowel DNA als RNA naar een enkele referentie genoom.                                                                                                                                                                                |
++---------------+----------------------------------------------------------------------------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| FastQC        | <https://www.bioinformatics.babraham.ac.uk/projects/fastqc/>                     | 0.11.9        | FastQC wordt gebruikt om de kwaliteit te checken van de rauwe data, hier uit is te zien of de data gelijk te gebruiken is of dat deze moet worden getrimmed. De trimmer kan ook afgesteld worden op basis van de fastqc.                                                                                   |
++---------------+----------------------------------------------------------------------------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Fastqcr       | <https://rpkgs.datanovia.com/fastqcr/index.html>                                 | 0.11.9        |                                                                                                                                                                                                                                                                                                            |
++---------------+----------------------------------------------------------------------------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| freebayes     | <https://github.com/freebayes/freebayes>                                         |               | freebayes is een haplotype gebaseerde gen variant detector, ontworpen om kleine polymorfismes te detecteren, SNP's, inserties en deleties in het bijzonder. Dit programma gebruikt .BAM bestanden met een Phred+33 encoding.                                                                               |
++---------------+----------------------------------------------------------------------------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| seqtk         | <https://github.com/lh3/seqtk>                                                   |               | seqtk wordt gebruikt voor het proceseren van sequences in het FASTA of FASTQ formaat. het "seamlessly parses" beide FASTA en FASTQ welke dan ook optimaal compressed wordt door gzip                                                                                                                       |
++---------------+----------------------------------------------------------------------------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Trimmomatic   | <https://github.com/usadellab/Trimmomatic>                                       | 0.39          | Trimmomatic wordt gebruikt om de data op te schonen nadat dez uit FastQC komt. Deze haalt de slechte kwaliteit paren af van de streng waardoor een hoge kwaliteit RNA- of DNA-streng overblijft die gebruikt kan worden.                                                                                   |
++---------------+----------------------------------------------------------------------------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bwa mem2      | <https://github.com/bwa-mem2/bwa-mem2?tab=readme-ov-file>                        |               | Bwa mem2 wordt gebruikt om DNA en RNA reads te alignen tegen een gekozen referentie genoom.                                                                                                                                                                                                                |
++---------------+----------------------------------------------------------------------------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| samtools      | <https://www.htslib.org>                                                         |               | samtools is een set van "utilities" dat alignments in de SAM, Bam en CRAM formatten kan manipuleren. het kan veranderen tussen de formats, sorteren, samenvoegen en indexen, ook kan het "reads" snel vinden in elke regio                                                                                 |
++---------------+----------------------------------------------------------------------------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| R             | <https://www.r-project.org>                                                      | 4.4.1         | R is de code taal die gebruikt wordt om alle statistieken testen te doen en tevens de visualisatie van de data die komt uit het onderzoek                                                                                                                                                                  |
++---------------+----------------------------------------------------------------------------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| R-studio      | <https://posit.co>                                                               | 2023.12.1+402 | R studio is het programma wat wordt gebruikt als IDE voor R                                                                                                                                                                                                                                                |
++---------------+----------------------------------------------------------------------------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| NCBI-GEO      | <https://www.ncbi.nlm.nih.gov/geo/>                                              |               | NCBI-GEO is gebruikt om het originele onderzoek te vinden waar dit onderzoek inspiratie vanaf neemt                                                                                                                                                                                                        |
++---------------+----------------------------------------------------------------------------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 ![Planning - Tijd voor onderzoek Genomics & Transcriptomics](images/Scherm­afbeelding%202024-09-24%20om%2015.06.09.png){width="681"}
 
 # Genomics
 
-# Project Opzet 
+# Project Opzet
 
 ## Week 1
 
@@ -95,7 +97,7 @@ Aan deze query kan aan het einde nog een woord of onderwerp toegevoegd worden. I
 
 #### Week planning
 
-Doormiddel van het programma trello is er een week planning gemaakt. Hier worden ook de taken verdeeld dit is te zien aan de foto's bij de tickets. De foto laat een gebruiker zien, dit gecombineerd met de datum waar voor het af moet zijn geeft ons een duidelijke verdeling. De datum toevoeging geeft de gebruiker die de ticket heeft ook een herinering.
+Door middel van het programma trello is er een week planning gemaakt. Hier worden ook de taken verdeeld dit is te zien aan de foto's bij de tickets. De foto laat een gebruiker zien, dit gecombineerd met de datum waar voor het af moet zijn geeft ons een duidelijke verdeling. De datum toevoeging geeft de gebruiker die de ticket heeft ook een herinnering.
 
 Hier een voorbeeld foto.
 
@@ -111,7 +113,7 @@ Hier zetten wij tickets in die aan bepaalde personen met verschillende urgenties
 
 De planning van de week voor mij was dat ik de Methoden moest bekijken en samenvatten voor zover mogelijk zodat de belangerijkste delen hiervan in het PVA en de Powerpoint werden gezet.
 
-De methoden zijn belangrijk omdat hierin de benodigdheden staan voor replicatie van het onderzoek. In de gekozen paper waren verschillende methoden die voor ons niet belangrijk zijn. Dit zijn bijvoorbeeld waar de muizen zijn gekocht of de Hi-C methoden dit omdat onze onderzoeks vraag als volgt gaat "Heeft leeftijd invloed op de expressie van genen" de Hi-C kijkt naar de chromosoomconfiguratie dit is te extreem voor ons in de tijds periode die wij hebben gekregen.
+De methoden zijn belangrijk omdat hierin de benodigdheden staan voor replicatie van het onderzoek. In de gekozen paper waren verschillende methoden die voor ons niet belangrijk zijn. Dit zijn bijvoorbeeld waar de muizen zijn gekocht of de Hi-C methoden, voor ons onderzoek is dit niet belangrijk omdat wij alleen naar de DNA-seq gaan kijken in vergelijking met het Referentie genoom (GRCm39)
 
 <https://trello.com>
 
@@ -139,15 +141,15 @@ Na alle methoden samengevat te hebben gingen wij als groepje kijken naar de mate
 
 **Onze gekozen methoden & materialen**
 
--   **Mouse-Gen:** Wij hebben in ons onderzoek een ander muis-gen dan het gen dat gebruikt is in het referentie onderzoek @Ma2024 , dit is omdat het referentie onderzoek een redelijk oud muis-gen gebruikt dit is het mm10 gen deze komt uit 2012. Wij gebruiken de GRCm39 ook wel het mm39 gen. Wij gaan dit gen gebruiken om te kijken of er variatie in zit tussen onze muizen en dit nieuwere referentie gen, dit nieuwere gen kan ons dus nieuw inzicht geven op mogelijke variaties / mutaties.
+-   **Muis-Gen:** Wij hebben in ons onderzoek een ander muis-gen dan het gen dat gebruikt is in het referentie onderzoek @Ma2024 , dit is omdat het referentie onderzoek een redelijk oud muis-gen gebruikt dit is het mm10 gen deze komt uit 2012. Wij gebruiken de GRCm39 ook wel het mm39 gen. Wij gaan dit gen gebruiken om te kijken of er variatie in zit tussen onze muizen en dit nieuwere referentie gen, dit nieuwere gen kan ons dus nieuw inzicht geven op mogelijke variaties / mutaties. De reden voor gebruik is dus dat dit nieuwere genoom van betere kwaliteit moet zijn dan de mm10.
 
--   **FastQC**: Dit programma hebben we gebruikt om de kwaliteit van de data te bekijken, FastQC is een programma wat fasta en fastq files kan inlezen dit kan via commandline, via galaxy (een website met bio informatica tool) en een FastQC programma met GUI. FastQC beoordeeld de files via verschillende tests en analyzen. Deze tests en analyzen zijn wat dieper uitgelegt in het FastQC hoofdstuk in tabel 1.
+-   **FastQC**: Dit programma hebben we gebruikt om de kwaliteit van de data te bekijken, FastQC is een programma wat fasta en fastq files kan inlezen dit kan via commandline, via galaxy (een website met bio informatica tool) en een FastQC programma met GUI. FastQC beoordeeld de files via verschillende tests en analyzen. Deze tests en analyzen zijn wat dieper uitgelegt in het FastQC hoofdstuk in tabel 1. De reden voor gebruik van fastQC is dus omdat het een zeer betrouwbaar programma (door het gebruik in vele wetenschappelijke artikelen) is en makkelijk te gebruiken is.
 
--   **Trimmomatic**: Dit programma hebben we gebruikt om de data na FastQC hogere kwaliteit te maken. Dit programma gebruikt verschillende parameters om de DNA-seq aan te passen zodat de kwaliteit goed genoeg wordt om dit te kunnen gebruiken. De reden dat de data wel met goeie kwaliteit kan worden gebruikt is omdat het dan betrouwbaar is.
+-   **Trimmomatic**: Dit programma hebben we gebruikt om de data na FastQC hogere kwaliteit te maken. Dit programma gebruikt verschillende parameters om de DNA-seq aan te passen zodat de kwaliteit goed genoeg wordt om dit te kunnen gebruiken. De reden dat de data wel met goeie kwaliteit kan worden gebruikt is omdat het dan betrouwbaar is. De reden dat wij trimmomatic gebruiken is omdat Storm en Ivar al veel ervaring hebben met trimmomatic en deze tool is gemaakt door illumina een bedrijf wat goed bekend staat om zijn sequencers dus een gevestigt bedrijf, waardoor het een betrouwbare tool is.
 
--   **Bwa-mem2**: Gebruikt om DNA-seq te aligneren met ons referentiegenoom. Het kan korte en middellange DNA- of RNA-reads alignen. Voor ons is Whole genome sequencing interresant dit is omdat hierbij de genomen worden gescand en dan vergeleken met het gekozen referentie genoom (in ons geval mm39 - GCF_000001635.27) dit om genetische variaties te identificeren.
+-   **Bwa-mem2**: Gebruikt om DNA-seq te aligneren met ons referentiegenoom. Het kan korte en middellange DNA- of RNA-reads alignen. Voor ons is Whole genome sequencing interresant dit is omdat hierbij de genomen worden gescand en dan vergeleken met het gekozen referentie genoom (in ons geval mm39 - GCF_000001635.27) dit om genetische variaties te identificeren. De reden waarom wij bwa-mem2 gebruiken en niet STAR is omdat Bwa-mem2 beter is voor DNA dit is omdat STAR gespecialiseerd is in RNA-seq ook is bwa-mem2 heel accuraat voor DNA sequences allignment, het gaat goed om met mismatches, kleine indels en langere reads. Het voordeel van bwa-mem2 is ook dat het minder zwaar is op de memory van de pc's. @Musich2021
 
--   **Freebayes**: Dit programma kijkt naar de alignement voor afwijkingen met het referentie genoom en geeft deze aan.
+-   **Freebayes**: Dit programma kijkt naar de alignement voor afwijkingen met het referentie genoom en geeft deze aan. De reden dat wij freebayes gebruiken is de goede documententatie en het makkelijke installatie proces. De bash scripts voor freebayes zijn makkelijk gemaakt en problemen kunnen snel worden verholpen met de documentatie die op de git staat.
 
 #### Onderzoeksvraag
 
@@ -264,11 +266,16 @@ Uit onze fastQC resultaten kwamen wat bijzondere resultaten. Er waren reads van 
 
 De conclusie uit de analyze van de FastQC resultaten is, Dat de generale statestieken 7 van de bestanden enorm veel duplicates wat een redelijk probleem vormt. Wat ook opvalt is dat alle bestanden met hoge duplicates een gem read lengte van 250 bp wat opmerkelijk lang is + de resultaten met enigzins goede kwaliteit hebben een gem lengte van 150 bp. Verder alle bestanden met veel duplicates bevatten veel minder reads dan de bestanden zonder of met weinig duplicates. Alle bestanden met 250 bp lengte eindigen aan het eind in het rode vlak in de sequentie kwaliteit en er is een dip bij de 110-120 waarna alles dus afzakt, voor de sequenties met 250bp is de kwaliteit goed van 0-110 bp. De sequence duplication levels zijn ook opmerkelijk door veel pieken en een hoog begin van de lijn. Overrepresented sequences vallen ook op want weer de 250bp bestanden hebben erg veel duplicates waar van sommige in de 50% zitten. Er zit ook heel veel adapter content bij 2 files is het zelfs \>50%. Kortom deze files moeten getrimmed of verwijderd worden.
 
+Deze code komt uit het logboek van Ivar
+
 ```{bash, eval=FALSE}
 
+#Hier wordt de working directory gezet, dit wordt gedaan met setwd
 setwd("/students/2024-2025/Thema05/3dconformatieChromatine/fastq")
 (x = getwd())
+#Hier wordt fastqc uitgevoerd op fq.dir = x, x is de eerder gezette wd. 
 fastqc(fq.dir = x, qc.dir = "/students/2024-2025/Thema05/3dconformatieChromatine/fastqc_output/", fastqc.path = "/usr/bin/fastqc", threads = 100)
+#ook wordt de output gezet via het qc.dir commando, waar fastqc staat word ook aangegeven met fastqc.path. Als laatste word de threads command gebruikt om aan te geven hoeveel threads gebruikt mogen worden.
 
 ```
 
@@ -279,6 +286,12 @@ cd fastqc_output
 pwd
 multiqc .
 ```
+
+multiQC wordt hiergebruikt om naar alle fastqc output files te kijken. Multiqc zoekt een directory voor fastQC output en compileert deze files zodat de algemene resultaten over meerdere files beter te begrijpen is.
+
+![Figuuur 3: Ruwe data in multiQC](images/multiqc_ruw_seq_quality.PNG)
+
+Hier is multiQC te zien, het overlapt alle grafieken en maakt hier 1 grote grafiek van waar wanneer deze wordt aangeclickt het allemaal dingen laat zien. Deze dingen zijn de naam van de sample, welke base positie het is en de kwaliteit. 1 ding wat ook nog anders is, is de score naast de titel. De score naast de titel laat zien dat 8 samples wel een goede kwaliteit hebben en 7 niet.
 
 Om een gehele analyze te zien van de FastQC resultaten moet er gekeken worden naar de logboeken van Storm en Ivar
 
@@ -347,6 +360,34 @@ Kritisch voor de generatie van het verschillend repertoire van b cellen capabel 
 
 @Nemazee2017
 
+#### Indexeren referentie genoom
+
+Hier wordt ons gekozen referentie genoom ge indexeert. De reden voor het alignen van het referentie genoom is voor het gebruik van BWA-mem2. een geïndexeerde versie van het refentiegenoom moet dus gemaakt worden, dit kan met bwa-mem2 index. indexeren maakt het align proces veel sneller. De samples SRR26980528_1 en \_2 zijn gebruikt na het referentiegenoom te indexeren met BWA_MEM2. Het gebruikte referentie genoom is mm39 (GCF_000001635.27).
+
+In de onderstaande code chunk wordt het geindexeerde muisgenoom "testnaam" genoemd. Daarna worden twee samples (forward read en reverse read) ge-aligned met het zojuist verkregen geïndexeerde referentiegenoom.
+
+*Deze code is geschreven door floris.*
+
+```{bash, eval=FALSE}
+
+
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
+
+
+# Het indexeren van het referentiegenoom met bwa-mem2. 
+bwa-mem2 index -p testnaam referentiegenoom
+
+# Voorbeeld aligning:
+bwa-mem2 mem ref.fa read1.fq read2.fq > aln-pe.sam
+
+# Align sample SRR26980549_1.fastq (deel 1 en 2) met het referentiegenoom mm39 muis. 
+./bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -p 60 testnaam fastq/SRR26980549_1.fastq fastq/SRR26980549_2.fastq > aligned_SRR26980549.sam &
+
+# find /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA -name "*.sra" | \
+#   parallel fasterq-dump -O /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/FASTQ {}
+
+```
+
 # Data Trimming
 
 ## Week 3
@@ -409,7 +450,7 @@ Voor diepere analyse check het logboek van Storm en Ivar
 
 **Flow chart voor Paired End mode.**
 
-[![Figuur 3 : Flow of reads in Trimmomatic - Paired End mode](images/clipboard-524134132.png)](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf)
+[![Figuur 4 : Flow of reads in Trimmomatic - Paired End mode](images/clipboard-524134132.png)](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf)
 
 Deze flowchart toont hoe Trimmomatic paired-end reads verwerkt. Het programma neemt beide reads als input en beoordeelt hun kwaliteit. Als zowel de forward als reverse reads voldoen aan de gekozen settings, blijven ze "paired" voor verdere analyse. Als één van de twee niet aan de kwaliteitsnormen voldoet wordt de slechte read verwijderd en de goede read als "unpaired" opgeslagen. Hierdoor onstaan vier mogelijkheden voor outputs: forward paired, reverse paired, forward unpaired en reverse unpaired. Allemaal afhankelijk van de kwaliteit van elke read.
 
@@ -419,6 +460,12 @@ Deze flowchart toont hoe Trimmomatic paired-end reads verwerkt. Het programma ne
 
 Deze tweede FastQC run is gedaan na het mappen van de data.
 
+![Figuur 5: multiQC view van fastq files na Trimmomatic](images/multiqc_trimd_seq_quality.PNG)
+
+Hier is de data te zien nadat deze getrimmed is, er zijn een paar dingen veranderd: We hebben nog maar 8 files van ongeveer 150 bp lang.
+
+Voor verdere analyse zie logboek van Ivar of Storm
+
 # Align data
 
 **Sorteren .sam bestanden**
@@ -427,21 +474,9 @@ Deze tweede FastQC run is gedaan na het mappen van de data.
 
 BWA-MEM2 wordt gebruikt om zowel DNA- als RNA-reads te aligneren met een referentiegenoom. Het kan korte en middellange DNA- of RNA-reads alignen. Er zijn verschillende manieren waar dit voor gebruikt kan worden zoals, Whole genome sequencing, Exoomsequencing en RNA-seq. Voor ons is Whole genome sequencing interresant dit is omdat hierbij de genomen worden gescand en dan vergeleken met het gekozen referentie genoom (in ons geval mm39 - GCF_000001635.27) dit om genetische variaties te identificeren.
 
-BWA-MEM2 heeft een geindexeerde versie nodig van ons referentie genoom, deze moet dus eerst gemaakt worden. Dit kan gedaan worden met bwa-mem2 index, nog een plus punt is het indexeren maakt het align proces veel sneller. De samples SRR26980528_1 en \_2 zijn gebruikt na het referentiegenoom te indexeren. Het gebruikte referentie genoom is mm39 - GCF_000001635.27
+BWA-MEM2 heeft een geindexeerde versie nodig van ons referentie genoom, deze moet dus eerst gemaakt worden. Dit kan gedaan worden met bwa-mem2 index, nog een plus punt is het indexeren maakt het align proces veel sneller. De samples SRR26980528_1 en \_2 zijn gebruikt na het referentiegenoom te indexeren. Het gebruikte referentie genoom is mm39 - GCF_000001635.27 in ons geval heet deze file "testnaam"
 
-In het bash script hieronder wordt het geindexeerde muisgenoom hernoemd naar "testnaam". Daarna worden twee samples forward- en reverse read ge-aligned met het verkregen geïndexeerde referentiegenoom
-
-*Deze code is geschreven door Floris deze is te vinden in zijn logboek. - dit gaat over het indexeren van het referentie genoom*
-
-```{bash, eval=FALSE}
-
-cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
-# Het indexeren van het referentiegenoom met bwa-mem2. 
-bwa-mem2 index -p testnaam referentiegenoom
-
-```
-
-*Deze code is voor de aligning van de data.*
+*Deze code is geschreven door Floris deze is te vinden in zijn logboek - Deze code is voor de aligning van de data.*
 
 Eerst is cat te zien ook wel concatenate dit read de file en print zijn content, dan is parallel te zien deze runt de workload over meerdere cores. Dan is te zien dat we een path aangeven specifiek naar bwa-mem2 omdat deze is geinstalleerd in deze speicifieke map, met mem roepen we de allignment modus aan welke bwa moet gebruiken deze modus is goed voor reads die door illumina machines zijn gesequenced. Het volgende wat te zien is is een -t 50 dit geeft aan hoeveel threads bwa moet gebruiken, testnaam refereent naar het geindexeerde referentie genoom. Dan zijn weer 2 paths te zien, deze referen naar de forward en reverse strands en de {} is om te zorgen dat het alle files in de map kan lezen zodat het eigenlijk de gehele map automatisch doet. De laatst path is voor de output en de laatste character "&" is zodat dit op de achtergrond gebeurd.
 
@@ -452,20 +487,53 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 De reden waarom wij bwa-mem2 gebruiken en niet STAR is omdat bwa-mem2 beter is voor DNA dit is omdat STAR gespecialiseerd is in RNA-seq ook is bwa-mem2 heel accuraat voor DNA sequences allignment, het gaat goed om met mismatches, kleine indels en langere reads. Het voordeel van bwa-mem2 is ook dat het minder zwaar is op de memory van de pc's.
 
-#### Freebayes
+#### Converteer SAM naar BAM
+
+```{r}
+aligned_SRR26980549.sam
+
+```
+
+#### Freebayes - variant calling
 
 @BioinformaticsWorkbook
 
 Freebayes is een "Bayesian" genetische variant detector gemaakt om kleine "poylmorphisms" (de aanwezigheid van twee of meer varianten van een specifieke DNA-sequentie), in het specifiek SNPs (single-nucleotide polymorphisms), indels (insersties en verwijderingen), MNPs (multi-nucleotide polymorphisms), en complexe evenementen (composite insertion and substitution events) kleiner dan de lenghte van een short-red sequencing alignment.
 
-freebayes is een haplotype-gebaseerd, in de manier waarop het varianten called gebaseerd op de leterlijke sequenties van reads ge aligned naar een specifieke target, niet hun exacte alignment. Dit model is een eenvoudige generalisatie van eerdere modellen (bijv. PolyBayes, samtools, GATK) die varianten detecteren of rapporteren op basis van alignments. Deze methode vermijdt een van de kernproblemen met alignment-based variant detection--- dat identieke sequenties meerdere mogelijke alignments kunnen hebben.
+freebayes is haplotype-gebaseerd, in de manier waarop het varianten called gebaseerd op de leterlijke sequenties van reads ge aligned naar een specifieke target, niet hun exacte alignment. Dit model is een eenvoudige generalisatie van eerdere modellen (bijv. PolyBayes, samtools, GATK) die varianten detecteren of rapporteren op basis van alignments. Deze methode vermijdt een van de kernproblemen met alignment-based variant detection--- dat identieke sequenties meerdere mogelijke alignments kunnen hebben.
 
-Voordat de freebayes echt kan
+Voordat de freebayes echt bezig kan moeten er nog wel een paar bestanden aangepast worden.
 
 ```{bash, eval=FALSE}
-/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static -f GCA_000001635.9_GRCm39_genomic.fna \ /students/2024-2025/Thema05/3dconformatieChromatine/aligned_sorted_SRR26980549.bam > \ /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf
+/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static -f GCA_000001635.9_GRCm39_genomic.fna \ /students/2024-2025/Thema05/3dconformatieChromatine/aligned_sorted_SRR26980549.bam > \ 
+/students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf
 ```
 
 De code hier activeert eerst de freebayes door naar het path te gaan waar freebayes is geinstalleerd en deze aan te roepen, -f geeft aan welk referentie genoom freebayes moet gebruiken wij linken hier naar het GCA_000001635.9_GRCm39_genomic.fna ref genoom wat de m39 versie is van het muis genoom. Daarna gaan we naar het aligned_sorted_SRR26980549.bam file, deze file is de ge aligneerde sequence file.
+
+```{bash, eval=FALSE}
+samtools faidx GCA_000001635.9_GRCm39_genomic.fna 
+```
+
+## Week 4
+
+### Annotatie
+
+**Gen annotatie** Eerst is er een .bed bestand van het niet door mensen leesbare .bam bestand gemaakt, daarna zijn de genen geannoteerd zodat ze geen namen hebben zoals: SRR26980549.46263152/2 maar .... Met behulp van bamToBed wordt het .bam bestand omgezet naar een .bed (Browser extensible data). De eerste kolom van een .bed bevat de naam van het chromosoom, de tweede kolom het start coördinaat van de feature, de derde kolom het eind coördinaat van de feature, 4e kolom de naam, daarna optioneel een score en dan de streng (-/+). bron: <https://genome.ucsc.edu/FAQ/FAQformat.html>
+
+```{bash, eval=FALSE}
+
+bamToBed -i aligned_sorted_SRR26980549.bam > aligned_sorted_SRR26980549.bed
+
+```
+
+### Visualisatie
+
+```{r, eval=FALSE}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("VariantAnnotation")
+```
 
 # Referenties
