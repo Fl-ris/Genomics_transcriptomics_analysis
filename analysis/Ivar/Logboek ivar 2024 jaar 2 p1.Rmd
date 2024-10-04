@@ -49,7 +49,8 @@ het B compartement is het laagactieve compartiment. Hierin zitten vaak de onderd
 
 ## Vrijdag 
 gezamenlijk de genomics data van ons onderzoek gedownload als SRA files en onze project map neergezet om volgende week uit te pakken zodat we dit kunnen gebruiken in ons onderzoek.
-De SRA[1] files staan in de SRA map "/students/2024-2025/Thema05/3Dchromatine/SRA"
+De SRA files staan in de SRA map "/students/2024-2025/Thema05/3Dchromatine/SRA"
+SRA staat voor Sequence Read Archives het is een ruw data archief voor sequencing bestanden met met een kwaliteits score per sequence zoals fastq bestanden. (https://www.ncbi.nlm.nih.gov/sra/docs/submitformats/).
 
 ## resultaten
 onderzoek links
@@ -94,6 +95,7 @@ FastQC is een kwaliteits controle programma voor sequentie data gegeneerd uit ne
 Het doet dit doormiddel van het analyseren van de fastq file die gegenereerd word door de sequincer. dit bestand bestaad uit een header begginnent met @ gevolgd door een identifier en een optionele input, in de volgende rij komt de sequentie letters. De derde rij begint met een + bevat optioneel de identifier, en de vierde rij bevat een kwaliteit score per base in ASCII caracters aan de hand van hoe zeker de sequencer is per base.
 1 van deze plots die fastqc weergeeft is de "per base sequence quality" dit plot geeft de algemene kwaliteit per nucleotide base weer aan de hand van hoe zeker het sequencer apparaat dit heeft meegegeven in de fastq file.
 Aan de hand hiervan kun je de gemiddelde kwaliteit van jouw sample bestuderen en beslissen of jouw data betrouwbaar is of niet.
+Versie 
 
 #### Uitleg MultiQC
 Het doel van MultiQC is om in 1 bestand een overzicht te krijgen als je meerdere bestanden hebt waarvan je de kwaliteit wil weten, Dit programma maakt hiervoor een overzicht
@@ -106,7 +108,7 @@ Iluminaclip verwijderd adapters en andere ilumina specifieke sequenties van de r
 ### FastQC en MultiQC run 
 Hieronder het automation script voor fastqc run in de fastq map
 
-```{bash, EVAL=FALSE}
+```{r eval=FALSE}
 # getwd
 setwd("/students/2024-2025/Thema05/3dconformatieChromatine/fastq")
 (x = getwd())
@@ -115,7 +117,7 @@ fastqc(fq.dir = x, qc.dir = "/students/2024-2025/Thema05/3dconformatieChromatine
 
 MultiQC command
 
-```{bash, EVAL=FALSE}
+```{bash, eval=FALSE}
 pwd
 cd ../
 cd fastqc_output
@@ -161,14 +163,11 @@ refseq Reference genomes (Mus Muscus)
 FastQC + Multiqc analyse gedaan, bestanden staan in /students/2024-2025/Thema05/3dconformatieChromatine/fastqc_output/
 
 ## Woensdag
-Samen met storm en Jarno aan het automatische bwa-mem commando gewerkt dit duurde lang vanwege problemen in het automatiseren. 
+Het doel van vandaag is samen met storm en Jarno aan het automatische bwa-mem commando werken. 
 
-### BWA-MEM mapping
-*uitvoering hiervan was na het trimmen van de data
-BWA-MEM code van storm yarno floris en ik.
-```{r}
-
-```
+### mapping bijproduct
+Om uit te vinden van wat de 4 eerste samples zijn hadden wij het idee om het sample te mappen tegen een referentie genoom om te kijken wat deze samples zouden kunnen zijn. uiteindelijk hebben wij hier niks mee gedaan vanwege de slechte kwaliteit van deze samples. Dit wordt later in het logboek uitgelegt.
+Gezamenlijk zijn wij bezig geweest met het BWA-MEM commando en hebben dit ook gerunt. maar vervolgens hebben wij hier niks me gedaan. de uitleg hiervoor komt later in het bestand
 
 
 ## Vrijdag
@@ -182,7 +181,7 @@ standaard
 
 Trimmomatic command
 
-```{bash EVAL=FALSE}
+```{bash eval=FALSE}
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | \
   parallel 'TrimmomaticPE -threads 80 ' \
                   '/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq ' \
@@ -228,21 +227,40 @@ De hoeveelheid duplicaties kan hiermee deels verklaart worden.
 Zoals hier te zien is de gemiddelde kwaliteit van deze samples wel goed het piek omhoog aan het eind is resultaat van het trimmen.
 
 ![general stats](../Logboek_recources/fastqc/multiqc_trimd_leng_distri.png)
-Het opvallende hier is dat er een piek aan het begin bij circa 10 readlengt. dit hoort niet te kunnen aangezien hij alle reads onder 40 in lengte had moeten verwijderen. 
+Het opvallende hier is dat er een piek aan het begin bij circa 10 readlengt. dit hoort niet te kunnen aangezien hij alle reads onder 40 in lengte door trimmomatic had moeten verwijderen. Trimmomatic had ook geen error aangegeven dat het minlen argument was gefaald of niet gevonden was.
 
 ![general stats](../Logboek_recources/fastqc/multiqc_trimd_cg_content.png)
+Het CG plot geeft een waarschuwing aan omdat het cg percentage een beetje afwijkt van een normaal verdeling heeft.
+Aangezien er geen scherpe pieken zijn in deze grafiek betekent het dat de samples in elk geval niet gecontamineerd zijn. 
+Voor het trimmen gaven deze samples ook al een waarschuwing van fastqc vanwege de afwijking in deviatie. Zoals ik bij de de standaard statistiek plot heb uitgezocht ben ik van mening dat ook al is de grafiek niet netjes denk ik dat het niet een significant probleem is voor ons verdere onderzoek.
 
 Overrepresented sequences
+Hier is geen plot voor maar het gaf een waarschuwing aan bij de 4 reverse paired reads. hier zal ik morgen naar kijken en eventueel met ronald overleggen omdat ik het raar vind dat dit alleen voorkomt bij de reverse paired reads.
+
+Adapter content
+hier is ook geen plot meer voor omdat er geen adapters meer gevonden zijn.  
 
 ## Dinsdag
-overleg met ronald over onderzoeksvraag en commentaar op fastq data en logboek
+Het doel van vandaag is overleggen met Ronald over onze onderzoeksvraag en commentaar op de fastqc data.
 
-via floris bwa gerund en via jarno freebayes zie hun logboek
+### Commentaar Fastqc
+multiqc overrepresentive sequences. 
+Na het bekijken van de individuele fastqc bestanden blijkt dat alle reverse read samples een overrepresentatie hebben van een verlengde GGGGGGG van varieërende lengtes. 
+Volgens Ronald kan dit een echt stuk genoom zijn of pcr artifact.
+Ik heb 1 van de sequences geblast via (https://blast.ncbi.nlm.nih.gov/Blast.cgi) door de volgende databases (Mus Muscus):
+Core nucleotide database.
+Nucleotide collections.
+Bij beide databases was er geen match en een globale google search om te kijken of er een lange ggg repeat sequentie in het genoom van een muis zit leverde ook geen informatie op.
+Dit samen met het feit dat dit deze sequentie alleen wordt aangegeven op de reverse pair reads concludeer ik dat dit hoogstwaarschijnlijk een mechanische fout heeft plaats gevonden tijdens het sequencen.
 
-multiqc overrepresentive kan echt stuk genoom zijn of pcr artifact
-blast gggggggggggggggg overreppentive sequince in alle reverse reads
-Core nucleotide database
-Nucleotide collections geen match
+### Onderzoeksvraag
+Als groep hadden wij tot vandaag nog geen onderzoeksvraag. Na overleg met Ronald zijn wij op het volgende gekomen. 
+"Zijn er genetische varianten te vinden in het embf1 en pax5 gen te vinden dat het vorige onderzoek kan beinvloeden" die in het genoom van rag2(-/-) muizen
+
+### BWA mapping
+via Floris bwa gerund en via Jarno freebayes zie hun logboek
+
+### Freebayes variant calling
 
 ## woensdag
 logboek review ronald
