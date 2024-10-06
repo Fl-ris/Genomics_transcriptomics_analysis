@@ -175,8 +175,6 @@ Prefetch is deel van de SRA toolkit, dit programma downloads Runs (sequence file
 
 SRA Toolkit Release 3.1.1 is gebruikt. in deze toolkit zitten verschillende tools die gebruikt worden. De reden dat wij deze toolkit gebruiken is omdat deze van NCBI komt dit is ook het platform waarvandaan wij onze data halen dit zou dus het makkelijkste moeten werken.
 
-# Quality control
-
 ## Week 2
 
 ### Doelen van de week
@@ -388,6 +386,101 @@ bwa-mem2 mem ref.fa read1.fq read2.fq > aln-pe.sam
 
 ```
 
+Bij deze indexering is een aligned bestand verkegen wat een .sam file is, dit bestand is tekst met een header en een alignment deel. Deze file heeft de sequenties die aligned zijn tegen het refentie sequentie opgeslagen. Omdat de .SAM niet georderd zijn op positie in het genoom moeten ze eerst met samtools sort omgezet worden naar een .BAM bestand (kijk naar het logboek van floris voor een diepere uitleg) de reden om dit te doen is dat het opvragen van data sneller gemaakt word als het geïndexeerd is.
+
+Samtools versie 1.16.1 is gebruikt dit is een collectie van tools om high-throughpout sequence data te werken. Het kan verschillende dingen zoals WGS/WES mapping naar variant calls en het filteren van .vcf bestanden.
+
+Bron: <http://www.htslib.org/doc/samtools-sort.html>
+
+-O BAM geeft het format aan, samtools sort -n zorgt dat de .sam gesorteerd worden op read naam (De QNAME kolom in het bestand)
+
+*Deze code is geschreven door floris*
+
+```{bash, eval=FALSE}
+# Voor een enkel sample:
+samtools sort -n -O BAM -o aligned_sorted_SRR26980549.bam aligned_SRR26980549.sam
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools sort -n -O BAM -o aligned_sorted_{}.bam aligned_{}.sam ' &
+
+```
+
+"fixmate -m" voegt mate score tags toe die gebruikt worden door markdup om de beste reads te selecteren om te houden.
+
+Met "—Threads" wordt het aantal threads gespecificeerd dat de computer moet gebruiken voor dit commando.
+
+Bron: <http://www.htslib.org/doc/samtools-markdup.html>
+
+*Deze code is geschreven door floris*
+
+```{bash, eval=FALSE}
+# Voor een enkel sample:
+samtools fixmate -m --threads 16 aligned_sorted_SRR26980549.bam \ fixed_mates_aligned_sorted_SRR26980549.bam
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools fixmate -m --threads 16 aligned_sorted_{}.bam fixed_mates_aligned_sorted_{}.bam' &
+
+
+```
+
+Met samtools markdup worden duplicaten gemarkeerd. Met het "-r" argument worden deze verwijderd en met "-s" worden statistieken over de data en uitgevoerde handelingen.
+
+Bron: <http://www.htslib.org/doc/samtools-markdup.html>
+
+```{bash, eval=FALSE}
+# Voor een enkel sample:
+samtools markdup -r -s sorted_coordinates_SRR26980549.bam dedup_SRR26980549.bam
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel  'samtools markdup -r -s sorted_coordinates_{}.bam dedup_{}.bam' &
+
+```
+
+Met samtools index wordt er een index bestand gemaakt.
+
+```{bash, eval=FALSE}
+# Voor een enkel sample:
+samtools index dedup_SRR26980549.bam dedup_SRR26980549.bai  &
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools index dedup_{}.bam dedup_{}.bai' &
+
+```
+
+Bron: <https://github.com/freebayes/freebayes> Met behulp van het onderstaande stuk code worden de resulaten van de freebayes variant calling direct gefilterd op kwaliteit met vcffilter. Met "QUAL = 20" worden enkel de variants geselecteerd die 99% kans hebben dat er een variant zit op die plaats.
+
+```{bash, eval=FALSE}
+# Voor een bestand:
+/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_SRR26980549.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 20" > filtered_SRR26980549.vcf
+ 
+ 
+# Met parallel: 
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_{}.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 20" > filtered_{}.vcf' &
+```
+
+Filteren van varianten:
+
+```{bash, eval=F}
+/students/2024-2025/Thema05/3dconformatieChromatine/vcffilter
+```
+
+```{bash, eval=FALSE}
+library(fastqcr)
+
+```
+
+Om alle paired read samples te mappen is het onderstaande bash script gebruikt. Hier is weer het parallel commando voor gebruikt. De lijst met sample namen wordt aan bwa-mem2 gegeven zodat het programma naar input bestanden met deze namen kan kijken en de gegenereerde .sam bestanden ook deze naam te geven.
+
+```{bash, eval=FALSE}
+
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 60 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_2.fastq > /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam' &
+
+```
+
+# CODE UITLEGGEN!
+
 # Data Trimming
 
 ## Week 3
@@ -489,8 +582,11 @@ De reden waarom wij bwa-mem2 gebruiken en niet STAR is omdat bwa-mem2 beter is v
 
 #### Converteer SAM naar BAM
 
-```{r}
-aligned_SRR26980549.sam
+```{bash, eval=FALSE}
+samtools sort -n -O BAM -o aligned_sorted_SRR26980549.bam aligned_SRR26980549.sam
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel samtools sort -n -O BAM -o aligned_sorted_{}.bam aligned_{}.sam  &
 
 ```
 
@@ -527,6 +623,8 @@ bamToBed -i aligned_sorted_SRR26980549.bam > aligned_sorted_SRR26980549.bed
 
 ```
 
+#### 
+
 ### Visualisatie
 
 ```{r, eval=FALSE}
@@ -534,6 +632,136 @@ if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
 BiocManager::install("VariantAnnotation")
+```
+
+# Stap 1
+
+```{bash, eval=FALSE}
+# Hier wil ik dat prefetch in de map te kijken SRA voor de gedownloade SraAccList deze wordt gebruikt om de files die ik wil te zoeken in de NCBI database
+prefetch $(</students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv) --output-directory \
+/students/2024-2025/Thema05/3dconformatieChromatine/SRA/ --max-size 200G
+
+```
+
+# Stap 2
+
+```{bash, extract_fastq_subset, eval=FALSE}
+find /students/2024-2025/Thema05/3dconformatieChromatine/SRA/ -name "*.sra" | \
+  parallel fasterq-dump -O /students/2024-2025/Thema05/3dconformatieChromatine/fastq/ {}
+```
+
+#  Stap 3
+
+```{bash, eval=FALSE}
+
+#Hier wordt de working directory gezet, dit wordt gedaan met setwd
+setwd("/students/2024-2025/Thema05/3dconformatieChromatine/fastq")
+(x = getwd())
+#Hier wordt fastqc uitgevoerd op fq.dir = x, x is de eerder gezette wd. 
+fastqc(fq.dir = x, qc.dir = "/students/2024-2025/Thema05/3dconformatieChromatine/fastqc_output/", fastqc.path = "/usr/bin/fastqc", threads = 100)
+#ook wordt de output gezet via het qc.dir commando, waar fastqc staat word ook aangegeven met fastqc.path. Als laatste word de threads command gebruikt om aan te geven hoeveel threads gebruikt mogen worden.
+```
+
+# Stap 4 - test data
+
+```{bash, eval=FALSE}
+
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
+
+seqkit head -n 10000 SRR26980527_1.fastq > subset_SRR26980527_1.fastq
+seqkit head -n 10000 SRR26980527_2.fastq > subset_SRR26980527_2.fastq
+
+#Code voor op de bin PC
+cd /students/2024-2025/Thema05/3D_Chromatine_Conformatie/DNA/SRA
+
+# Eerst hebben we geprobeerd om "sample" te gebruiken in plaats van head
+seqkit sample -p SRR26980527_1.fastq > subset_SRR26980527_1.fastq
+
+# Dit werkte echter niet heel goed dus hebben we uiteindelijk head gevonden en gebruikt
+
+seqkit head -n 10000 SRR26980527_1.fastq > subset_SRR26980527_1.fastq
+
+```
+
+# Stap 5 - gen aligneren
+
+```{bash, eval=FALSE}
+
+
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
+
+
+# Het indexeren van het referentiegenoom met bwa-mem2. 
+bwa-mem2 index -p testnaam referentiegenoom
+
+# Voorbeeld aligning:
+bwa-mem2 mem ref.fa read1.fq read2.fq > aln-pe.sam
+
+# Align sample SRR26980549_1.fastq (deel 1 en 2) met het referentiegenoom mm39 muis. 
+./bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -p 60 testnaam fastq/SRR26980549_1.fastq fastq/SRR26980549_2.fastq > aligned_SRR26980549.sam &
+
+# find /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA -name "*.sra" | \
+#   parallel fasterq-dump -O /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/FASTQ {}
+```
+
+# Stap 6 gen - sam file verwerken
+
+```{bash, eval=FALSE}
+# Voor een enkel sample:
+samtools sort -n -O BAM -o aligned_sorted_SRR26980549.bam aligned_SRR26980549.sam
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools sort -n -O BAM -o aligned_sorted_{}.bam aligned_{}.sam ' &
+
+```
+
+```{bash, eval=FALSE}
+# Voor een enkel sample:
+samtools fixmate -m --threads 16 aligned_sorted_SRR26980549.bam \ fixed_mates_aligned_sorted_SRR26980549.bam
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools fixmate -m --threads 16 aligned_sorted_{}.bam fixed_mates_aligned_sorted_{}.bam' &
+
+```
+
+```{bash, eval=FALSE}
+# Voor een enkel sample:
+samtools markdup -r -s sorted_coordinates_SRR26980549.bam dedup_SRR26980549.bam
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel  'samtools markdup -r -s sorted_coordinates_{}.bam dedup_{}.bam' &
+
+```
+
+```{bash, eval=FALSE}
+# Voor een bestand:
+/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_SRR26980549.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 20" > filtered_SRR26980549.vcf
+ 
+ 
+# Met parallel: 
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_{}.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 20" > filtered_{}.vcf' &
+```
+
+```{bash, eval=FALSE}
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 60 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_2.fastq > /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam' &
+```
+
+# Stap 7 - Trimmen
+
+```{bash, eval=FALSE}
+cat data/GSE149995_Sra_RunInfo.csv | \   parallel 'TrimmomaticPE -threads 16 ' \                   '/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}.fastq.gz ' \                   '/students/2024-2025/Thema05/3dconformatieChromatine/fastq-trimmed/{}.trimmed.fastq.gz ' \                   'ILLUMINACLIP:/homes/marcelk/Development/2.1.2-Transcriptomics/TruSeq3-SE.fa:2:30:10 ' \                   'MINLEN:40 ' \                   'SLIDINGWINDOW:4:20'
+```
+
+# Stap 8 - 2de Fastqc
+
+![](images/clipboard-3331623255.png)
+
+# Stap 9 - Alignen Data
+
+```{bash, eval=FALSE}
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel /students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 50 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_forward_paired.fastq /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_rev_paired.fastq > /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam &
 ```
 
 # Referenties
