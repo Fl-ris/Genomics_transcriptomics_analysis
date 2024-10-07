@@ -11,7 +11,7 @@
 
 <meta name="author" content="Floris Menninga" />
 
-<meta name="date" content="2024-10-04" />
+<meta name="date" content="2024-10-07" />
 
 <title>Genomics en Transcriptomics analyse muis B-cellen</title>
 
@@ -253,6 +253,29 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
 
 
 
@@ -353,15 +376,21 @@ display: none;
 <h1 class="title toc-ignore">Genomics en Transcriptomics analyse muis
 B-cellen</h1>
 <h4 class="author">Floris Menninga</h4>
-<h4 class="date">2024-10-04</h4>
+<h4 class="date">2024-10-07</h4>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#kwaliteitscontrole-vcf-bestanden" id="toc-kwaliteitscontrole-vcf-bestanden"><strong>Kwaliteitscontrole vcf
-bestanden:</strong></a></li>
+<li><a href="#trimmen-van-reads" id="toc-trimmen-van-reads">Trimmen van
+reads</a></li>
+<li><a href="#variant-calling-en-filteren-van-varianten" id="toc-variant-calling-en-filteren-van-varianten">Variant calling en
+filteren van varianten:</a></li>
 <li><a href="#annoteren-van-de-.vcf-bestanden" id="toc-annoteren-van-de-.vcf-bestanden"><strong>Annoteren van de .vcf
+bestanden:</strong></a></li>
+<li><a href="#isec" id="toc-isec">Isec</a></li>
+<li><a href="#section" id="toc-section"></a></li>
+<li><a href="#kwaliteitscontrole-vcf-bestanden" id="toc-kwaliteitscontrole-vcf-bestanden"><strong>Kwaliteitscontrole vcf
 bestanden:</strong></a></li>
 <li><a href="#visualisatie-van-de-verkregen-data" id="toc-visualisatie-van-de-verkregen-data"><strong>Visualisatie van de
 verkregen data:</strong></a></li>
@@ -378,7 +407,7 @@ library(tidyverse)
 library(ggplot2)</code></pre>
 <div id="inleiding" class="section level3">
 <h3><strong>Inleiding:</strong></h3>
-<p>Het gekozen artikel: (<a href="https://pubmed.ncbi.nlm.nih.gov/38866970/" class="uri">https://pubmed.ncbi.nlm.nih.gov/38866970/</a>) heeft
+<p>Het gekozen artikel: (<span class="citation">Ma F (<a href="#ref-chromatine_conf">2024</a>)</span>) (<a href="https://pubmed.ncbi.nlm.nih.gov/38866970/" class="uri">https://pubmed.ncbi.nlm.nih.gov/38866970/</a>) heeft
 betrekking tot de verandering in 3d conformatie van chromatine die
 leiden tot verminderde expressie van het gen Ebf1. Uit het onderzoek
 bleek de reden voor deze vermindering migratie van genen naar het B
@@ -390,20 +419,57 @@ cellen. Als dit gen minder tot expressie komt kunnen deze B cellen meer
 eigenschappen van de voorloper cel hebben.</p>
 <hr>
 </div>
+<div id="het-onderzoek" class="section level3">
+<h3><strong>Het onderzoek</strong></h3>
+<p>Het doel van het originele onderzoek (<span class="citation">Ma F (<a href="#ref-chromatine_conf">2024</a>)</span>) was om te achterhalen of
+verschil is in gen expressie van onder andere ebf1 tussen oude en jonge
+muizen. (verminderde interactie tussen ebf1 promoter en zijn
+enhancers)</p>
+<p>Met deze genomics analyze trachten we de volgende onderzoeksvraag te
+beantwoorden: Zijn er varianten aanwezig van PAX5 en Ebf1 in het genoom
+van de rag2(-/-) muizen die gebruikt zijn?</p>
+<p>Deze vraag is relevant omdat voor het transcriptomics gedeelte van
+het onderzoek gekeken wordt naar verschillen in expressie van deze
+genen. Als het blijkt dat er varianten van deze genen aanwezig zijn kan
+het verschil in expressie tussen de muizen die gebruikt zijn in het
+onderzoek niet alleen toegewezen worden aan de factoren waar naar getest
+wordt, de invloed van veroudering op de expressie. Dan zou het ook
+kunnen komen door mutaties van deze genen.</p>
+<p>Er is DNA sequentie data beschikbaar van rag2(-/-) muizen. Daarom kan
+er niet gekeken worden naar mutaties in het rag2 gen omdat deze niet
+meer aanwezig is.</p>
+<p>Rag2 knockout muizen zijn niet in staat om uitgerijpte T en B
+lymfocyten te maken. (<span class="citation">Shinkai Y (<a href="#ref-RAG-2-deficient_mice">1992</a>)</span>)</p>
+<p>Het gen Ebf1 (Early B-cell factor 1) is een gen dat bijdraagt aan de
+differentiatie van voorloper b cellen. (<span class="citation">Nechanitzky (<a href="#ref-EBF1">2013</a>)</span>)</p>
+<p>De reden dat gekozen is voor dit gen is dat het resultaat van een
+verminderde expressie zichtbaar gemaakt kan worden door functieverlies
+van B cellen. Samen met PAX5 werken deze genen aan de uitrijping van
+hematopoetische stam cellen. Functieverlies van PAX5 leidt tot
+accumulatie van snel proliferende lymfoblasten die niet meer normale
+differentiatie kunnen ondergaan. Ook is PAX5 een tumorsuppressor gen
+maar dat is niet van invloed op dit onderzoek. (<span class="citation">Chivukula and Dabbs (<a href="#ref-PAX5">2011</a>)</span>)</p>
+<p><strong>Verschillen tussen het originele onderzoek en dat van
+ons:</strong> In tegenstelling tot de analyses die betrokken zijn bij
+het transcriptomics gedeelte van de analyses hebben de onderzoekers van
+het artikel niet gebruik gemaakt van deze data daarom is er niets om mee
+te vergelijken. Al hebben ze wel een verouderd muis referentiegenoom
+gebruikt (mm10) deze vervangen we door mm39.</p>
+</div>
 <div id="workflow-genomics" class="section level3">
 <h3><strong>Workflow (Genomics):</strong></h3>
 <p>Ondanks dat DNA data onderdeel van de dataset was, staat er in de
 methode/artikel niet wat ze hiermee gedaan hebben. Daarom hebben we
-besloten een variant analyse hierop uit te voeren. Het referentiegenoom
-(muis) zal vergeleken worden met DNA seq data. In het onderzoek was een
-muis genoom versie uit 2012 gebruikt (mm10), deze gaan we vervangen door
-de nieuwste versie (GRCm39). De eerste stap is het downloaden van de
-.SRA archieven die de fastq bestanden bevatten, hier wordt prefetch voor
-gebruikt. Daarna worden deze .SRA’s uitgepakt met behulp van
-fasterq-dump. De nieuw verkregen fastq bestanden kunnen nu op kwaliteit
-gecontroleerd worden met fastqc, hierna worden ze getrimmed met
-trimmomatic en wordt de kwaliteit nogmaals bekeken. Duplicaten kunnen
-verwijderd worden.</p>
+besloten een variant analyse hierop uit te voeren, gericht op de
+volgende genen: PAX5, Ebf1 en FOXO1. Het referentiegenoom (muis) zal
+vergeleken worden met DNA seq data. In het onderzoek was een muis genoom
+versie uit 2012 gebruikt (mm10), deze gaan we vervangen door de nieuwste
+versie (GRCm39). De eerste stap is het downloaden van de .SRA archieven
+die de fastq bestanden bevatten, hier wordt prefetch voor gebruikt.
+Daarna worden deze .SRA’s uitgepakt met behulp van fasterq-dump. De
+nieuw verkregen fastq bestanden kunnen nu op kwaliteit gecontroleerd
+worden met fastqc, hierna worden ze getrimmed met trimmomatic en wordt
+de kwaliteit nogmaals bekeken. Duplicaten kunnen verwijderd worden.</p>
 </div>
 <div id="workflow-transcriptomics" class="section level3">
 <h3><strong>Workflow (Transcriptomics):</strong></h3>
@@ -426,7 +492,9 @@ voor de analyse:</strong> Samtools: 1.16.1</p>
 <div id="log" class="section level3">
 <h3>Log:</h3>
 <p><strong>02-09-2024</strong>:<br />
-Het gekozen artikel: <a href="https://pubmed.ncbi.nlm.nih.gov/38866970" class="uri">https://pubmed.ncbi.nlm.nih.gov/38866970</a> Gene expression
+Het gekozen artikel: Three-dimensional chromatin reorganization
+regulates B cell development during ageing. (<span class="citation">Ma F
+(<a href="#ref-chromatine_conf">2024</a>)</span>) Gene expression
 omnibus: <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE211975" class="uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE211975</a></p>
 </div>
 <div id="sras-downloaden-genomics" class="section level3">
@@ -438,8 +506,7 @@ selectie van SRA’s gemaakt die gedownload moeten worden. Een SRA
 (Sequence Read Archive) is een gecomprimeerd archief dat de sequencing
 reads bevat. Om deze bestanden te downloaden wordt gebruikt gemaakt van
 “prefetch”, deze commandline tool is onderdeel van de SRA toolkit.</p>
-<p><br />
-In de volgende stap worden deze bestanden uitgepakt. Het onderstaande
+<p>In de volgende stap worden deze bestanden uitgepakt. Het onderstaande
 stuk code is op mijn computer uitgevoerd en de data is op een externe
 HDD opgeslagen. Dit zelfde is gedaan op de assemblix computer waar de
 andere groepsleden ook bij kunnen. export om de “prefetch” binairy
@@ -483,33 +550,6 @@ find /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA -nam
 
 
 # parallel gebruiken: cat accessionlist.txt | parallel ls -lah SRA/{}/{}.sra</code></pre>
-<p><strong>Onderzoeksvraag Genomics</strong></p>
-<p>De volgende onderzoeksvraag is geformuleerd voor het genomics
-onderzoek:</p>
-<p>Zijn er varianten aanwezig van PAX5 en Ebf1 in het genoom van de
-rag2(-/-) muizen die gebruikt zijn?</p>
-<p>Deze vraag is relevant omdat voor het transcriptomics gedeelte van
-het onderzoek gekeken wordt naar verschillen in expressie van deze
-genen. Als het blijkt dat er variaten van deze genen aanwezig zijn kan
-het verschil in expressie tussen de muizen die gebruikt zijn in het
-onderzoek niet alleen toegewezen worden aan de factoren waar naar getest
-wordt, de invloed van veroudering op de expressie. Dan zou het ook
-kunnen komen door mutaties van deze genen.</p>
-<p>Er is DNA sequentie data beschikbaar van rag2(-/-) muizen. Daarom kan
-er niet gekeken worden naar mutaties in het rag2 gen omdat deze niet
-meer aanwezig is.</p>
-<p>Rag2 knockout muizen zijn niet in staat om uitgerijpte T en B
-lymfocyten te maken. Bron: <a href="https://pubmed.ncbi.nlm.nih.gov/1547487/" class="uri">https://pubmed.ncbi.nlm.nih.gov/1547487/</a></p>
-<p>Het gen Ebf1 (Early B-cell factor 1) is een gen dat bijdraagt aan de
-differentiatie van voorloper b cellen. bron: <a href="https://www.nature.com/articles/ni.2641" class="uri">https://www.nature.com/articles/ni.2641</a></p>
-<p>De reden dat gekozen is voor dit gen is dat het resultaat van een
-verminderde expressie zichtbaar gemaakt kan worden door functieverlies
-van B cellen. Samen met PAX5 werken deze genen aan de uitrijping van
-hematopoetische stam cellen. Functieverlies van PAX5 leidt tot
-accumulatie van snel proliferende lymfoblasten die niet meer normale
-differentiatie kunnen ondergaan. Ook is PAX5 een tumorsuppressor gen
-maar dat is niet van invloed op dit onderzoek.</p>
-<p>bron: <a href="https://www.sciencedirect.com/topics/neuroscience/pax5" class="uri">https://www.sciencedirect.com/topics/neuroscience/pax5</a></p>
 <p><strong>Test data genereren</strong> <strong>16-09-2024</strong></p>
 <p>Om te voorkomen dat een parallel commando na het uitvoeren van een
 lange bewerking een fout of onverwacht resultaat geeft moet er eerst een
@@ -524,19 +564,12 @@ ander path naar de data. Voor het maken van deze test data is seqkit
 (versie 2.3.0) gebruikt.</p>
 <p>Seqkit kan gebruikt worden voor meerdere bewerkingen zoals het
 filteren van sequenties op lengte / kwaliteit, DNA/RNA translateren naar
-een aminozuur sequentie. bron: <a href="https://bioinf.shenwei.me/seqkit/" class="uri">https://bioinf.shenwei.me/seqkit</a>/</p>
+een aminozuur sequentie. bron: <a href="https://bioinf.shenwei.me/seqkit" class="uri">https://bioinf.shenwei.me/seqkit</a></p>
 <pre class="bash"><code>
 cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
 
 seqkit head -n 1000000 SRR26980527_1.fastq &gt; subset_SRR26980527_1.fastq
 seqkit head -n 1000000 SRR26980527_2.fastq &gt; subset_SRR26980527_2.fastq
-</code></pre>
-<pre class="bash"><code>
-fastqc 
-
-multiqc
-
-seqkit (voor maken van subset van test data)
 </code></pre>
 <p><strong>Gebruikte samples</strong> <strong>17-09-2024</strong></p>
 <p>Na het controle van de kwaliteit van de fastq bestanden bleek het dat
@@ -582,10 +615,29 @@ bwa-mem2 index -p testnaam referentiegenoom
 bwa-mem2 mem ref.fa read1.fq read2.fq &gt; aln-pe.sam
 
 # Align sample SRR26980549_1.fastq (deel 1 en 2) met het referentiegenoom mm39 muis. 
-./bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -p 60 testnaam fastq/SRR26980549_1.fastq fastq/SRR26980549_2.fastq &gt; aligned_SRR26980549.sam &amp;
+./bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 40 testnaam fastq/SRR26980549_1.fastq fastq/SRR26980549_2.fastq &gt; aligned_SRR26980549.sam &amp;
 
-# find /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA -name &quot;*.sra&quot; | \
-#   parallel fasterq-dump -O /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/FASTQ {}
+# Met parallel: 
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;./bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 40 testnaam fastq/{}_1.fastq fastq/{}_2.fastq &gt; BWA_aligned_output/aligned_{}.sam&#39; &amp;
+</code></pre>
+</div>
+<div id="trimmen-van-reads" class="section level2">
+<h2>Trimmen van reads</h2>
+<pre class="bash"><code>
+cat data/GSE149995_Sra_RunInfo.csv | \
+  parallel &#39;TrimmomaticPE -threads 16 &#39; \
+                  &#39;/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}.fastq.gz &#39; \
+                  &#39;/students/2024-2025/Thema05/3dconformatieChromatine/fastq-trimmed/{}.trimmed.fastq.gz &#39; \
+                  &#39;ILLUMINACLIP:/students/2024-2025/Thema05/3dconformatieChromatineTrimmomatic/adapters/TruSeq3-SE.fa:2:30:10 &#39; \
+                  &#39;MINLEN:40 &#39; \
+                  &#39;SLIDINGWINDOW:4:20&#39;
+</code></pre>
+<p><strong>24-09-2024</strong><br />
+Het mappen met behulp van BWA-mem2 is opnieuw uitgevoerd na het trimmen.
+Het referentiegenoom dat in de vorige stap geïndexeerd was wordt weer
+opnieuw gebruikt.</p>
+<pre class="bash"><code>
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 50 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_forward_paired.fastq /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_rev_paired.fastq &gt; /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam&#39; &amp;
 </code></pre>
 <p><strong>14-09-2024</strong><br />
 In tegenstelling tot het artikel gaan we gebruik maken van Muis (<em>Mus
@@ -617,13 +669,14 @@ en het filteren van .vcf bestanden.</p>
 <p>Met samtools sort -n worden de .sam bestanden gesorteerd op read naam
 (De QNAME kolom in het bestand). Ook wordt het bestand geconverteerd van
 .SAM naar .BAM.</p>
-<p>Het format is aangegeven met “-O BAM”</p>
+<p>Het format is aangegeven met “-O BAM” en multithreading wordt
+aangegeven met “-<span class="citation">(<a href="#ref-16"><strong>16?</strong></a>)</span>” (16 threads).</p>
 <p>Bron: <a href="http://www.htslib.org/doc/samtools-sort.html" class="uri">http://www.htslib.org/doc/samtools-sort.html</a></p>
 <pre class="bash"><code># Voor een enkel sample:
-samtools sort -n -O BAM -o aligned_sorted_SRR26980549.bam aligned_SRR26980549.sam
+samtools sort -@40 -n -O BAM -o aligned_sorted_SRR26980549.bam aligned_SRR26980549.sam
 
 # Met parallel:
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;samtools sort -n -O BAM -o aligned_sorted_{}.bam aligned_{}.sam &#39; &amp;
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;samtools sort -@40 -n -O BAM -o samtools_output/aligned_sorted_{}.bam BWA_aligned_output/aligned_{}.sam &#39; &amp;
 </code></pre>
 <p>“fixmate -m” voegt mate score tags toe die gebruikt worden door
 markdup om de beste reads te selecteren om te houden.</p>
@@ -631,17 +684,17 @@ markdup om de beste reads te selecteren om te houden.</p>
 computer moet gebruiken voor dit commando.</p>
 <p>Bron: <a href="http://www.htslib.org/doc/samtools-markdup.html" class="uri">http://www.htslib.org/doc/samtools-markdup.html</a></p>
 <pre class="bash"><code># Voor een enkel sample:
-samtools fixmate -m --threads 16 aligned_sorted_SRR26980549.bam \ fixed_mates_aligned_sorted_SRR26980549.bam
+samtools fixmate -m --threads 40 aligned_sorted_SRR26980549.bam \ fixed_mates_aligned_sorted_SRR26980549.bam
 
 # Met parallel:
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;samtools fixmate -m --threads 16 aligned_sorted_{}.bam fixed_mates_aligned_sorted_{}.bam&#39; &amp;
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;samtools fixmate -m --threads 40 samtools_output/aligned_sorted_{}.bam samtools_output/fixed_mates_aligned_sorted_{}.bam&#39; &amp;
 </code></pre>
 <p>Daarna met “samtools sort” op coördinaten gesorteerd.</p>
 <pre class="bash"><code># Voor een enkel sample:
-samtools sort -o sorted_coordinates_SRR26980549.bam \ fixed_mates_aligned_sorted_SRR26980549.bam
+samtools sort -@80 -o sorted_coordinates_SRR26980549.bam \ fixed_mates_aligned_sorted_SRR26980549.bam
 
 # Met parallel:
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;samtools sort -o sorted_coordinates_{}.bam fixed_mates_aligned_sorted_{}.bam&#39; &amp;
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;samtools sort -@80 -o samtools_output/sorted_coordinates_{}.bam samtools_output/fixed_mates_aligned_sorted_{}.bam&#39; &amp;
 </code></pre>
 <p>Met samtools markdup worden duplicaten gemarkeerd. Met het “-r”
 argument worden deze verwijderd en met “-s” worden statistieken over de
@@ -651,24 +704,34 @@ data en uitgevoerde handelingen.</p>
 samtools markdup -r -s sorted_coordinates_SRR26980549.bam dedup_SRR26980549.bam
 
 # Met parallel:
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel  &#39;samtools markdup -r -s sorted_coordinates_{}.bam dedup_{}.bam&#39; &amp;
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel  &#39;samtools markdup -@80 -r -s samtools_output/sorted_coordinates_{}.bam samtools_output/dedup_{}.bam&#39; &amp;
 </code></pre>
 <p>Met samtools index wordt er een index bestand gemaakt.</p>
 <pre class="bash"><code># Voor een enkel sample:
-samtools index dedup_SRR26980549.bam dedup_SRR26980549.bai  &amp;
+samtools index -@80 dedup_SRR26980549.bam dedup_SRR26980549.bai  &amp;
 
 # Met parallel:
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;samtools index dedup_{}.bam dedup_{}.bai&#39; &amp;
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;samtools index -@80 samtools_output/dedup_{}.bam samtools_output/dedup_{}.bai&#39; &amp;
 </code></pre>
-<p>.</p>
-<pre class="bash"><code>
-freebayes -f ref.fa aln.bam &gt;var.vcf
-</code></pre>
-<p>Bron: <a href="https://github.com/freebayes/freebayes" class="uri">https://github.com/freebayes/freebayes</a> Met behulp van
-het onderstaande stuk code worden de resulaten van de freebayes variant
-calling direct gefilterd op kwaliteit met vcffilter. Met “QUAL = 20”
-worden enkel de variants geselecteerd die 99% kans hebben dat er een
-variant zit op die plaats.</p>
+</div>
+<div id="variant-calling-en-filteren-van-varianten" class="section level2">
+<h2>Variant calling en filteren van varianten:</h2>
+<p><strong>Variant calling met Freebayes:</strong></p>
+<p>Nu er gemapte reads zijn kan er variant calling op uitgevoerd worden.
+Hiermee kunnen mutaties / varianten gedetecteerd en mits ze statistisch
+significant zijn gerapporteerd worden. Dit zou ook grafisch met IGV
+(Genome browser) kunnen maar zou veel meer tijd kosten.</p>
+<p>Voor variant calling is freebayes uitgekozen. Dit is een genetische
+variant detector gemaakt om kleine polymorfismen zoals: SNPs, inserties,
+deleties en MNPs (multi-nucleotide polymorfismes) te herkennen.</p>
+<p>Bron: <a href="https://github.com/freebayes/freebayes" class="uri">https://github.com/freebayes/freebayes</a> Na het uitvoeren
+van het variant calling met freebayes worden de output bestanden, de
+.vcf’s gefilterd door ze in vcffilter te pipen. In dit onderstaande stuk
+code worden de resultaten van de freebayes variant calling direct
+gefilterd op kwaliteit met vcffilter. Met “QUAL = 20” worden enkel de
+variants geselecteerd die 99% kans hebben dat er een variant zit op die
+plaats. De reden dat op kwaliteit gefilterd moet worden is…. (nog
+bedenken.)</p>
 <pre class="bash"><code># Voor een bestand:
 /students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
  -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_SRR26980549.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f &quot;QUAL &gt; 20&quot; &gt; filtered_SRR26980549.vcf
@@ -676,13 +739,21 @@ variant zit op die plaats.</p>
  
 # Met parallel: 
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
- -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_{}.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f &quot;QUAL &gt; 20&quot; &gt; filtered_{}.vcf&#39; &amp;</code></pre>
-<p>Filteren van varianten:</p>
-<pre class="bash"><code>/students/2024-2025/Thema05/3dconformatieChromatine/vcffilter</code></pre>
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna samtools_output/dedup_{}.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f &quot;QUAL &gt; 20&quot; &gt; variant_calling/filtered_{}.vcf&#39; &amp;
+ 
+ # Test zonder filter stap:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna samtools_output/dedup_{}.bam &gt; variant_calling/variants{}.vcf&#39; &amp;</code></pre>
+<p><strong>Filteren:</strong> Met –minQualScore 30 wordt gefilterd op de
+waarschijnlijkheid dat de variant echt aanwezig is. Met de formule P =
+10^(-Q/10) kan de kans uitgerekend worden dat de variant niet echt
+aanwezig is. Met een score van 30 is dit: P = 10^(-Q/10) = 0.001. In
+andere woorden: De kans is 100-0.001 = 99.999% dat het wel klopt.</p>
+<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;java -jar /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -I variant_calling/variants{}.vcf --minQualScore 30 --outputVcf variant_calling/filterd_variant_{}.vcf&#39;</code></pre>
+<p>De .vcf’s zijn nu gefilterd, voorbeeldbestandsnaam:
+filterd_variant_SRR26980549.vcf</p>
 <p><strong>18-09-2024</strong><br />
 </p>
-<pre class="bash"><code>library(fastqcr)
-</code></pre>
 <p>Om alle paired read samples te mappen is het onderstaande bash script
 gebruikt. Hier is weer het parallel commando voor gebruikt. De lijst met
 sample namen wordt aan bwa-mem2 gegeven zodat het programma naar input
@@ -719,34 +790,10 @@ SRR26980552.sam<br />
 <p>De onnodige samples zijn ook verwijderd uit de lijst (SraAccList.csv)
 omdat deze met de pipe operator aan de parallel opdracht gegeven wordt.
 Als de namen in de accession</p>
-<pre class="bash"><code>
-cat data/GSE149995_Sra_RunInfo.csv | \
-  parallel &#39;TrimmomaticPE -threads 16 &#39; \
-                  &#39;/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}.fastq.gz &#39; \
-                  &#39;/students/2024-2025/Thema05/3dconformatieChromatine/fastq-trimmed/{}.trimmed.fastq.gz &#39; \
-                  &#39;ILLUMINACLIP:/students/2024-2025/Thema05/3dconformatieChromatineTrimmomatic/adapters/TruSeq3-SE.fa:2:30:10 &#39; \
-                  &#39;MINLEN:40 &#39; \
-                  &#39;SLIDINGWINDOW:4:20&#39;
-</code></pre>
-<p><strong>24-09-2024</strong><br />
-Het mappen met behulp van BWA-mem2 is opnieuw uitgevoerd na het trimmen.
-Het referentiegenoom dat in de vorige stap geïndexeerd was wordt weer
-opnieuw gebruikt.</p>
-<pre class="bash"><code>
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 50 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_forward_paired.fastq /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_rev_paired.fastq &gt; /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam&#39; &amp;
-</code></pre>
 <p>Feedback: Veel meer uitleg toevoegen, redenen waarom keuzes gemaakt
 zijn. Versies toevoegen van alle gebruikte software. Overal nog bronnen
 toevoegen. redenen waarom voor specifieke software gekozen is
 toevoegen.</p>
-<p><strong>Variant calling met Freebayes:</strong></p>
-<p>Nu er gemapte reads zijn kan er variant calling op uitgevoerd worden.
-Hiermee kunnen mutaties / varianten gedetecteerd en mits ze statistisch
-significant zijn gerapporteerd worden. Dit zou ook grafisch met IGV
-(Genome browser) kunnen maar zou veel meer tijd kosten.</p>
-<p>Voor variant calling is freebayes uitgekozen. Dit is een genetische
-variant detector gemaakt om kleine polymorfismen zoals: SNPs, inserties,
-deleties en MNPs (multi-nucleotide polymorfismes) te herkennen.</p>
 <p>Voordat freebayes uitgevoerd kan worden moet het referentiegenoom
 weer geïndexeerd worden, net als met BWA-mem2 index maar dan met
 samtools faidx zoals in de onderstaande code chunk beschreven is.</p>
@@ -758,40 +805,125 @@ vervolgens de freebayes variant calling uitgevoerd.</p>
 <pre class="bash"><code>
 /students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static -f GCA_000001635.9_GRCm39_genomic.fna \ /students/2024-2025/Thema05/3dconformatieChromatine/aligned_sorted_SRR26980549.bam &gt; \ /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf
 </code></pre>
-<p><strong>Gen annotatie</strong> Eerst is er een .bed bestand van het
-niet door mensen leesbare .bam bestand gemaakt, daarna zijn de genen
-geannoteerd zodat ze geen namen hebben zoals: SRR26980549.46263152/2
-maar …. Met behulp van bamToBed wordt het .bam bestand omgezet naar een
-.bed (Browser extensible data). De eerste kolom van een .bed bevat de
-naam van het chromosoom, de tweede kolom het start coördinaat van de
-feature, de derde kolom het eind coördinaat van de feature, 4e kolom de
-naam, daarna optioneel een score en dan de streng (-/+). bron: <a href="https://genome.ucsc.edu/FAQ/FAQformat.html" class="uri">https://genome.ucsc.edu/FAQ/FAQformat.html</a></p>
+</div>
+<div id="annoteren-van-de-.vcf-bestanden" class="section level2">
+<h2><strong>Annoteren van de .vcf bestanden:</strong></h2>
+<p>We hebben nu een serie grote bestanden die het verschil beschrijven
+tussen onze samples en het referentiegenoom van de muis (mm39). Om
+vragen te kunnen beantwoorden zoals: zit de mutatie in een gen, in een
+exon, veranderd het eiwit er door of maakt de variant een stopcodon.
+(nonsense mutatie). Om dit achterhalen moeten de .vcf bestanden
+geannoteerd worden, hier wordt SnpEff (<span class="citation">Cingolani
+et al. (<a href="#ref-SnpEff">2012</a>)</span>) voor gebruikt. Aan de
+hand van een referentiedatabase die gedownload kan worden met SnpEff kan
+een .vcf geannoteerd worden.</p>
+<p>Deze databases zijn voor 38000 genomen gemaakt maar het is ook
+mogelijk om deze zelf te maken. Met een bekend model organisme zoals de
+muis (<em>Mus musculus</em>) zou dit niet hoeven maar tijdens het
+uitvoeren van SnpEff bleek dat de nieuwste mm39 database niet gedownload
+kon worden. Tenzij we een oude versie zoals mm10 willen gebruiken moeten
+we zelf een database hiervoor maken.</p>
+<p>De genen worden ook geannoteerd zodat ze geen namen hebben zoals
+SRR26980549.46263152/2 maar bijvoorbeeld: EBF1.</p>
+<p>Over zicht van enkele mutaties die met SnpEff gedetecteerd kunnen
+worden: (afkomstig van de SnpEff website)</p>
+<table>
+<colgroup>
+<col width="23%" />
+<col width="36%" />
+<col width="40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Soort mutatie:</th>
+<th>Betekenis:</th>
+<th>Voorbeeld:</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SNP</td>
+<td>Single-Nucleotide Polymorphism</td>
+<td>Reference = ‘A’, Sample = ‘C’</td>
+</tr>
+<tr class="even">
+<td>Ins</td>
+<td>Insertion</td>
+<td>Reference = ‘A’, Sample = ‘AGT’</td>
+</tr>
+<tr class="odd">
+<td>Del</td>
+<td>Deletion</td>
+<td>Reference = ‘AC’, Sample = ‘C’</td>
+</tr>
+<tr class="even">
+<td>MNP</td>
+<td>Multiple-nucleotide polymorphism</td>
+<td>Reference = ‘ATA’, Sample = ‘GTC’</td>
+</tr>
+<tr class="odd">
+<td>MIXED</td>
+<td>Multiple-nucleotide and an InDel</td>
+<td>Reference = ‘ATA’, Sample = ‘GTCAGT’</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Converteren van .bam naar .bed</strong></p>
+<p>Eerst is er een .bed bestand van het niet door mensen leesbare .bam
+bestand gemaakt, de leesbare tegenhanger hiervan is .sam maar voor
+sommige analyses in R is een .bed bestand handiger.</p>
+<p>Met behulp van bamToBed wordt het .bam bestand omgezet naar een .bed
+(Browser extensible data). De eerste kolom van een .bed bevat de naam
+van het chromosoom, de tweede kolom het start coördinaat van de feature,
+de derde kolom het eind coördinaat van de feature, 4e kolom de naam,
+daarna optioneel een score en dan de streng (-/+). bron: <a href="https://genome.ucsc.edu/FAQ/FAQformat.html" class="uri">https://genome.ucsc.edu/FAQ/FAQformat.html</a></p>
 <pre class="bash"><code>
-bamToBed -i aligned_sorted_SRR26980549.bam &gt; aligned_sorted_SRR26980549.bed
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;bamToBed -i dedup_{}.bam &gt; dedeup_{}.bed&#39;
 </code></pre>
-<p><strong>Sequence depth vaststellen:</strong> Om te achterhalen wat de
-coverage is, is het volgende bash commando uitgevoerd:</p>
+<p>Voordat bcftools isec uitgevoerd kan worden moeten de vcf bestanden
+gecomprimeerd worden met bgzip.</p>
+<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;bgzip filterd_variant_{}.vcf&#39;
+</code></pre>
+<p>Daarna, om de vervolg processen sneller te maken (en omdat isec
+anders een foutmelding geeft) moet een index bestand gemaakt worden.
+Hier wordt “tabix” voor gebruikt. Het onderstaande commando gebruikt de
+net gemaakte bgzip gecomprimeerde bestanden van de .vcf als input.</p>
 <pre class="bash"><code>
-samtools depth -a aligned_sorted_SRR26980549.bam &gt; depth_output.txt
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;tabix -p vcf filterd_variant_{}.vcf.gz&#39;
+</code></pre>
+<pre><code>## cat: /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv: Bestand of map bestaat niet</code></pre>
+</div>
+<div id="isec" class="section level2">
+<h2>Isec</h2>
+<p>Er zijn vier biologische replicaten, met behulp van “bcftools isec -c
+all” worden enkel de varianten die in alle vier de muizen aanwezig zijn
+geselecteerd. Hierdoor worden veel “willekeurige” mutaties er uit
+gefilterd die niet in alle vier de samples aanwezig waren. Bron: <a href="https://samtools.github.io/bcftools/bcftools.html" class="uri">https://samtools.github.io/bcftools/bcftools.html</a> In het
+onderstaande code chunk wordt bcftools isec uitgevoerd met argumenten:
+“-c all” dit betekend dat alle varianten die overeen komen tussen de
+vier samples in het output bestand opgeslagen moeten worden.</p>
+<pre class="r"><code>bcftools isec -c all filterd_variant_SRR26980549.vcf.gz filterd_variant_SRR26980550.vcf.gz filterd_variant_SRR26980551.vcf.gz filterd_variant_SRR26980552.vcf.gz &gt; isec.vcf</code></pre>
+</div>
+<div id="section" class="section level2">
+<h2></h2>
+<p>Het onderstaande script was eerst uitgevoerd met mm39 als
+referentiegenoom voor de annotatie maar dit gaf een foutmelding (Op de
+github pagina van het programma snpEff waren er meer meldingen van dit
+gedrag. <a href="https://github.com/pcingola/SnpEff/issues/536" class="uri">https://github.com/pcingola/SnpEff/issues/536</a>) dus is
+het opnieuw uitgevoerd met het oude mm10 referentiegenoom. Dit is het
+zelfde referentiegenoom dat ook het artikel gebruikt was.</p>
+<pre class="bash"><code># Test:
+/students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 filtered_variants.vcf &gt; annotated_variants.vcf
+
+# Voor alle .vcf bestanden:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/filterd_variant_{}.vcf &gt; /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants_{}.vcf&#39;
+
+# Alleen het isec .vcf bestand:
+java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf &gt; /students/2024-2025/Thema05/3dconformatieChromatine/annotated_isec.vcf
 </code></pre>
 </div>
 <div id="kwaliteitscontrole-vcf-bestanden" class="section level2">
 <h2><strong>Kwaliteitscontrole vcf bestanden:</strong></h2>
-</div>
-<div id="annoteren-van-de-.vcf-bestanden" class="section level2">
-<h2><strong>Annoteren van de .vcf bestanden:</strong></h2>
-<p>Het onderstaande script was eerst uitgevoerd met mm39 als
-referentiegenoom voor de annotatie maar dit gaf een foutmelding (Op de
-github pagina van het programma snpEff waren er meer meldingen van dit
-gedrag.) dus is het opnieuw uitgevoerd met het oude mm10
-referentiegenoom.</p>
-<pre class="bash"><code># Test:
-/students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 filtered_variants.vcf &gt; annotated_variants.vcf
-
-
-java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf &gt; /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants.vcf
-</code></pre>
-<pre class="r"><code>#samtools isec gebruiken.</code></pre>
 </div>
 <div id="visualisatie-van-de-verkregen-data" class="section level2">
 <h2><strong>Visualisatie van de verkregen data:</strong></h2>
@@ -820,6 +952,37 @@ cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomic
 
 prefetch $(&lt;/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/SRR_Acc_List.txt) \
 --output-directory &quot;/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/&quot; --max-size 200G</code></pre>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-PAX5" class="csl-entry">
+Chivukula, Mamatha, and David J. Dabbs. 2011. <span>“Chapter 21 -
+Immunocytology.”</span> In <em>Diagnostic Immunohistochemistry (Third
+Edition)</em>, edited by David J. Dabbs, Third Edition, 890–918.
+Philadelphia: W.B. Saunders. https://doi.org/<a href="https://doi.org/10.1016/B978-1-4160-5766-6.00025-X">https://doi.org/10.1016/B978-1-4160-5766-6.00025-X</a>.
+</div>
+<div id="ref-SnpEff" class="csl-entry">
+Cingolani, P., A. Platts, M. Coon, T. Nguyen, L. Wang, S. J. Land, X.
+Lu, and D. M. Ruden. 2012. <span>“A Program for Annotating and
+Predicting the Effects of Single Nucleotide Polymorphisms, SnpEff: SNPs
+in the Genome of Drosophila Melanogaster Strain W1118; Iso-2;
+Iso-3.”</span> <em>Fly</em> 6 (2): 80–92.
+</div>
+<div id="ref-chromatine_conf" class="csl-entry">
+Ma F, Du H, Cao Y. 2024. <span>“Three-Dimensional Chromatin
+Reorganization Regulates b Cell Development During Ageing.”</span>
+<em>Nat Cell Biol.</em> Jun;26(6) (26): 991–1002. <a href="https://doi.org/10.1038/s41556-024-01424-9">https://doi.org/10.1038/s41556-024-01424-9</a>.
+</div>
+<div id="ref-EBF1" class="csl-entry">
+Nechanitzky, Akbas, R. 2013. <span>“Transcription Factor EBF1 Is
+Essential for the Maintenance of b Cell Identity and Prevention of
+Alternative Fates in Committed Cells.”</span> <em>Nat Immunol</em> 14
+(June): 867–75. https://doi.org/<a href="https://doi.org/10.1038/ni.2641">https://doi.org/10.1038/ni.2641</a>.
+</div>
+<div id="ref-RAG-2-deficient_mice" class="csl-entry">
+Shinkai Y, Lam KP, Rathbun G. 1992. <span>“RAG-2-Deficient Mice Lack
+Mature Lymphocytes Owing to Inability to Initiate v(d)j
+Rearrangement.”</span> <em>Cell</em> 6 (March): 855–67. <a href="https://doi.org/10.1016/0092-8674(92)90029-c.">https://doi.org/10.1016/0092-8674(92)90029-c.</a>
+</div>
+</div>
 </div>
 </div>
 
