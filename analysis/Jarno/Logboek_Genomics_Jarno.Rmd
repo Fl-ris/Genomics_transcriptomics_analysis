@@ -18,9 +18,25 @@ Dit logboek gaat over Genomics en Transcriptomics, De eerste 5 weken focussen we
 
 In het transcriptomics gedeelte wordt hier ook gebruik van gemaakt dus is het goed om te weten of er varianten aanwezig zijn in het genoom van de muizen die voor transcriptomics gebruikt worden (Rag2 knockout).
 
+#### Onderzoeksvraag
+
+**Zijn er varianten aanwezig van PAX5 en Ebf1 in het genoom van de rag2(-/-) muizen die gebruikt zijn?**
+
 ### Workflow
 
 DNA was wel een deel van onze dataset echter is er in het referentie onderzoek ( @Ma2024 ) niet wat er mee gedaan is. Dit is de reden dat we hebben besloten om een variant analyse te doen op de data. Hier gaan we het referentiegenoom van de muis vergelijken met DNA seq data. In het onderzoek is het mm10 genoom gebruikt, dit genoom komt uit 2012 wat dus redelijk oud is en om deze reden vervangen wij dit oude genoom met het nieuwe muis genoom de GRCm39 deze komt uit 2020. De eerste stap is om de .SRA files te downloaden van de archieven, deze bevatten fastq bestamden, prefetch wordt gebruikt hiervoor. Dan worden de .SRA files uitgepakt door het gebruiken van fasterq-dump. Deze fastq files worden door FastQC gehaald om de kwaliteit te checken. De files worden geanalyseerd op kwaliteit en worden hierna getrimmed zo nodig. Duplicaten en adapters worden uit de DNA-seq gehaald en de data wordt gealiëneerd. Daarna wordt freebayes gebruikt om de DNA-seq te vergelijken met het referentie genoom wat dus de variant analyse is. Uit deze variant analyse resultaten wordt een visualisatie gemaakt en een conclusie of er wat gevonden is.
+
+### Het onderzoek
+
+Dit onderzoek focust op variant analyse, hierom is de **onderzoeksvraag** ook: **Zijn er varianten aanwezig van PAX5 en Ebf1 in het genoom van de rag2(-/-) muizen die gebruikt zijn?**
+
+Deze onderzoeksvraag is relevant omdat er in het transcriptomics van het originele onderzoek @Ma2024 gekeken wort naar verschillen in expressie van de genoemde genen. Als er varianten aanwezig blijken te zijn in deze genen kan het verschil in de expressie tussen de muizen die gebruikt zijn in het onderzoek niet alleen aan de geteste factoren toegewezen worden. De invloed van veroudering op expressie is dan niet zeker want de mutaties kunnen ook voor andere werking zorgen van de genen.
+
+Er is alleen DNA sequentie data beschikbaar van de rag(-/-) muizen. Om deze reden kan er niet gekeken worden naar mutaties in het rag2 gen, Deze is dus niet meer aanwezig.
+
+Het Ebf1-gen, ook bekend als Early B-cell factor 1, speelt een cruciale rol in de differentiatie van voorlopercellen van B-lymfocyten. Een verminderde expressie van het Ebf1-gen kan resulteren in functieverlies van B-cellen. In samenwerking met PAX5 zijn deze genen betrokken bij de rijping van hematopoetische stamcellen. Een verlies van functie van PAX5 leidt tot de ophoping van snel delende lymfoblasten die niet in staat zijn tot normale differentiatie.
+
+**Relevantie voor ons onderzoek**, De onderzoekers van het artikel hebben, in tegenstelling tot de analyses die het transcriptomicsgedeelte van de analyse berteffen, geen gebruikgemaakt van deze DNA data en andere gegevens, waardoor er geen vergelijkbare gegevens zijn. Hoewel ze een verouderd muis referentiegenoom (mm10) hebben toegepast, vervangen we dit door mm39.
 
 Hier onder is een overzicht te zien van de Tools die wij gaan gebruiken in ons onderzoek.
 
@@ -151,12 +167,6 @@ Na alle methoden samengevat te hebben gingen wij als groepje kijken naar de mate
 
 -   **Freebayes**: Dit programma kijkt naar de alignement voor afwijkingen met het referentie genoom en geeft deze aan. De reden dat wij freebayes gebruiken is de goede documententatie en het makkelijke installatie proces. De bash scripts voor freebayes zijn makkelijk gemaakt en problemen kunnen snel worden verholpen met de documentatie die op de git staat.
 
-#### Onderzoeksvraag
-
-Onze onderzoeks vraag is : **Zijn er varianten aanwezig van PAX5 en Ebf1 in het genoom van de rag2 knockout muizen die gebruikt zijn?**
-
-Als er varianten aanwezig zijn in het gen kan het zorgen voor problemen tijdens de volwassen wording van de Pro-B cellen waardoor er dus slecht werkende B cellen ontstaan.
-
 #### Download - SRA script met prefetch
 
 Eerst werd ons gevraagd om naar de juiste map te gaan. Dit kan door de terminal te openen naar onze home te gaan en cd naar /students/2024-2025/Thema05/ en hier de map voor ons project aan te maken.\
@@ -197,6 +207,8 @@ SRA Toolkit Release 3.1.1 is gebruikt. in deze toolkit zitten verschillende tool
 Om de SRA data naar fastq om te zetten gebruiken we fasterq-dump. fasterq-dump is een programma in de SRA toolkit, wij gebruiken Release 3.1.1, De reden voor het gebruik van fasterq-dump is de goede documentatie en de link met NCBI waar wij onze files vandaan halen. Fasterq-dump zit ook in de SRA toolkit deze staat geinstalleerd op het systeem dit is makkelijk te doen door naar de git te kijken van Fasterq-dump ook wel de SRA toolkit git.
 
 Fasterq-dump neemt de SRA files en extract de data hiervan naar fastq- of fasta files. in ons geval fastq files.
+
+# Uitleg wat is een fastq bestand
 
 De code hieronder zoekt eerst in de SRA map naar files met een filenaam die eindigt op .sra
 
@@ -277,11 +289,18 @@ fastqc(fq.dir = x, qc.dir = "/students/2024-2025/Thema05/3dconformatieChromatine
 
 ```
 
+Hier is de code voor multiqc - geschreven door Ivar & Storm
+
 ```{bash, eval=FALSE}
+#hier staat print working directory
 pwd
+# hier wordt met cd../ gezorgt dat bash 1 directory terug gaat
 cd ../
+# deze cd lijd bash naar fastqc_output
 cd fastqc_output
+# hier wordt de working directory weer geprint
 pwd
+# hier wordt multiqc uitgevoerd op alle bestanden in de fastqc_output
 multiqc .
 ```
 
@@ -463,10 +482,12 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 Filteren van varianten:
 
 ```{bash, eval=F}
+#hier word 
 /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter
 ```
 
 ```{bash, eval=FALSE}
+#hier word de library fastqcr aangeroepen
 library(fastqcr)
 
 ```
@@ -474,10 +495,22 @@ library(fastqcr)
 Om alle paired read samples te mappen is het onderstaande bash script gebruikt. Hier is weer het parallel commando voor gebruikt. De lijst met sample namen wordt aan bwa-mem2 gegeven zodat het programma naar input bestanden met deze namen kan kijken en de gegenereerde .sam bestanden ook deze naam te geven.
 
 ```{bash, eval=FALSE}
-
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 60 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_2.fastq > /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam' &
+#cat concatinate de sraacclist en geeft het mee aan parallel
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv |
+#parallel zorgt dat de tool tegelijkertijd uit gevoerd wordt. hier voert het voor elk sample in de lijst het bw-mem2 commando uit
+parallel '/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 60 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_2.fastq > /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam' &
 
 ```
+
+bwa-mem2 mem roept het programma bwa-mem2 aan dit wordt gebruikt om de illumina sequenties te mappen
+
+-t 60 geeft aan dat het proces 60 threads moet gebruiken om de snelheid te verhogen.
+
+/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}\_1.fastq en /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}\_2.fastq geeft de paths naar de fastq input bestanden weer.
+
+/students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam geeft de path waar de output bestanden heen moeten
+
+& dit zet het hele parallel-proces op de achtergrond zodat de shell beschikbaar is tijdens het proces.
 
 # CODE UITLEGGEN!
 
@@ -519,7 +552,15 @@ cat data/GSE149995_Sra_RunInfo.csv | \
 
 Hier is het bash script te zien dat wij hebben gebruikt om onze data te trimmen. Eerst is de cat command te zien dit is ook wel concatenate dit read de file en print zijn content. Het leest de GSE149995_Sra_RunInfo deze file is belangrijk omdat het metadata bevat over de sequenceing runs die gedowload zijn uit de SRA database, er kunen dingen instaan zoals Sample names, Sequencing platform, Run accesion numbers en nog andere data.
 
-parallel is een command dat trimomatic meerdere cores tegelijk moet gebruiken, dit doen wij omdat het programma dan sneller de data kan verwerken. Met -threads 16 word aangegeven dat het 16 threads mag gebruiken. Met TrimmomaticPE wordt trimmomatic aangeroepen, verder zijn 2 andere belangerijke dingen de { } is om de trimmomatic te automatiseren dit doet hij door alle files in de map fastq te nemen die eindigen met .fastq.gz en de output van trimmomatic naar de fastq-trimmed map te zetten. Het andere belangrijke is de MINLEN en Slidingwindow commando's. Minlen laat de reads vallen wanneer het onder een bepaalde lengte is. Slidingwindow het zorgt ervoor dat trimmomatic snijdt zodra de gemiddelde kwaliteit binnen het venster onder een drempelwaarde komt.
+parallel is een command dat trimomatic meerdere cores tegelijk moet gebruiken, dit doen wij omdat het programma dan sneller de data kan verwerken.
+
+Met -threads 16 word aangegeven dat het 16 threads mag gebruiken.
+
+Met TrimmomaticPE wordt trimmomatic aangeroepen, verder zijn 2 andere belangerijke dingen de { } is om de trimmomatic te automatiseren dit doet hij door alle files in de map fastq te nemen die eindigen met .fastq.gz en de output van trimmomatic naar de fastq-trimmed map te zetten.
+
+Het andere belangrijke is de MINLEN en Slidingwindow commando's. Minlen laat de reads vallen wanneer het onder een bepaalde lengte is.
+
+Slidingwindow het zorgt ervoor dat trimmomatic snijdt zodra de gemiddelde kwaliteit binnen het venster onder een drempelwaarde komt.
 
 Er zijn ook een paar samples niet gebruikt. Dit zijn de: B220+CD43+IgM- sorted primary pro-B cells. Deze samples zijn verkregen met een illumina MiSeq.
 
@@ -580,7 +621,7 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 De reden waarom wij bwa-mem2 gebruiken en niet STAR is omdat bwa-mem2 beter is voor DNA dit is omdat STAR gespecialiseerd is in RNA-seq ook is bwa-mem2 heel accuraat voor DNA sequences allignment, het gaat goed om met mismatches, kleine indels en langere reads. Het voordeel van bwa-mem2 is ook dat het minder zwaar is op de memory van de pc's.
 
-#### Converteer SAM naar BAM
+#### Converteer BAM naar SAM
 
 ```{bash, eval=FALSE}
 samtools sort -n -O BAM -o aligned_sorted_SRR26980549.bam aligned_SRR26980549.sam
@@ -634,7 +675,47 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("VariantAnnotation")
 ```
 
-# Stap 1
+```{r}
+library(VariantAnnotation)
+
+vcf_file <- "/Users/Gebruiker/github_werkmap/Genomics_transcriptomics_analysis/analysis/Jarno/varianten_test.vcf"
+
+vcf_data <- readVcf(vcf_file, genome="GRCh38")
+
+
+head(vcf_data)
+```
+
+```{r}
+library(ggplot2)
+
+
+variable_poisitions <- start(rowRanges(vcf_data))
+
+ggplot(data.frame(variable_poisitions), aes(x = variable_poisitions)) +
+  geom_histogram(binwidth = 1000000, fill = "skyblue", color = "black") +
+  labs(title = "Distriebutie van Variant Positions",
+       x = "Position op het chromosoom",
+       y = "tellingvan Varianten") +
+  theme_minimal()
+```
+
+```{r}
+quality_scores <- qual(vcf_data)
+
+quality_df <- data.frame(quality_scores)
+
+ggplot(quality_df, aes(x = quality_scores)) +
+  geom_histogram(binwidth = 10, fill = "lightblue", color = "black") +
+  labs(title = "Distribution of Quality Scores (QUAL)",
+       x = "Quality Score (QUAL)",
+       y = "Count") +
+  theme_minimal()
+```
+
+# Alle bash code in correcte volgorde
+
+## Stap 1 - Data downloaden
 
 ```{bash, eval=FALSE}
 # Hier wil ik dat prefetch in de map te kijken SRA voor de gedownloade SraAccList deze wordt gebruikt om de files die ik wil te zoeken in de NCBI database
@@ -643,14 +724,14 @@ prefetch $(</students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.c
 
 ```
 
-# Stap 2
+## Stap 2 - Data omzetten naar fastq - fasta
 
 ```{bash, extract_fastq_subset, eval=FALSE}
 find /students/2024-2025/Thema05/3dconformatieChromatine/SRA/ -name "*.sra" | \
   parallel fasterq-dump -O /students/2024-2025/Thema05/3dconformatieChromatine/fastq/ {}
 ```
 
-#  Stap 3
+## Stap 3 - Fastqc uitvoeren
 
 ```{bash, eval=FALSE}
 
@@ -662,7 +743,7 @@ fastqc(fq.dir = x, qc.dir = "/students/2024-2025/Thema05/3dconformatieChromatine
 #ook wordt de output gezet via het qc.dir commando, waar fastqc staat word ook aangegeven met fastqc.path. Als laatste word de threads command gebruikt om aan te geven hoeveel threads gebruikt mogen worden.
 ```
 
-# Stap 4 - test data
+## Stap 4 - test data
 
 ```{bash, eval=FALSE}
 
@@ -683,7 +764,7 @@ seqkit head -n 10000 SRR26980527_1.fastq > subset_SRR26980527_1.fastq
 
 ```
 
-# Stap 5 - gen aligneren
+## Stap 5 - gen aligneren
 
 ```{bash, eval=FALSE}
 
@@ -704,7 +785,7 @@ bwa-mem2 mem ref.fa read1.fq read2.fq > aln-pe.sam
 #   parallel fasterq-dump -O /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/FASTQ {}
 ```
 
-# Stap 6 gen - sam file verwerken
+## Stap 6 gen - sam file verwerken
 
 ```{bash, eval=FALSE}
 # Voor een enkel sample:
@@ -748,17 +829,17 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 60 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_2.fastq > /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam' &
 ```
 
-# Stap 7 - Trimmen
+## Stap 7 - Trimmen
 
 ```{bash, eval=FALSE}
 cat data/GSE149995_Sra_RunInfo.csv | \   parallel 'TrimmomaticPE -threads 16 ' \                   '/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}.fastq.gz ' \                   '/students/2024-2025/Thema05/3dconformatieChromatine/fastq-trimmed/{}.trimmed.fastq.gz ' \                   'ILLUMINACLIP:/homes/marcelk/Development/2.1.2-Transcriptomics/TruSeq3-SE.fa:2:30:10 ' \                   'MINLEN:40 ' \                   'SLIDINGWINDOW:4:20'
 ```
 
-# Stap 8 - 2de Fastqc
+## Stap 8 - 2de Fastqc
 
 ![](images/clipboard-3331623255.png)
 
-# Stap 9 - Alignen Data
+## Stap 9 - Alignen Data
 
 ```{bash, eval=FALSE}
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel /students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 50 testnaam /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_forward_paired.fastq /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_rev_paired.fastq > /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam &
