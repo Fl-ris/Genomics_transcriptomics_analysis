@@ -1,0 +1,27 @@
+---
+title: "Invloed van leeftijd op gen expressie van Ebf1 in muizen"
+author: "F.J.A. Menninga"
+date: "2024-09-12"
+output:
+  ioslides_presentation: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Recap van onderzoek: ##
+- Invloed van 
+- Verschil in gen expressie ebf1 tussen oude en jonge muizen. (verminderde interactie tussen ebf1 promoter en zijn enhancers)
+- Verminderde ebf1 expressie leidt tot functieverlies B cellen.
+- Verplaatsing van het ebf1 gen van compartiment A naar B.
+
+## Experimentele opzet: ##
+RNA-seq:
+- Voorloper B-cellen
+- Twee groepen (jong/oud)
+- Vier muizen per groep
+
+- Illumina NextSeq 500

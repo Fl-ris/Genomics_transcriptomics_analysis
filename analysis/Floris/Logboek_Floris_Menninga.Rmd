@@ -5,6 +5,9 @@ date: "`r Sys.Date()`"
 bibliography: Logboek_Floris_Menninga.bib
 link-citations: true
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
   bookdown::pdf_document2:
     keep_tex: false    
     toc: false      
@@ -12,9 +15,6 @@ output:
     includes:  
         in_header: include_tex_header.tex
   html_document:
-    toc: yes
-    toc_depth: '2'
-  pdf_document:
     toc: yes
     toc_depth: '2'
   word_document:
@@ -54,6 +54,7 @@ Het doel van het originele onderzoek (@chromatine_conf) was om te achterhalen of
 Met deze genomics analyze trachten we de volgende onderzoeksvraag te beantwoorden: Zijn er varianten aanwezig van PAX5 en Ebf1 in het genoom van de rag2(-/-) muizen die gebruikt zijn?
 
 Deze vraag is relevant omdat voor het transcriptomics gedeelte van het onderzoek gekeken wordt naar verschillen in expressie van deze genen.
+
 Als het blijkt dat er varianten van deze genen aanwezig zijn kan het verschil in expressie tussen de muizen die gebruikt zijn in het onderzoek niet alleen toegewezen worden aan de factoren waar naar getest wordt, de invloed van veroudering op de expressie.
 Dan zou het ook kunnen komen door mutaties van deze genen.
 
@@ -79,9 +80,11 @@ Al hebben ze wel een verouderd muis referentiegenoom gebruikt (mm10) deze vervan
 
 Ondanks dat DNA data onderdeel van de dataset was, staat er in de methode/artikel niet wat ze hiermee gedaan hebben.
 Daarom hebben we besloten een variant analyse hierop uit te voeren, gericht op de volgende genen: PAX5, Ebf1 en FOXO1.
+
 Het referentiegenoom (muis) zal vergeleken worden met DNA seq data.
 In het onderzoek was een muis genoom versie uit 2012 gebruikt (mm10), deze gaan we vervangen door de nieuwste versie (GRCm39).
 De eerste stap is het downloaden van de .SRA archieven die de fastq bestanden bevatten, hier wordt prefetch voor gebruikt.
+
 Daarna worden deze .SRA's uitgepakt met behulp van fasterq-dump.
 De nieuw verkregen fastq bestanden kunnen nu op kwaliteit gecontroleerd worden met fastqc, hierna worden ze getrimmed met trimmomatic en wordt de kwaliteit nogmaals bekeken.
 Duplicaten kunnen verwijderd worden.
@@ -89,10 +92,13 @@ Duplicaten kunnen verwijderd worden.
 ### **Workflow (Transcriptomics):**
 
 Net zoals in het originele artikel beschreven was wordt read mapping uitgevoerd met het FASTQ bestand van elk van de samples.
+
 Met het .SAM bestand dat verkregen is werd daarna met FeatureCounts en RSEM de gen expressie gekwantificeerd.
 Deze read mapping was met STAR uitgevoerd maar wij gaan hier HISAT2 voor gebruiken omdat STAR verouderd is volgens het github repo.
+
 FeatureCounts gebruikt namelijk het .SAM (of .BAM) bestand en telt hoeveel reads bij elke "feature" (gen/exon) horen.
 RSEM kan hier ook voor gebruikt worden maar is complexer om te gebruiken dan FeatureCounts.
+
 Dit kan daarna gevisualiseerd worden met R in een box-plot, viool-plot, heatmap, MA-plot etc.
 Ook was er in het artikel gebruik gemaakt van "Cufflinks", deze gaan we vervangen door "StringTie".
 Volgens de website van Cufflinks is StringTie accurater en veel efficiënter.
@@ -109,6 +115,7 @@ Het gekozen artikel: Three-dimensional chromatin reorganization regulates B cell
 
 De eerste stap om een variant calling analyse uit te voeren is het downloaden van de genetische data die verkregen was door het sequencen van de samples.
 Met behulp van de SRA run selector van NCBI is een selectie van SRA's gemaakt die gedownload moeten worden.
+
 Een SRA (Sequence Read Archive) is een gecomprimeerd archief dat de sequencing reads bevat.
 Om deze bestanden te downloaden wordt gebruikt gemaakt van "prefetch", deze commandline tool is onderdeel van de SRA toolkit.
 
@@ -198,7 +205,9 @@ En de volgende samples zijn Rag2(-/-) knockout: SRR26980549, SRR26980550, SRR269
 
 Met enkel een fastq bestand met reads is nog niet duidelijk waar in het genoom van het organisme deze reads kwamen.
 Met read mapping worden de reads vergeleken met een bekend genoom, in dit geval het mm39 muis referentiegenoom en worden de reads er tegen aan gelegd zodat hun locatie in het genoom bekend wordt.
+
 Aangezien er geannoteerde versies van het referentiegenoom zijn, met de namen van de genen kan dan ook achterhaald worden van welke genen de reads deel uitmaken.
+BWA-mem2 is de software die hiervoor gebruikt wordt.
 
 <https://www.ebi.ac.uk/training/online/courses/functional-genomics-ii-common-technologies-and-data-analysis-methods/rna-sequencing/performing-a-rna-seq-experiment/data-analysis/read-mapping-or-alignment/>
 
@@ -206,14 +215,20 @@ bron: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3375638/>
 
 Omdat het programma dat gebruikt gaat worden voor het alignen, BWA-mem2, een geïndexeerde versie van het referentiegenoom nodig heeft moet deze eerst gemaakt worden.
 Dit kan gedaan worden met bwa-mem2 index.
-indexeren maakt het align proces veel sneller.
+Indexeren maakt het align proces veel sneller.
 
 De samples SRR26980528_1 en \_2 zijn gebruikt na het referentiegenoom te indexeren met BWA_MEM2.
 Het gebruikte referentie genoom is mm39 (GCF_000001635.27).
+In het bestand met het referentiegenoom dat gedowload is (<https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001635.27/>) Zijn twee referentiegenomen aanwezig: GCF_000001635.27 en GCA_000001635.9/.
+Het verschil is dat GCF van Refseq is en GCA van GeneBank.
 
-In de onderstaande code chunk wordt het geïndexeerde muisgenoom "testnaam" genoemd.
+We hebben gekozen voor GCF omdat de chromosoom namen die hier gebruikt worden overeen komen met de namen die verwacht worden in de database van SnpEff.
+Hier zijn we achter gekomen door het eerst te indexeren met het Genebank genoom, tijdens de SnpEff annotatie was de foutmelding "ERROR_CHROMOSOME_NOT_FOUND" gegeven.
+
+In de onderstaande code chunk wordt het geïndexeerde muisgenoom "GCF_ref" genoemd.
 Daarna worden twee samples (forward read en reverse read) ge-aligned met het zojuist verkregen geïndexeerde referentiegenoom.
 Deze twee bewerkingen worden beiden met bwa-mem2 uitgevoerd.
+Bwa-mem2 is een snellere versie van bwa-mem.
 
 ```{bash, eval=FALSE}
 
@@ -222,20 +237,48 @@ cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
 
 
 # Het indexeren van het referentiegenoom met bwa-mem2. 
-bwa-mem2 index -p testnaam referentiegenoom
+/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 index -p GCF_ref /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna
 
 # Voorbeeld aligning:
 bwa-mem2 mem ref.fa read1.fq read2.fq > aln-pe.sam
 
 # Align sample SRR26980549_1.fastq (deel 1 en 2) met het referentiegenoom mm39 muis. 
-./bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 40 testnaam fastq/SRR26980549_1.fastq fastq/SRR26980549_2.fastq > aligned_SRR26980549.sam &
+./bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 50 GCF_ref fastq/SRR26980549_1.fastq fastq/SRR26980549_2.fastq > aligned_SRR26980549.sam &
 
 # Met parallel: 
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel './bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 40 testnaam fastq/{}_1.fastq fastq/{}_2.fastq > BWA_aligned_output/aligned_{}.sam' &
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 50 GCF_ref fastq/{}_1.fastq fastq/{}_2.fastq > BWA_aligned_output/aligned_{}.sam' &
 
 ```
 
 ## Trimmen van reads
+
+De verkregen sequence reads, korte sequenties van, in ons geval 150 bp die corresponderen met een deel van een DNA sequentie.
+Het genoom kan niet in zijn geheel gelezen worden door technische beperkingen van de gebruikte machines (Illumina).
+Namate de read langer wordt is de kans dat er fouten gemaakt worden groter, daarom, mits er genoeg reads zijn die het laaste stuk bevatten, kan er een stuk afgeknipt worden.
+Ook moeten de adapters verwijderd worden.
+
+Adapters zijn korte stukken DNA (ongeveer 80bp) die aan DNA linkers die op het oppervlak van de flow cells vast zitten.
+bron: <https://www.lubio.ch/blog/ngs-adapters>
+
+Voor het trimmen maken we gebruik van Trimmomatic.
+In het onderstaande code blok staan de commando's die uitgevoerd worden.
+TrimmomaticPE is de paired-end versie van Trimmomatic.
+Paired end betekend dat er twee reads zijn die in tegengestelde richting gelezen zijn.
+
+Met -threads 16 worden het aantal treads gespecificeerd, hierdoor kunnen er meerdere bewerkingen parallel uitegevoerd worden.
+
+\*\*De argumenten die we gebruiken voor Trimmomatic zijn:\*\*
+
+\*\*MINLIN:40\*\* Dit betekend dat de minimale lengte van de reads 40 baseparen betreft.
+\*\*SLINDINGWINDOW:4:20\*\* Het eerste nummer 4 specificeert de grootte van de sliding window en het tweede, 20 is de vereiste gemiddelde read kwaliteit binnen het window van 4 basen.
+
+Een sliding window is dat er steeds, in dit geval 4 basen bekenen worden en dat er dan 4 naast gepakt worden enz.
+
+ILLUMINACLIP is het path naar een bestand dat adapter sequenties bevat voor Illumina adapters.
+De gebruikte adapter: TruSeq3-SE.fa:2:30:10 De 2:30:10 betekenen het volgende: 2 is de "seed mismatch", het aantal mismatches dat toegestaan is in een sequentie die een adapter kan zijn.
+30 is de "palindrome clip threshold en 10 is de "simple clip threshold", specificeerd hoe accuraat de match tussen de adapter sequentie en de mogenlijke adapter in de read.
+
+Bron: <http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf>
 
 ```{bash, eval=FALSE}
 
@@ -263,6 +306,7 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 **14-09-2024**\
 In tegenstelling tot het artikel gaan we gebruik maken van Muis (*Mus musculus*) referentiegenoom: GRCm39 (GCF_000001635.27) gebruik maken.
 Deze is nieuwer dan versie mm10 die gebruikt was.
+
 Aangezien het onderzoek dit jaar gepubliceerd is en voltooid was in 2022 vraag ik mij af waarom ze voor een versie uit 2012 gekozen hebben terwijl er een nieuwere beschikbaar was.
 
 **.sam bestanden sorteren:** **17-09-2024**
@@ -315,6 +359,7 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 ```
 
 Daarna met "samtools sort" op coördinaten gesorteerd.
+Bij samtools sort moet het aantal treads met -@n aangegeven worden.
 
 ```{bash, eval=FALSE}
 # Voor een enkel sample:
@@ -339,7 +384,7 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 ```
 
-Met samtools index wordt er een index bestand gemaakt.
+Met samtools index wordt er een index bestand gemaakt, dit is in de vorm van een .bai index.
 
 ```{bash, eval=FALSE}
 # Voor een enkel sample:
@@ -356,34 +401,43 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 Nu er gemapte reads zijn kan er variant calling op uitgevoerd worden.
 Hiermee kunnen mutaties / varianten gedetecteerd en mits ze statistisch significant zijn gerapporteerd worden.
-Dit zou ook grafisch met IGV (Genome browser) kunnen maar zou veel meer tijd kosten.
+Dit zou ook grafisch met IGV (Genome browser) kunnen maar zou veel meer tijd kosten om door alle varianten te kammen en te oordelen of ze in exonen liggen van relevante genen.
 
 Voor variant calling is freebayes uitgekozen.
 Dit is een genetische variant detector gemaakt om kleine polymorfismen zoals: SNPs, inserties, deleties en MNPs (multi-nucleotide polymorfismes) te herkennen.
 
-Bron: <https://github.com/freebayes/freebayes> Na het uitvoeren van het variant calling met freebayes worden de output bestanden, de .vcf's gefilterd door ze in vcffilter te pipen.
+Bron: <https://github.com/freebayes/freebayes>
+
+Na het uitvoeren van het variant calling met freebayes worden de output bestanden, de .vcf's gefilterd door ze in vcffilter te pipen.
+
 In dit onderstaande stuk code worden de resultaten van de freebayes variant calling direct gefilterd op kwaliteit met vcffilter.
-Met "QUAL = 20" worden enkel de variants geselecteerd die 99% kans hebben dat er een variant zit op die plaats.
+Met "QUAL = 30" worden enkel de variants geselecteerd die 99.999% kans hebben dat er een variant zit op die plaats.
 De reden dat op kwaliteit gefilterd moet worden is....
 (nog bedenken.)
 
 ```{bash Variant_calling_filtering, eval=FALSE}
 # Voor een bestand:
 /students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
- -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_SRR26980549.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 20" > filtered_SRR26980549.vcf
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_SRR26980549.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 30" > filtered_SRR26980549.vcf
  
  
 # Met parallel: 
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
- -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna samtools_output/dedup_{}.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 20" > variant_calling/filtered_{}.vcf' &
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna samtools_output/dedup_{}.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 30" > variant_calling/filtered_{}.vcf' &
  
  # Test zonder filter stap:
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
  -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna samtools_output/dedup_{}.bam > variant_calling/variants{}.vcf' &
 ```
 
-**Filteren:** Met --minQualScore 30 wordt gefilterd op de waarschijnlijkheid dat de variant echt aanwezig is.
-Met de formule P = 10\^(-Q/10) kan de kans uitgerekend worden dat de variant niet echt aanwezig is.
+Er ging iets verkeerd tijden het pipen (\|) van het resultaat van freebayes in vcffilter ondanks dat dit exacte commando wel op de website van freebayes staat.
+Nu zijn deze twee bewerkingen in twee delen opgesplitst, eerst varianten zoeken met freebayes en daarna filteren met Vcffilter.
+
+**Filteren:**
+
+Met --minQualScore 30 wordt gefilterd op de waarschijnlijkheid dat de variant echt aanwezig is.
+Met de formule P = 10\^(-Q/10) kan de kans uitgerekend worden dat de variant niet echt aanwezig is. p = probability.
+
 Met een score van 30 is dit: P = 10\^(-Q/10) = 0.001.
 In andere woorden: De kans is 100-0.001 = 99.999% dat het wel klopt.
 
@@ -393,10 +447,11 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 De .vcf's zijn nu gefilterd, voorbeeldbestandsnaam: filterd_variant_SRR26980549.vcf
 
-**18-09-2024**\
+**18-09-2024**
 
 Om alle paired read samples te mappen is het onderstaande bash script gebruikt.
 Hier is weer het parallel commando voor gebruikt.
+
 De lijst met sample namen wordt aan bwa-mem2 gegeven zodat het programma naar input bestanden met deze namen kan kijken en de gegenereerde .sam bestanden ook deze naam te geven.
 
 ```{bash, eval=FALSE}
@@ -416,26 +471,24 @@ Deze samples zijn verkregen met een Illumina MiSeq.
 SRR26980527\
 SRR26980528\
 SRR26980529\
-SRR26980530\
+SRR26980530
 
 De reden hiervoor is dat het samples van WT muizen zijn, hier gaan we het referentiegenoom voor gebruiken.
+
 Ook was de kwaliteit van deze sequenties volgens fastqc veel slechter dan die van de onderstaande samples.
 Mogelijk komt dit omdat de reads te lang waren en de kwaliteit daardoor te snel naar beneden ging.
 
 **De volgende zijn wel gebruikt:**\
 Primary pro-B cells by CD19+ selection (Rag2-/-) Deze samples zijn verkregen met een Illumina NovaSeq 6000.
-SRR26980549.sam\
-SRR26980550.sam\
-SRR26980551.sam\
-SRR26980552.sam\
+SRR26980549\
+SRR26980550\
+SRR26980551\
+SRR26980552\
 
 De onnodige samples zijn ook verwijderd uit de lijst (SraAccList.csv) omdat deze met de pipe operator aan de parallel opdracht gegeven wordt.
-Als de namen in de accession
+Als de namen in de accession lijst.
 
-Feedback: Veel meer uitleg toevoegen, redenen waarom keuzes gemaakt zijn.
-Versies toevoegen van alle gebruikte software.
-Overal nog bronnen toevoegen.
-redenen waarom voor specifieke software gekozen is toevoegen.
+**Feedback: Veel meer uitleg toevoegen, redenen waarom keuzes gemaakt zijn. Versies toevoegen van alle gebruikte software. Overal nog bronnen toevoegen. redenen waarom voor specifieke software gekozen is toevoegen.**
 
 Voordat freebayes uitgevoerd kan worden moet het referentiegenoom weer geïndexeerd worden, net als met BWA-mem2 index maar dan met samtools faidx zoals in de onderstaande code chunk beschreven is.
 
@@ -456,13 +509,14 @@ Met het geïndexeerde referentiegenoom (GCA_000001635.9_GRCm39) was vervolgens d
 ## **Annoteren van de .vcf bestanden:**
 
 We hebben nu een serie grote bestanden die het verschil beschrijven tussen onze samples en het referentiegenoom van de muis (mm39).
+
 Om vragen te kunnen beantwoorden zoals: zit de mutatie in een gen, in een exon, veranderd het eiwit er door of maakt de variant een stopcodon.
-(nonsense mutatie).
-Om dit achterhalen moeten de .vcf bestanden geannoteerd worden, hier wordt SnpEff (@SnpEff) voor gebruikt.
+(nonsense mutatie) moeten de .vcf bestanden geannoteerd worden, hier wordt SnpEff (@SnpEff) voor gebruikt.
 Aan de hand van een referentiedatabase die gedownload kan worden met SnpEff kan een .vcf geannoteerd worden.
 
 Deze databases zijn voor 38000 genomen gemaakt maar het is ook mogelijk om deze zelf te maken.
 Met een bekend model organisme zoals de muis (*Mus musculus*) zou dit niet hoeven maar tijdens het uitvoeren van SnpEff bleek dat de nieuwste mm39 database niet gedownload kon worden.
+
 Tenzij we een oude versie zoals mm10 willen gebruiken moeten we zelf een database hiervoor maken.
 
 De genen worden ook geannoteerd zodat ze geen namen hebben zoals SRR26980549.46263152/2 maar bijvoorbeeld: EBF1.
@@ -470,7 +524,7 @@ De genen worden ook geannoteerd zodat ze geen namen hebben zoals SRR26980549.462
 Over zicht van enkele mutaties die met SnpEff gedetecteerd kunnen worden: (afkomstig van de SnpEff website)
 
 | Soort mutatie: | Betekenis:                       | Voorbeeld:                           |
-|-----------------|--------------------------|-----------------------------|
+|-------------------|--------------------------|----------------------------|
 | SNP            | Single-Nucleotide Polymorphism   | Reference = 'A', Sample = 'C'        |
 | Ins            | Insertion                        | Reference = 'A', Sample = 'AGT'      |
 | Del            | Deletion                         | Reference = 'AC', Sample = 'C'       |
@@ -482,6 +536,7 @@ Over zicht van enkele mutaties die met SnpEff gedetecteerd kunnen worden: (afkom
 Eerst is er een .bed bestand van het niet door mensen leesbare .bam bestand gemaakt, de leesbare tegenhanger hiervan is .sam maar voor sommige analyses in R is een .bed bestand handiger.
 
 Met behulp van bamToBed wordt het .bam bestand omgezet naar een .bed (Browser extensible data).
+
 De eerste kolom van een .bed bevat de naam van het chromosoom, de tweede kolom het start coördinaat van de feature, de derde kolom het eind coördinaat van de feature, 4e kolom de naam, daarna optioneel een score en dan de streng (-/+).
 bron: <https://genome.ucsc.edu/FAQ/FAQformat.html>
 
@@ -491,10 +546,111 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 ```
 
+
+
+
+Het onderstaande script was eerst uitgevoerd met mm39 als referentiegenoom voor de annotatie maar dit gaf een foutmelding (Op de github pagina van het programma snpEff waren er meer meldingen van dit gedrag. <https://github.com/pcingola/SnpEff/issues/536>) dus is het opnieuw uitgevoerd met het oude mm10 referentiegenoom.
+Dit is het zelfde referentiegenoom dat ook het artikel gebruikt was.
+Maar later hebben we zelf een database gemaakt (SnpEff hem laten maken) voor mm39.
+
+```{bash, eval=FALSE}
+# Test:
+/students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 filtered_variants.vcf > annotated_variants.vcf
+
+# Voor alle .vcf bestanden:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'java -jar \ /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/filterd_variant_{}.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants_{}.vcf'
+
+# Alleen het isec .vcf bestand:
+java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_isec.vcf
+
+```
+
+**Database maken voor SnpEff:**
+
+```{bash, eval=FALSE}
+# Navigeer naar de directory waar de databases opgeslagen worden. 
+cd snpEff/snpEff/data/
+
+# Download het .gff bestand:
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/635/GCF_000001635.27_GRCm39/GCF_000001635.27_GRCm39_genomic.gff.gz
+
+```
+
+**Debuggen van database maken:**
+
+Het maken van de mm39 database ging niet zonder problemen, eerst vereiste het programma bestaden die niet aagegeven waren op de website van SnpEff.
+Dit waren protein.fna en cds.fna.
+Deze bestanden waren gedownload van de NCBI website: <https://ftp.ensembl.org/pub/release-112/fasta/mus_musculus/dna/>
+
+Daarna gaf SnpEff een foutmelding over een missend CDS bestand.
+Deze melding kan genegeerd worden met de flag "-"
+
+```{bash, eval=F}
+
+# Downloaden van benodigde bestanden: 
+
+# Referentiegenoom (Refseq)
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/635/GCF_000001635.27_GRCm39/GCF_000001635.27_GRCm39_genomic.fna.gz
+
+# Annotatiebestand: (.GTF)
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/635/GCF_000001635.27_GRCm39/GCF_000001635.27_GRCm39_genomic.gtf.gz
+
+# protein.faa:
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/635/GCF_000001635.27_GRCm39/GCF_000001635.27_GRCm39_protein.faa.gz
+
+# Plaats bestanden in SnpEff/snpEff/data/mm39/
+
+# Hernoem bestand GCF_000001635.27_GRCm39_genomic.fna.gz --> sequences.fa
+
+# Hernoem bestand GCF_000001635.27_GRCm39_protein.faa.gz --> protein.fa
+
+# Hernoem bestand 
+
+
+java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar build  -gtf22 -nodownload -v  mm39
+```
+
+## Chromosoom namen wijzigen:
+
+```{bash, eval=FALSE}
+bgzip -c /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf.gz
+
+```
+
+```{bash, eval=FALSE}
+tabix -p vcf /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf.gz
+```
+
+```{bash, eval=FALSE}
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel \
+'bcftools annotate --rename-chrs /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/names.txt /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/filterd_variant_{}.vcf.gz > /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/hernoemd_{}.vcf'
+```
+
+Annotatie test:
+
+```{bash, eval=FALSE}
+java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar -v -stats /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_annotatie.html mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/hernoemd_SRR26980549.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_SRR26980549.vcf
+
+```
+
+Nu met parallel voor alle bestanden en multithreading: Ook worden er html bestanden met statistieken over de annotatie gegenereerd.
+
+```{bash, eval=FALSE}
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel \
+'java -Xmx80G -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar -v -stats /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/{}_annotatie.html mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/hernoemd_{}.vcf -threads 50 > /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_{}.vcf'
+
+```
+
+## Isec ## 
+
+Er zijn vier biologische replicaten, met behulp van "bcftools isec -c all" worden enkel de varianten die in alle vier de muizen aanwezig zijn geselecteerd.
+Hierdoor worden veel "willekeurige" mutaties er uit gefilterd die niet in alle vier de samples aanwezig waren.
+Bron: <https://samtools.github.io/bcftools/bcftools.html> In het onderstaande code chunk wordt bcftools isec uitgevoerd met argumenten: "-c all" dit betekend dat alle varianten die overeen komen tussen de vier samples in het output bestand opgeslagen moeten worden.
+
 Voordat bcftools isec uitgevoerd kan worden moeten de vcf bestanden gecomprimeerd worden met bgzip.
 
 ```{bash, eval=F}
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'bgzip filterd_variant_{}.vcf'
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'bgzip annotated_{}.vcf'
 
 ```
 
@@ -502,42 +658,51 @@ Daarna, om de vervolg processen sneller te maken (en omdat isec anders een foutm
 Hier wordt "tabix" voor gebruikt.
 Het onderstaande commando gebruikt de net gemaakte bgzip gecomprimeerde bestanden van de .vcf als input.
 
-```{bash}
+```{bash, eval=F}
 
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'tabix -p vcf filterd_variant_{}.vcf.gz'
-
-```
-
-## Isec
-
-Er zijn vier biologische replicaten, met behulp van "bcftools isec -c all" worden enkel de varianten die in alle vier de muizen aanwezig zijn geselecteerd.
-Hierdoor worden veel "willekeurige" mutaties er uit gefilterd die niet in alle vier de samples aanwezig waren.
-Bron: <https://samtools.github.io/bcftools/bcftools.html> In het onderstaande code chunk wordt bcftools isec uitgevoerd met argumenten: "-c all" dit betekend dat alle varianten die overeen komen tussen de vier samples in het output bestand opgeslagen moeten worden.
-
-```{r, eval=FALSE}
-
-bcftools isec -c all filterd_variant_SRR26980549.vcf.gz filterd_variant_SRR26980550.vcf.gz filterd_variant_SRR26980551.vcf.gz filterd_variant_SRR26980552.vcf.gz > isec.vcf
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'tabix -p vcf annotated_{}.vcf.gz'
 
 ```
 
-## 
+Vervolgens is isec zelf uitgevoerd. Het verkregen isec.vcf bestand bevat alle varianten die de vier samples gemeen hebben.
+```{bash, eval=FALSE}
 
-Het onderstaande script was eerst uitgevoerd met mm39 als referentiegenoom voor de annotatie maar dit gaf een foutmelding (Op de github pagina van het programma snpEff waren er meer meldingen van dit gedrag. <https://github.com/pcingola/SnpEff/issues/536>) dus is het opnieuw uitgevoerd met het oude mm10 referentiegenoom.
-Dit is het zelfde referentiegenoom dat ook het artikel gebruikt was.
+bcftools isec -c all annotated_SRR26980549.vcf annotated_SRR26980550.vcf annotated_SRR26980551.vcf annotated_SRR26980552.vcf > isec.vcf
+
+```
+
+## Annoteren Isec.vcf
+Omdat het verkregen isec bestand geen annotatie metadata heeft moet deze stap opnieuw uitgevoerd worden. (of isec uitvoeren op niet geannoteerde .vcf's en daarna een enkele annotatie stap uitvoeren)
 
 ```{bash, eval=FALSE}
-# Test:
-/students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 filtered_variants.vcf > annotated_variants.vcf
-
-# Voor alle .vcf bestanden:
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/filterd_variant_{}.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants_{}.vcf'
-
-# Alleen het isec .vcf bestand:
-java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_isec.vcf
-
+java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar -v -stats /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec_annotatie.html mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_isec.vcf
 ```
 
-## **Kwaliteitscontrole vcf bestanden:**
+
+
+## **Kwaliteitscontrole geannoteerde vcf bestanden:**
+
+Met de flag -stat maakt SnpEff ook een html bestand met informatie over de geannoteerde bestanden.
+Hieronder staat een overzicht van de soorten mutaties (variaten) die voorkwamen in deze data.
+
+SRR26980549: ![SRR26980549](/home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980549_annotatie.png "SRR26980549_annotatie")
+
+Base changes (SNPs)
+
+|       | A      | C     | G     | T     |
+|-------|--------|-------|-------|-------|
+| **A** | 0      | 2,186 | 3,450 | 1,863 |
+| **C** | 2,812  | 0     | 1,984 | 4,098 |
+| **G** | 14,367 | 1,982 | 0     | 2,848 |
+| **T** | 1,864  | 3,448 | 2,330 | 0     |
+
+SRR26980550: ![SRR26980550](/home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980550_annotatie.png "SRR26980550_annotatie")Base changes (SNPs)
+
+![SRR26980551](/home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980551_annotatie.png "SRR26980551_annotatie")
+
+![SRR26980552](/home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980552_annotatie.png "SRR26980552_annotatie")
+
+
 
 ## **Visualisatie van de verkregen data:**
 
@@ -548,19 +713,3 @@ java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpE
 Artikel 3d conformatie chromatine: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10329473/> Samtools: <http://www.htslib.org/> BWA-MEM2 <https://github.com/bwa-mem2/bwa-mem2> Trimmomatic: <http://www.usadellab.org/cms/?page=trimmomatic> FastQC: <https://www.bioinformatics.babraham.ac.uk/projects/fastqc/>
 
 # Transcriptomics:
-
-### SRA's downloaden (Transcriptomics):
-
-De SRA's van de RNA seq worden gedownload met het onderstaande stuk code.
-De gebruikte accention list staat in de github repository.
-
-```{bash, eval=FALSE}
-export PATH="/home/floris/Documenten/Applicaties/sratoolkit.3.1.1-ubuntu64/bin/:$PATH"
-
-
-
-cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/
-
-prefetch $(</run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/SRR_Acc_List.txt) \
---output-directory "/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/" --max-size 200G
-```

@@ -1,0 +1,40 @@
+---
+title: "Transcriptomics analyse muis B-cellen"
+author: "Floris Menninga"
+date: "`r Sys.Date()`"
+bibliography: Logboek_Floris_Menninga.bib
+link-citations: true
+output:
+  html_document:
+    toc: yes
+    toc_depth: '2'
+  bookdown::pdf_document2:
+    keep_tex: false    
+    toc: false      
+    fig_caption: true
+    includes:  
+        in_header: include_tex_header.tex
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+  word_document:
+    toc: yes
+    toc_depth: '2'
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+
+### SRA's downloaden (Transcriptomics):
+
+De SRA's van de RNA seq worden gedownload met het onderstaande stuk code.
+De gebruikte accention list staat in de github repository.
+
+```{bash, eval=FALSE}
+
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/
+
+prefetch $(</run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/SRR_Acc_List.txt) \
+--output-directory "/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/transcriptomics/" --max-size 200G
+```
