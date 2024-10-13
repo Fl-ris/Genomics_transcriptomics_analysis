@@ -11,7 +11,7 @@
 
 <meta name="author" content="Floris Menninga" />
 
-<meta name="date" content="2024-10-10" />
+<meta name="date" content="2024-10-13" />
 
 <title>Transcriptomics analyse muis B-cellen</title>
 
@@ -352,20 +352,157 @@ display: none;
 
 <h1 class="title toc-ignore">Transcriptomics analyse muis B-cellen</h1>
 <h4 class="author">Floris Menninga</h4>
-<h4 class="date">2024-10-10</h4>
+<h4 class="date">2024-10-13</h4>
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#workflow-transcriptomics" id="toc-workflow-transcriptomics"><strong>Workflow
+(Transcriptomics):</strong></a></li>
+</ul>
+</div>
 
+<div id="workflow-transcriptomics" class="section level2">
+<h2><strong>Workflow (Transcriptomics):</strong></h2>
+<p>Net zoals in het originele artikel beschreven was wordt read mapping
+uitgevoerd met het FASTQ bestand van elk van de samples.</p>
+<p>Met het .SAM bestand dat verkregen is werd daarna met FeatureCounts
+en RSEM de gen expressie gekwantificeerd. Deze read mapping was met STAR
+uitgevoerd maar wij gaan hier HISAT2 voor gebruiken omdat STAR verouderd
+is volgens het github repo.</p>
+<p>FeatureCounts gebruikt namelijk het .SAM (of .BAM) bestand en telt
+hoeveel reads bij elke “feature” (gen/exon) horen. RSEM kan hier ook
+voor gebruikt worden maar is complexer om te gebruiken dan
+FeatureCounts.</p>
+<p>Dit kan daarna gevisualiseerd worden met R in een box-plot,
+viool-plot, heatmap, MA-plot etc. Ook was er in het artikel gebruik
+gemaakt van “Cufflinks”, deze gaan we vervangen door “StringTie”.
+Volgens de website van Cufflinks is StringTie accurater en veel
+efficiënter.</p>
+<p><strong>De volgende R libraries en commandline tools zijn gebruikt
+voor de analyse:</strong> Samtools: 1.16.1</p>
+<pre class="r"><code>library(tidyverse)
+library(GEOquery)
+library(DESeq2)</code></pre>
 <div id="sras-downloaden-transcriptomics" class="section level3">
 <h3>SRA’s downloaden (Transcriptomics):</h3>
 <p>De SRA’s van de RNA seq worden gedownload met het onderstaande stuk
 code. De gebruikte accention list staat in de github repository.</p>
 <pre class="bash"><code>
-cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/
+prefetch $(&lt;/students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt) \
+--output-directory &quot;/students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/&quot; --max-size 200G</code></pre>
+<pre class="r"><code>gse &lt;- getGEO(GEO = &quot;GSE214438&quot;)
+# Combine the condition with a sample number and replicate number
+Condition = paste(rep(gse[[1]]@phenoData@data$`genotype/variation:ch1`, each = 2),
+                  rep(1:3, each = 2),
+                  paste0(&#39;r&#39;, rep(1:2, 9)), sep = &#39;_&#39;)
+run_info &lt;- read.csv(file = &quot;data/GSE149995_Sra_RunInfo.csv&quot;)
+setup &lt;- cbind(run_info %&gt;% dplyr::select(Run, Experiment), Condition)
+pander(setup)</code></pre>
+<p>Hier worden de bestanden uitgepakt op assemblix in onze gedeelde
+directory.</p>
+<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | \
+  parallel fasterq-dump -O /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/FASTQ {}</code></pre>
+</div>
+<div id="kwaliteitscontrole-met-fastqc" class="section level3">
+<h3>Kwaliteitscontrole met fastqc:</h3>
+<p>Voor het trimmen: Het volgende commando is uitgevoerd in de FASTQ/
+directory.</p>
+<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
+fastqc -o /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/fastqc_output/voor_trimmen/ {}_1.fastq {}_2.fastq </code></pre>
+<p>Vervolgens met met “multiqc .” in de output directory een multiqc
+rapport gemaakt van de resultaten van fastqc.</p>
+</div>
+<div id="trimmen-met-trimmomatic" class="section level3">
+<h3>Trimmen met Trimmomatic:</h3>
+<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
+&#39;TrimmomaticPE -threads 80 &#39; \
+    &#39;/students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/FASTQ/{}_1.fastq&#39; \
+    &#39;/students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/FASTQ/{}_2.fastq&#39; \
+    &#39;/students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/trimmomatic_output/paired/{}_forward_paired.fastq&#39; \
+    &#39;/students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/trimmomatic_output/unpaired/{}_forward_unpaired.fastq&#39; \
+    &#39;/students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/trimmomatic_output/paired/{}_rev_paired.fastq&#39; \
+    &#39;/students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/trimmomatic_output/unpaired/{}_rev_unpaired.fastq&#39; \
+    &#39;ILLUMINACLIP:/students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic/Trimmomatic-0.39/adapters/TruSeq3-SE.fa:2:30:10&#39; \
+    &#39;MINLEN:40 &#39; \
+    &#39;SLIDINGWINDOW:4:20&#39;</code></pre>
+</div>
+<div id="kwaliteitscontrole-met-fastqc-1" class="section level3">
+<h3>Kwaliteitscontrole met fastqc:</h3>
+<p>Na het trimmen: Het volgende commando is uitgevoerd in de
+trimmomatic_output/paired/ directory.</p>
+<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
+fastqc -o /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/fastqc_output/na_trimmen/ {}_forward_paired.fastq {}_rev_paired.fastq </code></pre>
+<p>Vervolgens met met “multiqc .” in de output directory een multiqc
+rapport gemaakt van de resultaten van fastqc.</p>
+<p>Maken van index voor referentiegenoom om te gebruiken met HIsat2. De
+naam van de index is: hisat2_index.</p>
+<pre class="bash"><code>hisat2-build -p 60 /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna hisat2_index
+</code></pre>
+<p>Read mapping:</p>
+<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
+hisat2 -p 80 -x hisat2_index -1 /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/trimmomatic_output/paired/{}_forward_paired.fastq -2 /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/trimmomatic_output/paired/{}_rev_paired.fastq -S /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/hisat2_mapped/{}.sam &amp;</code></pre>
+</div>
+<div id="sorteren-en-indexeren-van-.sam" class="section level3">
+<h3>Sorteren en indexeren van .sam</h3>
+<p>Omzetten van .sam naar .bam:</p>
+<pre class="bash"><code>
+cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
+&#39;samtools view -@40 -b /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/hisat2_mapped/{}.sam &gt; /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/{}.bam&#39; &amp;
+</code></pre>
+<p>Index maken:</p>
+<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
+&#39;samtools index -@80 /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/sorted_{}.bam&#39;
+  </code></pre>
+<p>Sorteren op queryname voor fixmate:</p>
+<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
+&#39;samtools sort -@80 -O BAM -n  /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/sorted_{}.bam -o /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/sorted2_{}.bam&#39;
+</code></pre>
+<p>Samtools fixmate:</p>
+<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
+&#39;samtools fixmate -m -@80 /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/sorted2_{}.bam /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/fixed_mates_sorted_{}.bam&#39;</code></pre>
+<p>Sorteren op coordinaten, dit is de standaard dus hoeft er geen
+argument voor meegegven worden. Vraag: Waarom zijn de gesorteerde
+bestanden kleiner dan de niet gesorteerde?</p>
+<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
+&#39;samtools sort -@80 /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/fixed_mates_sorted_{}.bam -o /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/fixed_mates_sorted_coords_{}.bam&#39;</code></pre>
+<p>Duplicaten verwijderen:</p>
+<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
+&#39;samtools markdup -@80 -r -s /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/fixed_mates_sorted_coords_{}.bam /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/dedup_{}.bam&#39;</code></pre>
+<p>Featurecounts: bron: <a href="https://subread.sourceforge.net/featureCounts.html" class="uri">https://subread.sourceforge.net/featureCounts.html</a> -T 64
+was het maximale aantal threads dat het programma kan gebruiken.</p>
+<pre class="bash"><code>
+cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
+&#39;featureCounts -T 64 -p --countReadPairs -B -t exon -g gene_id -a /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/data/mm39/genes.gtf -o /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/featurecounts_output/{}_counts.txt /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/dedup_{}.bam&#39;
 
-prefetch $(&lt;/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/Transcriptomics/SRR_Acc_List.txt) \
---output-directory &quot;/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/transcriptomics/&quot; --max-size 200G</code></pre>
+# Test:
+featureCounts -T 64 -p --countReadPairs -a /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/data/mm39/genes.gtf -o /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/featurecounts_output/count.out /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/dedup_*
+</code></pre>
+</div>
+<div id="visualisatie-van-featurecounts" class="section level3">
+<h3>Visualisatie van featurecounts</h3>
+<p>Header = True werkte niet… daarom zelf namen gegeven.</p>
+<pre class="r"><code>counts &lt;- read.delim(file = &quot;/home/floris/Documenten/Data_set/PRJNA885415/Transcriptomics/featurecounts/featurecounts_output.csv&quot;, header = F)
+
+# Geef namen aan de kolomen
+names(counts) &lt;- c(&quot;Gene_id&quot;,&quot;Chr&quot;,&quot;Start&quot;,&quot;End&quot;,&quot;Strand&quot;,&quot;Length&quot;,&quot;SRR21754408&quot;,&quot;SRR21754418&quot;,&quot;SRR21754419&quot;,&quot;SRR21754420&quot;,&quot;SRR21754421&quot;,&quot;SRR21754422&quot;,&quot;SRR21754423&quot;)
+
+#counts &lt;- subset(counts, row)
+counts &lt;- counts[-c(1,2), ]
+
+head(counts)</code></pre>
+</div>
+<div id="differential-expression-met-deseq2" class="section level3">
+<h3>Differential expression met DESeq2</h3>
+<p>Deseq2</p>
+<pre class="r"><code>#filtered_counts &lt;- counts[which(rowSums(counts) &gt; 50), ]
+
+# Filteren:
+filtered_counts &lt;- counts %&gt;%  
+  select(c(SRR21754408:SRR21754423)) %&gt;% 
+  filter(rowSums() &gt; 50)</code></pre>
+</div>
 </div>
 
 

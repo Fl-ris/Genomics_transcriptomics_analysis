@@ -13,15 +13,57 @@ knitr::opts_chunk$set(echo = FALSE)
 
 
 ## Recap van onderzoek: ##
-- Invloed van 
+- Invloed van leeftijd op ruimtelijke chromatine veranderingen en de invloed hiervan op de expressie van PAX5, Ebf1 en FOXO1.
+
 - Verschil in gen expressie ebf1 tussen oude en jonge muizen. (verminderde interactie tussen ebf1 promoter en zijn enhancers)
 - Verminderde ebf1 expressie leidt tot functieverlies B cellen.
 - Verplaatsing van het ebf1 gen van compartiment A naar B.
 
+
 ## Experimentele opzet: ##
 RNA-seq:
 - Voorloper B-cellen
-- Twee groepen (jong/oud)
+- Twee groepen (jong: 100–110 weken en oud: 8–12 weken)
 - Vier muizen per groep
 
 - Illumina NextSeq 500
+
+## Workflow: ##
+1. Kwaliteit controle (FastQC)
+2. Trimmen met Trimmomatic
+3. Kwaliteit controle na trimmen (FastQC)
+4. Read mapping met HISAT2 (input: fastQ, output: SAM bestand)
+5. Sorteren en indexen (input: .sam, ouput: .bam)
+6. FeatureCounts gebruiken om de gen expressie te kwantificeren
+7. RSEM gebruiken voor uitgebreidere featureCounts (optioneel)
+8. Visualiseren (in de volgende twee dia's besproken...)
+
+## Statistische analyses: ##
+
+
+## Visualisatie methodes: ##
+
+**Vulcano plot**
+- 
+Dimentiereductie om verschil tussen groepen zichtbaar te maken:
+- PCA tussen de twee groepen
+- UMAP
+
+## Tijdsverdeling:
+<img align="center" width="800" height="400" src=gannt_chart.png>
+
+
+## Bronnen:
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11178499/
+https://www.ncbi.nlm.nih.gov/assembly/327618
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE214438
+https://pubmed.ncbi.nlm.nih.gov/38866970/
+
+## Discussie
+
+
+
+
+
+
+
