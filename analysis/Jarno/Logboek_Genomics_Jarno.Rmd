@@ -208,7 +208,11 @@ Om de SRA data naar fastq om te zetten gebruiken we fasterq-dump. fasterq-dump i
 
 Fasterq-dump neemt de SRA files en extract de data hiervan naar fastq- of fasta files. in ons geval fastq files.
 
-# Uitleg wat is een fastq bestand
+Het fastQ format is een text gebaseerde format voor het opslaan van biologische sequenties (meestal nucleotiden sequenties) als de corresponderende kwaliteit's scoren.
+
+Een fastQ bestand heeft een bepaalde indeling:
+
+Een header, deze header beginst met een @ teken wat gevolgd wordt door een sequentie ID en soms een bescrhijving van wat het bestand bevat. Na deze header komen de sequeneties deze hebben een score die worden aangegeven met een + als start. De score wordt weergegeven in ASCII characters, Het "!" teken geeft de
 
 De code hieronder zoekt eerst in de SRA map naar files met een filenaam die eindigt op .sra
 
@@ -407,9 +411,7 @@ bwa-mem2 mem ref.fa read1.fq read2.fq > aln-pe.sam
 
 Bij deze indexering is een aligned bestand verkegen wat een .sam file is, dit bestand is tekst met een header en een alignment deel. Deze file heeft de sequenties die aligned zijn tegen het refentie sequentie opgeslagen. Omdat de .SAM niet georderd zijn op positie in het genoom moeten ze eerst met samtools sort omgezet worden naar een .BAM bestand (kijk naar het logboek van floris voor een diepere uitleg) de reden om dit te doen is dat het opvragen van data sneller gemaakt word als het geïndexeerd is.
 
-Samtools versie 1.16.1 is gebruikt dit is een collectie van tools om high-throughpout sequence data te werken. Het kan verschillende dingen zoals WGS/WES mapping naar variant calls en het filteren van .vcf bestanden.
-
-Bron: <http://www.htslib.org/doc/samtools-sort.html>
+Samtools versie 1.16.1 is gebruikt dit is een collectie van tools om high-throughpout sequence data te werken. Het kan verschillende dingen zoals WGS/WES mapping naar variant calls en het filteren van .vcf bestanden. @samtools_markdup
 
 -O BAM geeft het format aan, samtools sort -n zorgt dat de .sam gesorteerd worden op read naam (De QNAME kolom in het bestand)
 
@@ -424,11 +426,11 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 ```
 
-"fixmate -m" voegt mate score tags toe die gebruikt worden door markdup om de beste reads te selecteren om te houden.
+"fixmate -m" voegt score tags toe die gebruikt worden door markdup om de beste reads te selecteren om te behouden.
 
-Met "—Threads" wordt het aantal threads gespecificeerd dat de computer moet gebruiken voor dit commando.
+Met "—Threads" wordt het aantal threads gespecificeerd dat de computer moet gebruiken voor dit commando. @samtools_markdup
 
-Bron: <http://www.htslib.org/doc/samtools-markdup.html>
+De reden waarom je de mate-informatie wil corrigeren en mogelijke duplicaten wil weten is omdat je wil dat de paired-end reads goed worden geïnterpreteerd. Dit betekent dat je geen valse positieve of valse mutaties wil dit zou namelijk het onderzoek comprimeren. Het er uit halen van duplicaten en het corrigeren van de mate-info zorgt dus voor meer nauwkeurigheid en betrouwbaarheid van de "downstream" analyses zoals variant detectie in ons geval.
 
 *Deze code is geschreven door floris*
 
@@ -444,7 +446,21 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 Met samtools markdup worden duplicaten gemarkeerd. Met het "-r" argument worden deze verwijderd en met "-s" worden statistieken over de data en uitgevoerde handelingen.
 
-Bron: <http://www.htslib.org/doc/samtools-markdup.html>
+Bron: @samtools_markdup
+
+*Deze code is geschreven door floris*
+
+markdup, is het commando in samtools om markdup aan te roepen, markdup zoekt naar duplicaten in BAM-bestanden
+
+-r, deze optie zorgt voor dat duplicaten worden "removed" ook wel verwijderd uit het bestand. Zonder deze optie zouden de duplicaten alleen worden gemarkeerd.
+
+-s, deze optie zorgt dat informatie over de duplicaten naar STDERR (foutuitvoer) geschreven worden, dit is handig voor loggen en trouble shooten.
+
+sorted_coordinates_SRR26980549.bam, dit is het input BAM bestand waarin de reads op hun genoomcoördinaten zijn gesorteerd. Zonder dit bestand werkt markdup niet
+
+dedup_SRR26980549.bam, dit is het output BAM bestand waarin de dupicaten zijn gemarkeerd en in ons geval ook verwijderd.
+
+De reden om markdup te gebruiken en dus de duplicaten te markeren en verwijderen is, voor meer nauwkeurigheid in de data, ook de betrouwbaarheid van de downstream analyse wordt hoger.
 
 ```{bash, eval=FALSE}
 # Voor een enkel sample:
@@ -455,7 +471,17 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 ```
 
-Met samtools index wordt er een index bestand gemaakt.
+Met samtools index wordt er een index bestand gemaakt bij elke sample
+
+index, dit is het commando om indexing aan te roepen in de samtools toolkit.
+
+verder zijn de input en ouput sample te zien dedup_SRR26980549.bam en dedup_SRR26980549.bai er is wel iets veranderd aan de extensie. Het is van .bam naar .bai gegaan, de afkorting .bai staat voor BAM index
+
+Als laatste is de & te zien, dit zorgt ervoor dat het bash script op de achtergrond wordt uitgevoerd.
+
+De reden om de samples te indexen is omdat geïndexeerde bestanden sneller zijn, dit in de zin van zoeken naar specifieke regios. In een geïndexeerd bestand is het mogelijk om direct specifieke delen te bezoeken, voor sommige programa's is het ook een vereiste om geïndexeerde data te hebben. Dit zijn programmas zoals IGV (Integrative Genomics Viewer) waar visueel naar data gekeken word. Kortom efficiëntie
+
+*Deze code is geschreven door floris*
 
 ```{bash, eval=FALSE}
 # Voor een enkel sample:
@@ -468,6 +494,18 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 Bron: <https://github.com/freebayes/freebayes> Met behulp van het onderstaande stuk code worden de resulaten van de freebayes variant calling direct gefilterd op kwaliteit met vcffilter. Met "QUAL = 20" worden enkel de variants geselecteerd die 99% kans hebben dat er een variant zit op die plaats.
 
+**Freebayes** - is de tool die gebruikt wordt om genetische varianten te detecteren ook wel "variant calling" de gebruikte versie is 1.3.6 op linux
+
+-f, deze optie geeft het referentie genoom aan dat gebruikt wordt bij het vergelijken van de sequentie-reads. Freebayes gebruikt dit referentiegenoom (referentie genoom is GRCm39) om genetische varianten te detecteren.
+
+Het dedup_SRR26980549.bam bestand is het bestand wat als input wordt gebruikt, freebayes kijkt in deit bestand de uitgelijnde reads om genetische varianten te detecteren
+
+Het "\|" symbool is een pipe, waarmee de uitvoer van freebayes gelijk doorgegeven wordt aan vcffilter zonder een tussenbestand te maken.
+
+vcffilter, dit is een tool die wordt gebruikt om VCF-bestanden te filteren op basis van bepaalde criteria. In ons geval gebruiken wij vcffilter-assembly-0.2 jar. de criteria die wij hebben gezet is een minimale kwaliteit hoger dan 20 dit wordt gedaan met "QUAL \> 20"
+
+De reden om een VCF-bestand ook wel Variant Call Format te maken is het opslaan van genetische varianten. Het VCF bestand is essentieel voor de visualisatie die wij later gaan doen.
+
 ```{bash, eval=FALSE}
 # Voor een bestand:
 /students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
@@ -477,19 +515,6 @@ Bron: <https://github.com/freebayes/freebayes> Met behulp van het onderstaande s
 # Met parallel: 
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
  -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_{}.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 20" > filtered_{}.vcf' &
-```
-
-Filteren van varianten:
-
-```{bash, eval=F}
-#hier word 
-/students/2024-2025/Thema05/3dconformatieChromatine/vcffilter
-```
-
-```{bash, eval=FALSE}
-#hier word de library fastqcr aangeroepen
-library(fastqcr)
-
 ```
 
 Om alle paired read samples te mappen is het onderstaande bash script gebruikt. Hier is weer het parallel commando voor gebruikt. De lijst met sample namen wordt aan bwa-mem2 gegeven zodat het programma naar input bestanden met deze namen kan kijken en de gegenereerde .sam bestanden ook deze naam te geven.
@@ -504,15 +529,13 @@ parallel '/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-
 
 bwa-mem2 mem roept het programma bwa-mem2 aan dit wordt gebruikt om de illumina sequenties te mappen
 
--t 60 geeft aan dat het proces 60 threads moet gebruiken om de snelheid te verhogen.
+-t 60 geeft aan dat het proces 60 threads moet gebruiken om de snelheid te verhogen. Dit is handig om te doen voor uitlijning van grote hoeveelheden data omdat het dan sneller verwerkt wordt.
 
 /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}\_1.fastq en /students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}\_2.fastq geeft de paths naar de fastq input bestanden weer.
 
 /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam geeft de path waar de output bestanden heen moeten
 
 & dit zet het hele parallel-proces op de achtergrond zodat de shell beschikbaar is tijdens het proces.
-
-# CODE UITLEGGEN!
 
 # Data Trimming
 
@@ -598,6 +621,10 @@ Deze tweede FastQC run is gedaan na het mappen van de data.
 
 Hier is de data te zien nadat deze getrimmed is, er zijn een paar dingen veranderd: We hebben nog maar 8 files van ongeveer 150 bp lang.
 
+Conclusie FastQC run 2\
+
+De conclusie van de fastqc rapport is dat de samples 549, 550, 551, 551 goed zijn op het gebied van de algemene sequentie kwaliteit. Alleen deze samples laten een aantal bijzonderheden zien die we niet helemaal kunnen verklaren, maar hoogstwaarschijnlijk niet ernstig genoeg zijn om de verdere stappen te kunnen beinvloeden.
+
 Voor verdere analyse zie logboek van Ivar of Storm
 
 # Align data
@@ -621,7 +648,7 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 De reden waarom wij bwa-mem2 gebruiken en niet STAR is omdat bwa-mem2 beter is voor DNA dit is omdat STAR gespecialiseerd is in RNA-seq ook is bwa-mem2 heel accuraat voor DNA sequences allignment, het gaat goed om met mismatches, kleine indels en langere reads. Het voordeel van bwa-mem2 is ook dat het minder zwaar is op de memory van de pc's.
 
-#### Converteer BAM naar SAM
+#### Converteer SAM naar BAM
 
 ```{bash, eval=FALSE}
 samtools sort -n -O BAM -o aligned_sorted_SRR26980549.bam aligned_SRR26980549.sam
@@ -630,6 +657,16 @@ samtools sort -n -O BAM -o aligned_sorted_SRR26980549.bam aligned_SRR26980549.sa
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel samtools sort -n -O BAM -o aligned_sorted_{}.bam aligned_{}.sam  &
 
 ```
+
+Ondanks dat de .bam eerst staat en dan de .sam worden de sam files naar bam omgezet.
+
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv, leest de lijst van sample-namen uit het SraAccList CSV bestand, dit bestand bevat de accessienummers bijvoorbeeld SRR26980550.
+
+samtools sort -n -O BAM -o aligned_sorted\_{}.bam aligned\_{}.sam: dit is het sorteer commando wat uitgevoerd wordt, id de parallel staan inplaats van de bestand namen alleen de {} en de file type in dit geval .bam & .sam. Dit zorgt dat samtools kijkt in de map waar het uitgevoerd wordt er gezocht naar alleen bestanden die voldoen aan de filter eisen dus iets waar "aligned_sorted\_" in staat, dan de {} dus de sample naam waarschijnlijk en dan de .bam afkorting.
+
+&, dit zorgt ervoor dat het script op de achtergrond gerund word waardoor er verder gewerkt kan worden terwijl dit script runt.
+
+De reden om de aligned files om te zetten van .sam naar .bam is omdat deze worden gebruikt om een bed file te maken. Ook zijn er voordelen aan bam bestanden tegenover sam bestanden dit zijn: minder opslagruimte, meer compatibiliteit en sneller lees baar door verschillende tools.
 
 #### Freebayes - variant calling
 
@@ -651,6 +688,20 @@ De code hier activeert eerst de freebayes door naar het path te gaan waar freeba
 ```{bash, eval=FALSE}
 samtools faidx GCA_000001635.9_GRCm39_genomic.fna 
 ```
+
+Faidx, dit is een commando van samtools dat gebruikt wordt om een FASTA-index te generen voor het referentiegenoom in FASTA-formaat
+
+GCA_000001635.9_GRCm39_genomic.fna is het referentie genoom in fasta formaat waar de indexering op wordt toegepast.
+
+Een .fai bestand bevat info over de volgorde van de sequenties in het FASTA-bestand, zoals de namen van de chromosomen, de lengte van de sequenties en waar deze zich bevinden in het bestand. dit maakt snelle toegang to specifieke chromosomen of sequenties mogelijk zonder het hele fasta bestand in het geheugen te hoeven laden.
+
+hier een voorbeeld van hoe het er uit zou kunnen zien.
+
+chr1 195471974 52 60 61
+
+chr1 195471971 52 60 61
+
+De reden om dit bestand te maken is voor noodzaak bij bepaalde tools down stream.
 
 ## Week 4
 
