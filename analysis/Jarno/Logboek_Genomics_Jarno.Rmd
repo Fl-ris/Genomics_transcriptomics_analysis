@@ -668,6 +668,8 @@ bamToBed -i aligned_sorted_SRR26980549.bam > aligned_sorted_SRR26980549.bed
 
 ### Visualisatie
 
+verschillende soorten visualisatie proberen
+
 ```{r, eval=FALSE}
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -678,9 +680,9 @@ BiocManager::install("VariantAnnotation")
 ```{r}
 library(VariantAnnotation)
 
-vcf_file <- "/Users/Gebruiker/github_werkmap/Genomics_transcriptomics_analysis/analysis/Jarno/varianten_test.vcf"
+vcf_file <- "annotated_SRR26980552.vcf"
 
-vcf_data <- readVcf(vcf_file, genome="GRCh38")
+vcf_data <- readVcf(vcf_file, genome="GRCm39")
 
 
 head(vcf_data)
@@ -701,16 +703,104 @@ ggplot(data.frame(variable_poisitions), aes(x = variable_poisitions)) +
 ```
 
 ```{r}
-quality_scores <- qual(vcf_data)
 
-quality_df <- data.frame(quality_scores)
+vcf_data_549 <- read.delim("annotated_SRR26980549.vcf", skip=129 ,stringsAsFactors = FALSE)
+vcf_data_550 <- read.delim("annotated_SRR26980550.vcf", skip=129 ,stringsAsFactors = FALSE)
+vcf_data_551 <- read.delim("annotated_SRR26980551.vcf", skip=129 ,stringsAsFactors = FALSE)
+vcf_data_552 <- read.delim("annotated_SRR26980552.vcf", skip=129 ,stringsAsFactors = FALSE)
 
-ggplot(quality_df, aes(x = quality_scores)) +
-  geom_histogram(binwidth = 10, fill = "lightblue", color = "black") +
-  labs(title = "Distribution of Quality Scores (QUAL)",
-       x = "Quality Score (QUAL)",
-       y = "Count") +
-  theme_minimal()
+head(vcf_data_549)
+```
+
+```{r}
+head(vcf_data_549$X.CHROM)
+head(vcf_data_550$X.CHROM)
+head(vcf_data_551$X.CHROM)
+head(vcf_data_552$X.CHROM)
+```
+
+```{r}
+
+library(ggplot2)
+
+
+variable_poisitions_549 <- vcf_data_549$POS
+
+p_549 <- ggplot(data.frame(variable_poisitions_549), aes(x = variable_poisitions_549)) +
+  geom_histogram(binwidth = 1000000, fill = "blue", color = "blue") +
+  labs(x = "Positie (coördinaten) op NC_000067.7",
+       y = "Aantal varianten")  +
+    theme_minimal()
+
+variable_poisitions_550 <- vcf_data_550$POS
+
+p_550 <- ggplot(data.frame(variable_poisitions_550), aes(x = variable_poisitions_550)) +
+  geom_histogram(binwidth = 1000000, fill = "blue", color = "blue") +
+  labs(x = "Positie (coördinaten) op NC_000067.7",
+       y = "Aantal varianten")  +
+    theme_minimal()
+
+variable_poisitions_551 <- vcf_data_551$POS
+
+p_551 <- ggplot(data.frame(variable_poisitions_551), aes(x = variable_poisitions_551)) +
+  geom_histogram(binwidth = 1000000, fill = "blue", color = "blue") +
+  labs(x = "Positie (coördinaten) op NC_000067.7",
+       y = "Aantal varianten")  +
+    theme_minimal()
+
+variable_poisitions_552 <- vcf_data_552$POS
+
+p_552 <- ggplot(data.frame(variable_poisitions_552), aes(x = variable_poisitions_552)) +
+  geom_histogram(binwidth = 1000000, fill = "blue", color = "blue") +
+  labs(x = "Positie (coördinaten) op NC_000067.7 ",
+       y = "Aantal varianten") +
+    theme_minimal()
+p_552
+```
+
+ggplot2 is een library in R die gebruikt kan worden om uitgebreidere plots te maken dan dat base R dat kan. Dit houd in dat alles aan te passen is, van kleuren tot labels tot titels en nog veel meer andere stijl aanpassingen.
+
+```{r}
+library(ggpubr)
+
+multi_pos_plot <- ggarrange(p_549, p_550, p_551, p_552,
+          labels = c("Sample: 549", "Sample: 550", "Sample: 551", "Sample: 552"),
+          ncol = 2, nrow = 2)
+
+annotate_figure(multi_pos_plot, top = text_grob("Distriebutie van Variant Positions", 
+               color = "black", size = 14))
+```
+
+```{r}
+library(patchwork)
+
+multi_pos_plot_v2 <- (p_549 + p_550) / (p_551 + p_552)
+
+multi_pos_plot_v2 <- multi_pos_plot + plot_annotation(
+  title = "Distriebutie van Variant Positions",
+  theme = theme(plot.title = element_text(color = "black", size = 14))
+)
+
+multi_pos_plot_v2
+```
+
+**Visualisatie oefening**
+
+```{r}
+if (!require(devtools)) install.packages("devtools")
+devtools::install_github("gaospecial/ggVennDiagram")
+```
+
+```{r}
+set.seed(124)
+num_genes <- 2000
+genes <- paste0("Gene", 1:num_genes)
+expression_values <- rnorm(num_genes)
+```
+
+```{r}
+library("ggVennDiagram")
+ggVennDiagram(x, label_alpha = 0)
 ```
 
 # Alle bash code in correcte volgorde
