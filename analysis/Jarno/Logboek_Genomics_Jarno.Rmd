@@ -803,6 +803,55 @@ library("ggVennDiagram")
 ggVennDiagram(x, label_alpha = 0)
 ```
 
+## Week 5
+
+**Het omzetten van vcf naar een vcf.gz doormiddel van bgzip**
+
+```{bash, eval=FALSE}
+bgzip -c /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants.vcf.gz
+
+```
+
+**Indexering met tabix**
+
+```{bash, eval=FALSE}
+tabix -p vcf /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants.vcf.gz
+
+```
+
+**Hernaam chromosomen**
+
+Eerst names.txt aanmaken
+
+```{bash, eval=FALSE}
+#zcat opend de zipped file .gz en leest de output
+zcat /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants.vcf.gz | grep -v '^#' | cut -f1 | sort | uniq > old_chr_names.txt
+# grep -v filterd op lines die met # beginnen, cut -f1 extract de eerste colom van de overgebleven data, sort sorteed de chromosoom namen, uniq verwijderd dubbelen zodat alleen unieke overlblijven
+
+awk '{print $1, "x"}' old_chr_names.txt > names.txt
+# awk proceeerd elke line in old_chr_names.txt, print $1 print de chr naam en de X print een x
+
+cat names.txt
+
+```
+
+n deze names.text hebben we handmatig de goede chr positie uitgezocht voor de bijbehorende oudenamen waardoor de volgende structuur is ontstaan
+
+CM000994.3 Chr 1 \
+CM000995.3 Chr 2\
+CM000996.3 Chr 3 \
+CM000997.3 Chr 4
+
+Dit is gedaan doormiddel van <https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001635.27/>
+
+```{bash, eval=FALSE}
+bcftools annotate --rename-chrs /homes/jjduiker/Desktop/Genomics_transcriptomics_analysis/analysis/Jarno/names.txt /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants.vcf.gz > /students/2024-2025/Thema05/3dconformatieChromatine/hernoemd_variant_calling.vcf
+```
+
+```{bash, eval=FALSE}
+java -Xmx8g -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar -v -stats /students/2024-2025/Thema05/ppg/annotation_output/ex1.html GRCh38.p14 /students/2024-2025/Thema05/ppg/varscan/hernoemd_variant_calling.vcf > /students/2024-2025/Thema05/ppg/annotation_output/ex1.ann.vcf
+```
+
 # Alle bash code in correcte volgorde
 
 ## Stap 1 - Data downloaden
