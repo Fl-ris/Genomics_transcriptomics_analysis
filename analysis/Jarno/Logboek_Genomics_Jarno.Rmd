@@ -38,7 +38,7 @@ Het Ebf1-gen, ook bekend als Early B-cell factor 1, speelt een cruciale rol in d
 
 **Relevantie voor ons onderzoek**, De onderzoekers van het artikel hebben, in tegenstelling tot de analyses die het transcriptomicsgedeelte van de analyse berteffen, geen gebruikgemaakt van deze DNA data en andere gegevens, waardoor er geen vergelijkbare gegevens zijn. Hoewel ze een verouderd muis referentiegenoom (mm10) hebben toegepast, vervangen we dit door mm39.
 
-Hier onder is een overzicht te zien van de Tools die wij gaan gebruiken in ons onderzoek.
+Hieronder is een overzicht te zien van de Tools die wij gaan gebruiken in ons onderzoek.
 
 +---------------+----------------------------------------------------------------------------------+-----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Tool          | Referentie                                                                       | Versie                | Waarom                                                                                                                                                                                                                                                                                                     |
@@ -91,7 +91,7 @@ Hier onder is een overzicht te zien van de Tools die wij gaan gebruiken in ons o
 -   Bash script schrijven voor de download
 -   De SRA unpacken en data controleren
 
-In de klas is er een groep gemaakt samen met Floris, Storm en Ivar. Wij vieren hebben als doelstelling een goed en een interessant onderzoek te presenteren. De motivatie in deze groep is dus een goede basis om op te bouwen.
+In de klas is er een groep gemaakt samen met Floris, Storm en Ivar. Wij vieren hebben als doelstelling een goed en interessant onderzoek te presenteren. De motivatie in deze groep is dus een goede basis om op te bouwen.
 
 De Data set zoeken word gedaan via NCBI in de GEO datasets catagorie met de volgende zoek opdracht die als standaard is gesteld door de opdracht gevers: "("expression profiling by high throughput sequencing"[DataSet Type]) AND "genome variation profiling by high throughput sequencing"[DataSet Type]"
 
@@ -109,7 +109,7 @@ Aan deze query kan aan het einde nog een woord of onderwerp toegevoegd worden. I
 
 #### Week planning
 
-Door middel van het programma trello is er een week planning gemaakt. Hier worden ook de taken verdeeld dit is te zien aan de foto's bij de tickets. De foto laat een gebruiker zien, dit gecombineerd met de datum waar voor het af moet zijn geeft ons een duidelijke verdeling. De datum toevoeging geeft de gebruiker die de ticket heeft ook een herinnering.
+Door middel van het programma Trello is er een week planning gemaakt. Hier worden ook de taken verdeeld dit is te zien aan de foto's bij de tickets. De foto laat een gebruiker zien, dit gecombineerd met de datum waar voor het af moet zijn geeft ons een duidelijke verdeling. De datum toevoeging geeft de gebruiker die de ticket heeft ook een herinnering.
 
 Hier een voorbeeld foto.
 
@@ -123,7 +123,7 @@ Hier zetten wij tickets in die aan bepaalde personen met verschillende urgenties
 
 -   COULD - kan gedaan worden maar is zeker niet essentieel voor het project.
 
-De planning van de week voor mij was dat ik de Methoden moest bekijken en samenvatten voor zover mogelijk zodat de belangerijkste delen hiervan in het PVA en de Powerpoint werden gezet.
+De planning van de week voor mij was dat ik de Methoden moest bekijken en samenvatten voor zover mogelijk zodat de belangrijkste delen hiervan in het PVA en de Powerpoint werden gezet.
 
 De methoden zijn belangrijk omdat hierin de benodigdheden staan voor replicatie van het onderzoek. In de gekozen paper waren verschillende methoden die voor ons niet belangrijk zijn. Dit zijn bijvoorbeeld waar de muizen zijn gekocht of de Hi-C methoden, voor ons onderzoek is dit niet belangrijk omdat wij alleen naar de DNA-seq gaan kijken in vergelijking met het Referentie genoom (GRCm39)
 
@@ -131,7 +131,7 @@ De methoden zijn belangrijk omdat hierin de benodigdheden staan voor replicatie 
 
 #### Methoden
 
-Het weten van de methoden is belangrijk omdat wij moeten weten wat wij kunnen repliceren en wat te ver gegerepen is voor ons onderzoek en dit zou onze onderzoeksvraag kunnen beinvloeden. Als we Hi-C als voorbeeld nemen dit is een hoge doorvoer technique die chromatine conformatie vastlegt. Dit zouden wij niet in onze 5 weken kunnen doen op een goede manier. Dit is waarom wij kiezen voor de genoom analyze voor afwijkingen met het algemene referentie genoom.
+Het weten van de methoden is belangrijk omdat wij moeten weten wat wij kunnen repliceren en wat te ver gegrepen is voor ons onderzoek en dit zou onze onderzoeksvraag kunnen beïnvloeden. Als we Hi-C als voorbeeld nemen dit is een hoge doorvoer techniek die chromatine conformatie vastlegt. Dit zouden wij niet in onze 5 weken kunnen doen op een goede manier. Dit is waarom wij kiezen voor de genoom analyse voor afwijkingen met het algemene referentie genoom.
 
 In de les heb ik de methoden afgemaakt er waren uit eindelijk 24 methoden waar de materialen een beetje in gemixt stonden dit waren de volgende. Hier zijn er een paar die wel interessant zijn voor ons eigen onderzoek. Alle 24 methoden staan samen gevat in een extern document die te vinden is in de git.
 
@@ -143,11 +143,11 @@ In de les heb ik de methoden afgemaakt er waren uit eindelijk 24 methoden waar d
 
 -   Chip-seq en HiChIP- Chromatine immunoprecipitatie-sequencing of ChIP-seq genoemd, een nieuwe moleculaire laboratoriumtechniek die de DNA-bindingslocaties van een bepaald eiwit identificeerd. De DNA-fragmenten die aan het specifieke eiwit zijn verbonden, worden opgevangen met behulp van gesynthetiseerde immunoglobulinen, waarna de DNA-fragmenten worden gesequenced. De verzamelde DNA-sequenties worden daarna met behulp van softwaretools geanalyseerd om de kwaliteit van de ChIP-seq en mogelijke DNA-bindingslocaties te evalueren. HiChIP is een recent ontwikkelde methode voor het onderzoeken van de conformatie van chromatine, waarbij een in situ Hi-C-bibliotheek wordt voorbereid, gevolgd door een chromatine-immunoprecipitatiestap (ChIP). Dit proces is in het algemeen gericht op de histonmodificatie H3K27ac of cohesie.
 
--   Pro-B cell purification - hier zuiveren ze de Pro-B cellen doormiddel van positieve selectie van CD19+ en B220 markers.
+-   Pro-B cell purification - hier zuiveren ze de Pro-B cellen door middel van positieve selectie van CD19+ en B220 markers.
 
 -   In situ Hi-C - In situ HiC maakt gebruik van de relatieve frequentie van DNA-DNA-ligatiegebeurtenissen om de driedimensionale structuur van een genoom te heropbouwen. Op deze manier worden restrictie-enzymverteerde uiteinden van genomisch DNA in vaste kernen aangegeven met gebiotinyleerde dNTP's. DNA-DNA-ligatiegebeurtenissen die ontstaan door nabijheidsligatie worden daarna vastgelegd, versterkt en in de volgende generatie gesequenced om hun lineaire genomische positie vast te stellen, en hun driedimensionale relatie.
 
--   RNA-seq, De RNA-seq is niet heel belangrijk voor ons genomics deel echter is het wel belangrijk voor het transcriptomics deel. Dit wijst op hoe de RNA is gesequenced. Er zijn verschillende basis paren lengten gebruikt: 2x75, 1x100 , 2x100bp deze zijn allemaal gesequenced op een Illumina NovaSeq sequencer. De mapping is gedaan naar het mm10 genoom doormiddel van STAR. STAR is een aligner gemaakt om specifiek de vele uitdaging aan te pakken van RNA-seq data mapping. Het gebruikt een strategie om rekening te houden voor de "spliced" alignments.
+-   RNA-seq, De RNA-seq is niet heel belangrijk voor ons genomics deel echter is het wel belangrijk voor het transcriptomics deel. Dit wijst op hoe de RNA is gesequenced. Er zijn verschillende basis paren lengten gebruikt: 2x75, 1x100 , 2x100bp deze zijn allemaal gesequenced op een Illumina NovaSeq sequencer. De mapping is gedaan naar het mm10 genoom door middel van STAR. STAR is een aligner gemaakt om specifiek de vele uitdaging aan te pakken van RNA-seq data mapping. Het gebruikt een strategie om rekening te houden voor de "spliced" alignments.
 
 Na alle methoden samengevat te hebben gingen wij als groepje kijken naar de materialen en methoden om te beslissen wat wij nodig hadden, wat outdated was en wat wij nog extra of anders wilden doen.
 
@@ -209,7 +209,7 @@ Het zijn de namen van de samples netjes onder elkaar.
 
 #### Data uitpakken - fasterq-dump
 
-Om de SRA data naar fastq om te zetten gebruiken we fasterq-dump. fasterq-dump is een programma in de SRA toolkit, wij gebruiken Release 3.1.1, De reden voor het gebruik van fasterq-dump is de goede documentatie en de link met NCBI waar wij onze files vandaan halen. Fasterq-dump zit ook in de SRA toolkit deze staat geinstalleerd op het systeem dit is makkelijk te doen door naar de git te kijken van Fasterq-dump ook wel de SRA toolkit git.
+Om de SRA data naar fastq om te zetten gebruiken we fasterq-dump. fasterq-dump is een programma in de SRA toolkit, wij gebruiken Release 3.1.1, De reden voor het gebruik van fasterq-dump is de goede documentatie en de link met NCBI waar wij onze files vandaan halen. Fasterq-dump zit ook in de SRA toolkit deze staat geïnstalleerd op het systeem dit is makkelijk te doen door naar de git te kijken van Fasterq-dump ook wel de SRA toolkit git.
 
 Fasterq-dump neemt de SRA files en extract de data hiervan naar fastq- of fasta files. in ons geval fastq files.
 
@@ -236,7 +236,7 @@ GATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT - DNAseq\
 
 #### FastaQC - Raw data run
 
-FastQC wordt gebruikt om de kwaliteit te checken van de rauwe data, hier uit is te zien of de data gelijk te gebruiken is of dat deze moet worden getrimmed. De trimmer kan ook afgesteld worden op basis van de fastqc. @BabrahamBioinformatics
+FastQC wordt gebruikt om de kwaliteit te checken van de rauwe data, hier uit is te zien of de data gelijk te gebruiken is of dat deze moet worden getrimmed. De trimmer kan ook afgesteld worden op basis van de Fastqc. @BabrahamBioinformatics
 
 Waarom wij FastQC gebruiken is omdat voor wij gaan werken met onze data willen wij zien of de data wel geschikt is om mee te werken. Als de kwaliteit heel slecht is dan kunnen er niet betrouwbare resultaten uit worden gehaald, en het is niet goed repliceerbaar.
 
@@ -289,7 +289,7 @@ Uit onze fastQC resultaten kwamen wat bijzondere resultaten. Er waren reads van 
 
 [![Figuur 2: Per base sequence content](images/clipboard-308353073.png)](https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon/img/fastqc_per_base_sequence_content.png)
 
-De conclusie uit de analyze van de FastQC resultaten is, Dat de generale statestieken 7 van de bestanden enorm veel duplicates wat een redelijk probleem vormt. Wat ook opvalt is dat alle bestanden met hoge duplicates een gem read lengte van 250 bp wat opmerkelijk lang is + de resultaten met enigzins goede kwaliteit hebben een gem lengte van 150 bp. Verder alle bestanden met veel duplicates bevatten veel minder reads dan de bestanden zonder of met weinig duplicates. Alle bestanden met 250 bp lengte eindigen aan het eind in het rode vlak in de sequentie kwaliteit en er is een dip bij de 110-120 waarna alles dus afzakt, voor de sequenties met 250bp is de kwaliteit goed van 0-110 bp. De sequence duplication levels zijn ook opmerkelijk door veel pieken en een hoog begin van de lijn. Overrepresented sequences vallen ook op want weer de 250bp bestanden hebben erg veel duplicates waar van sommige in de 50% zitten. Er zit ook heel veel adapter content bij 2 files is het zelfs \>50%. Kortom deze files moeten getrimmed of verwijderd worden.
+De conclusie uit de analyse van de FastQC resultaten is, Dat de generale statistieken 7 van de bestanden enorm veel duplicates wat een redelijk probleem vormt. Wat ook opvalt is dat alle bestanden met hoge duplicates een gem read lengte van 250 bp wat opmerkelijk lang is + de resultaten met enigszins goede kwaliteit hebben een gem lengte van 150 bp. Verder alle bestanden met veel duplicates bevatten veel minder reads dan de bestanden zonder of met weinig duplicates. Alle bestanden met 250 bp lengte eindigen aan het eind in het rode vlak in de sequentie kwaliteit en er is een dip bij de 110-120 waarna alles dus afzakt, voor de sequenties met 250bp is de kwaliteit goed van 0-110 bp. De sequence duplication levels zijn ook opmerkelijk door veel pieken en een hoog begin van de lijn. Overrepresented sequences vallen ook op want weer de 250bp bestanden hebben erg veel duplicates waar van sommige in de 50% zitten. Er zit ook heel veel adapter content bij 2 files is het zelfs \>50%. Kortom deze files moeten getrimmed of verwijderd worden.
 
 Deze code komt uit het logboek van Ivar
 
@@ -319,17 +319,17 @@ pwd
 multiqc .
 ```
 
-multiQC wordt hiergebruikt om naar alle fastqc output files te kijken. Multiqc zoekt een directory voor fastQC output en compileert deze files zodat de algemene resultaten over meerdere files beter te begrijpen is.
+MultiQC wordt hier gebruikt om naar alle fastqc output files te kijken. Multiqc zoekt een directory voor FastQC output en compileert deze files zodat de algemene resultaten over meerdere files beter te begrijpen is.
 
 ![Figuuur 3: Ruwe data in multiQC](images/multiqc_ruw_seq_quality.PNG)
 
-Hier is multiQC te zien, het overlapt alle grafieken en maakt hier 1 grote grafiek van waar wanneer deze wordt aangeclickt het allemaal dingen laat zien. Deze dingen zijn de naam van de sample, welke base positie het is en de kwaliteit. 1 ding wat ook nog anders is, is de score naast de titel. De score naast de titel laat zien dat 8 samples wel een goede kwaliteit hebben en 7 niet.
+Hier is MultiQC te zien, het overlapt alle grafieken en maakt hier 1 grote grafiek van waar wanneer deze wordt aangeklikt het allemaal dingen laat zien. Deze dingen zijn de naam van de sample, welke base positie het is en de kwaliteit. 1 ding wat ook nog anders is, is de score naast de titel. De score naast de titel laat zien dat 8 samples wel een goede kwaliteit hebben en 7 niet.
 
-Om een gehele analyze te zien van de FastQC resultaten moet er gekeken worden naar de logboeken van Storm en Ivar
+Om een gehele analyse te zien van de FastQC resultaten moet er gekeken worden naar de logboeken van Storm en Ivar
 
 #### Test data maken
 
-**Seqkit -** Is een veelzijdige tool voor het verwerken en analyseren van sequentiebestanden de inputs welke hij accepteert zijn FASTA en FASTQ. Het kan grote datasets efficient doorlopen en biedt meerdere functies zoals filtering, slitsen van sequenties, statistieken genereren, test data sets maken etc. De gebruikte versie op de bio inf assemblix server (waar de Rstudio commands op gerund worden) is op dit moment seqkit V2.3.0
+**Seqkit -** Is een veelzijdige tool voor het verwerken en analyseren van sequentiebestanden de inputs welke hij accepteert zijn FASTA en FASTQ. Het kan grote datasets efficiënt doorlopen en biedt meerdere functies zoals filtering, splitsen van sequenties, statistieken genereren, test data sets maken etc. De gebruikte versie op de bio inf assemblix server (waar de Rstudio commands op gerund worden) is op dit moment seqkit V2.3.0
 
 **Testdata -** Test data is een essentieel deel van een onderzoek dit is om verschillende redenen, test data kan helpen om tools te valideren. Als de test data dezelfde resultaten geeft als de twee of meer echte data sets dan kan dit aangeven dat de tool niet goed werkt. Testdata kan ook worden gebruikt om de code in de bashscripts proef te runnen, dit omdat niet altijd alles goed gaat met de commando's en inplaats van de echte data te beschadigen kan dit beter met test data.
 
@@ -361,9 +361,9 @@ seqkit head -n 10000 SRR26980527_1.fastq > subset_SRR26980527_1.fastq
 
 Seqkit is het aanroepen van het programma wat de testdata maakt, de reden om seqkit te gebruiken is omdat het een super snel programma is. Sneller dan een programma zoals pigz wat multi-threaded is.
 
-head selecteerd het deel van de originele data waarop de test-data moet worden gebaseerd, het gebruiken van head inplaats van sample is voor repliceerbaarheid en reproductie omdat het heel erg lijkt op de originele data.
+head selecteert het deel van de originele data waarop de test-data moet worden gebaseerd, het gebruiken van head inplaats van sample is voor repliceerbaarheid en reproductie omdat het heel erg lijkt op de originele data.
 
--n geeft de lengthe aan van hoeveel reads in de test data moet zitten.
+-n geeft de lengte aan van hoeveel reads in de test data moet zitten.
 
 #### Achtergrond Info verzameling
 
@@ -396,7 +396,7 @@ Kritisch voor de generatie van het verschillend repertoire van b cellen capabel 
 
 Hier wordt ons gekozen referentie genoom ge indexeert. De reden voor het alignen van het referentie genoom is voor het gebruik van BWA-mem2. een geïndexeerde versie van het refentiegenoom moet dus gemaakt worden, dit kan met bwa-mem2 index. indexeren maakt het align proces veel sneller. De samples SRR26980528_1 en \_2 zijn gebruikt na het referentiegenoom te indexeren met BWA_MEM2. Het gebruikte referentie genoom is mm39 (GCF_000001635.27).
 
-In de onderstaande code chunk wordt het geindexeerde muisgenoom "testnaam" genoemd. Daarna worden twee samples (forward read en reverse read) ge-aligned met het zojuist verkregen geïndexeerde referentiegenoom.
+In de onderstaande code chunk wordt het geïndexeerde muisgenoom "testnaam" genoemd. Daarna worden twee samples (forward read en reverse read) ge-aligned met het zojuist verkregen geïndexeerde referentiegenoom.
 
 **Wat hier uit komt is een SAM file deze ziet er als volgt uit:\
 **\
@@ -695,7 +695,7 @@ Voor verdere analyse zie logboek van Ivar of Storm
 
 BWA-MEM2 wordt gebruikt om zowel DNA- als RNA-reads te aligneren met een referentiegenoom. Het kan korte en middellange DNA- of RNA-reads alignen. Er zijn verschillende manieren waar dit voor gebruikt kan worden zoals, Whole genome sequencing, Exoomsequencing en RNA-seq. Voor ons is Whole genome sequencing interresant dit is omdat hierbij de genomen worden gescand en dan vergeleken met het gekozen referentie genoom (in ons geval mm39 - GCF_000001635.27) dit om genetische variaties te identificeren.
 
-BWA-MEM2 heeft een geindexeerde versie nodig van ons referentie genoom, deze moet dus eerst gemaakt worden. Dit kan gedaan worden met bwa-mem2 index, nog een plus punt is het indexeren maakt het align proces veel sneller. De samples SRR26980528_1 en \_2 zijn gebruikt na het referentiegenoom te indexeren. Het gebruikte referentie genoom is mm39 - GCF_000001635.27 in ons geval heet deze file "testnaam"
+BWA-MEM2 heeft een geïndexeerde versie nodig van ons referentie genoom, deze moet dus eerst gemaakt worden. Dit kan gedaan worden met bwa-mem2 index, nog een plus punt is het indexeren maakt het align proces veel sneller. De samples SRR26980528_1 en \_2 zijn gebruikt na het referentiegenoom te indexeren. Het gebruikte referentie genoom is mm39 - GCF_000001635.27 in ons geval heet deze file "testnaam"
 
 *Deze code is geschreven door Floris deze is te vinden in zijn logboek - Deze code is voor de aligning van de data.*
 
@@ -788,7 +788,7 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("VariantAnnotation")
 ```
 
-```{r}
+```{r, eval=F}
 library(VariantAnnotation)
 
 vcf_file <- "annotated_SRR26980552.vcf"
@@ -799,7 +799,7 @@ vcf_data <- readVcf(vcf_file, genome="GRCm39")
 head(vcf_data)
 ```
 
-```{r}
+```{r, eval=F}
 library(ggplot2)
 
 
@@ -813,7 +813,7 @@ ggplot(data.frame(variable_poisitions), aes(x = variable_poisitions)) +
   theme_minimal()
 ```
 
-```{r}
+```{r, eval=F}
 
 vcf_data_549 <- read.delim("annotated_SRR26980549.vcf", skip=129 ,stringsAsFactors = FALSE)
 vcf_data_550 <- read.delim("annotated_SRR26980550.vcf", skip=129 ,stringsAsFactors = FALSE)
@@ -823,14 +823,14 @@ vcf_data_552 <- read.delim("annotated_SRR26980552.vcf", skip=129 ,stringsAsFacto
 head(vcf_data_549)
 ```
 
-```{r}
+```{r, eval=F}
 head(vcf_data_549$X.CHROM)
 head(vcf_data_550$X.CHROM)
 head(vcf_data_551$X.CHROM)
 head(vcf_data_552$X.CHROM)
 ```
 
-```{r}
+```{r, eval=F}
 
 library(ggplot2)
 
@@ -871,24 +871,24 @@ p_552
 
 ggplot2 is een library in R die gebruikt kan worden om uitgebreidere plots te maken dan dat base R dat kan. Dit houd in dat alles aan te passen is, van kleuren tot labels tot titels en nog veel meer andere stijl aanpassingen.
 
-```{r}
+```{r, eval=F}
 library(ggpubr)
 
 multi_pos_plot <- ggarrange(p_549, p_550, p_551, p_552,
           labels = c("Sample: 549", "Sample: 550", "Sample: 551", "Sample: 552"),
           ncol = 2, nrow = 2)
 
-annotate_figure(multi_pos_plot, top = text_grob("Distriebutie van Variant Positions", 
+annotate_figure(multi_pos_plot, top = text_grob("Distributie van Variant posities", 
                color = "black", size = 14))
 ```
 
-```{r}
+```{r, eval=F}
 library(patchwork)
 
 multi_pos_plot_v2 <- (p_549 + p_550) / (p_551 + p_552)
 
 multi_pos_plot_v2 <- multi_pos_plot + plot_annotation(
-  title = "Distriebutie van Variant Positions",
+  title = "Distributie van Variant posities",
   theme = theme(plot.title = element_text(color = "black", size = 14))
 )
 
@@ -897,19 +897,19 @@ multi_pos_plot_v2
 
 **Visualisatie oefening**
 
-```{r}
+```{r, eval=F}
 if (!require(devtools)) install.packages("devtools")
 devtools::install_github("gaospecial/ggVennDiagram")
 ```
 
-```{r}
+```{r, eval=F}
 set.seed(124)
 num_genes <- 2000
 genes <- paste0("Gene", 1:num_genes)
 expression_values <- rnorm(num_genes)
 ```
 
-```{r}
+```{r, eval=F}
 library("ggVennDiagram")
 ggVennDiagram(x, label_alpha = 0)
 ```
@@ -1014,7 +1014,7 @@ seqkit head -n 10000 SRR26980527_1.fastq > subset_SRR26980527_1.fastq
 
 ```
 
-## Stap 5 - gen aligneren
+## Stap 5 - gen alignen
 
 ```{bash, eval=FALSE}
 
