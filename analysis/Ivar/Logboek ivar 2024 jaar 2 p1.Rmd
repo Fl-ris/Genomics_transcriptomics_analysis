@@ -14,11 +14,15 @@ Dit logboek is voor het project genomics en transcriptomics in het thema aging. 
 
 # Library chunk
 ```{r}
-library(fastqcr)
+library("fastqcr")
+library("ggVennDiagram")
+library("ggplot2")
+library("GenomicRanges")
+library("dplyr")
+library("tidyr")
 ```
 
-
-# Week 1
+# Week 1 introductie en data downloaden
 # doel project genomics and aging
 ## Wat en waarom
 In de eerste 2 lessen hebben we als groep gezocht naar potentieel onderzoek dat wij kunnen gebruiken voor het project. Het thema dat wij hiervoor hebben gekozen is aging omdat dit ons een interessant lijkt. 
@@ -76,13 +80,14 @@ Uitleg onderzoeksvraag staat hierboven vermeld en in teams map onderzoek.
 SRA files in de map "/students/2024-2025/Thema05/3Dchromatine/SRA"
 
 
-# Week 2
+# Week 2 FastQC en Trimmomatic
 
 ## Maandag 
+
 # presentatie linkin in logboek
 Na de groepenpresentaties hebben wij we gezamenlijk de genomics data uitgepakt met de tool fasterq-dump van de SRA toolkit[1] via floris zijn laptop.
 
-```{r EVAL=FALSE}
+```{bash eval=FALSE}
 # Eerst nieuwe map maken voor fastq
 # Locale test: (niet op de assemblix server) 
 cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
@@ -102,7 +107,7 @@ Ookal is 10,000 de gegeven standaard voor Seqtk wij hebben gekozen voor 1,000,00
 Een voorbeeld hiervan is Fastqc het standaard programma voor kwaliteitscontrole. Een van de proccesen hiervan kijkt voor sequenties die over-gerepresenteerd zijn maar dat is alleen voor sequenties die in de eerste 100,000 sequenties van het bestand voorkomen. en dus door een groter bestand te genereren kan dit procces beter getest worden voordat de echte dataset dit analyseerd. (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/8%20Duplicate%20Sequences.html)
 
 
-```{r EVAL=FALSE}
+```{r eval=FALSE}
 
 cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
 
@@ -204,7 +209,7 @@ Het doel van vandaag is samen met storm en Jarno aan het automatische bwa-mem co
 
 ### mapping bijproduct
 Om uit te vinden van wat de 4 eerste samples zijn hadden wij het idee om het sample te mappen tegen een referentie genoom om te kijken wat deze samples zouden kunnen zijn. uiteindelijk hebben wij hier niks mee gedaan vanwege de slechte kwaliteit van deze samples. Dit wordt later in het logboek uitgelegd.
-Gezamenlijk zijn wij bezig geweest met het BWA-MEM commando en hebben dit ook gerunt. maar vervolgens hebben wij hier niks me gedaan. de uitleg hiervoor komt later in het bestand
+Gezamenlijk zijn wij bezig geweest met het BWA-MEM commando en hebben dit ook gerunt. maar vervolgens hebben wij hier niks me gedaan. de uitleg hiervoor komt later in het bestand.
 
 
 ## Vrijdag
@@ -246,7 +251,7 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | \
 ### Resultaten
 Functioneel bash script voor trimmen
 
-# Week 3 
+# Week 3 Eindresultaat quality control en bwa mapping en varriant calling
 
 ## Maandag
 Het doel vandaag is besluiten wat we doen met de samples van dramatisch slechte kwaliteit en met trimmomatic experimenteren. Dit doen we om de data klaar te zetten voor het mappen en alignen.
@@ -289,6 +294,7 @@ Het opvallende hier is dat er een piek aan het begin bij circa 10 readlengt. dit
 Het CG plot geeft een waarschuwing aan omdat het cg percentage een beetje afwijkt van een normaal verdeling heeft.
 Aangezien er geen scherpe pieken zijn in deze grafiek betekent het dat de samples in elk geval niet gecontamineerd zijn. 
 Voor het trimmen gaven deze samples ook al een waarschuwing van fastqc vanwege de afwijking in deviatie. Zoals ik bij de de standaard statistiek plot heb uitgezocht ben ik van mening dat ook al is de grafiek niet netjes denk ik dat het niet een significant probleem is voor ons verdere onderzoek.
+De 2 verschillende hoogtes zal waarschijnlijk te maken hebben met het feit dat zoals te zien bij standaard statistieken dat er verschillende hoeveelheden sequentie gemeten zijn en dat er tussen 549/550 100 miljoen sequentie's gemeten zijn en bij 551/552 150 miljoen sequenties zijn gemeten.
 
 Overrepresented sequences
 Hier is geen plot voor maar het gaf een waarschuwing aan bij de 4 reverse paired reads. hier zal ik morgen naar kijken en eventueel met ronald overleggen omdat ik het raar vind dat dit alleen voorkomt bij de reverse paired reads.
@@ -309,21 +315,206 @@ Nucleotide collections.
 Bij beide databases was er geen match en een globale google search om te kijken of er een lange ggg repeat sequentie in het genoom van een muis zit leverde ook geen informatie op.
 Dit samen met het feit dat dit deze sequentie alleen wordt aangegeven op de reverse pair reads concludeer ik dat dit hoogstwaarschijnlijk een mechanische fout heeft plaats gevonden tijdens het sequencen.
 
+### Conclussie FastQC
+De conclusie van de fastqc rapport is dat de samples 549, 550, 551, 551 goed zijn op het gebied van de algemene sequentie kwaliteit. Alleen deze samples laten een aantal bijzonderheden zien die we niet helemaal kunnen verklaren, maar hoogstwaarschijnlijk niet ernstig genoeg zijn om de verdere stappen te kunnen beïnvloeden.
+
 ### Onderzoeksvraag
 Als groep hadden wij tot vandaag nog geen onderzoeksvraag. Na overleg met Ronald zijn wij op het volgende gekomen. 
 "Zijn er genetische varianten te vinden in het embf1 en pax5 gen te vinden dat het vorige onderzoek kan beinvloeden" die in het genoom van rag2(-/-) muizen
 
 ### BWA mapping
 Voor een voledige uitleg van bwa-mem2 mappen zie het logboek van Jarno en Floris. 
-Voor het Mappen gebruiken wij BWA-mem2 [6]
+Voor het Mappen gebruiken wij BWA-mem2[6]. 
+We hebben voor deze tool gekozen omdat het volgens de mensen achter bwa de volgende versie is en een stuk efficiënter dan de standaard bwa mapper. 
+Ook word bij het BIN galaxy systeem van de Hanze Bio-informatica systeem aangeraden om bij het mappen van reads langer dan 100 basisparen bwa-mem2 te gebruiken. Dit is toepasbaar op onze data omdat wij een gemmidelde readlengte van circa 150 hebben, zie read lengt distributie plot van de fastqc analyse.
 
 #### Mapping en Aligment uitleg
-Mappen is het procces
+Mappen is het proces van alle reads tegen een referentie genoom aan te leggen zodat je weet welke read op welke plek in het genoom hoort. Dit word gedaan zodat je alle reads op de plekken liggen waar ze horen en je hierna een analyse op kunt doen om te kijken of er varianten in de genen liggen. meer hierover bij variant calling.
+De overlappende reads op 1 plek in het genoom wordt ook wel de covarage van een gen of positie genoemd.
 
-#### Alignen
 
-### Freebayes variant calling
-Voor een voledige uitleg van Freebayes varriant calling zie het logboek van Jarno en Floris 
+#### Code van Floris
+```{bash eval=FALSE}
+# Voor een enkel sample:
+samtools sort -@40 -n -O BAM -o aligned_sorted_SRR26980549.bam aligned_SRR26980549.sam
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools sort -@40 -n -O BAM -o samtools_output/aligned_sorted_{}.bam BWA_aligned_output/aligned_{}.sam ' &
+```
+
+```{bash eval=FALSE}
+# Voor een enkel sample:
+samtools fixmate -m --threads 40 aligned_sorted_SRR26980549.bam \ fixed_mates_aligned_sorted_SRR26980549.bam
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools fixmate -m --threads 40 samtools_output/aligned_sorted_{}.bam samtools_output/fixed_mates_aligned_sorted_{}.bam' &
+```
+
+```{bash eval=FALSE}
+# Voor een enkel sample:
+samtools sort -@80 -o sorted_coordinates_SRR26980549.bam \ fixed_mates_aligned_sorted_SRR26980549.bam
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools sort -@80 -o samtools_output/sorted_coordinates_{}.bam samtools_output/fixed_mates_aligned_sorted_{}.bam' &
+```
+
+```{bash eval=FALSE}
+# Voor een enkel sample:
+samtools markdup -r -s sorted_coordinates_SRR26980549.bam dedup_SRR26980549.bam
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel  'samtools markdup -@80 -r -s samtools_output/sorted_coordinates_{}.bam samtools_output/dedup_{}.bam' &
+```
+
+```{bash eval=FALSE}
+# Voor een enkel sample:
+samtools index -@80 dedup_SRR26980549.bam dedup_SRR26980549.bai  &
+
+# Met parallel:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'samtools index -@80 samtools_output/dedup_{}.bam samtools_output/dedup_{}.bai' &
+```
+
+
+### Freebayes variant calling * nog uitbreiden
+Voor een voledige uitleg van Freebayes[7] variant calling zie het logboek van Jarno en Floris.
+
+#### Variant calling uitleg
+Variant calling is het proces van het vinden van varianten op een positie in het genoom op basis van de hoeveelheid reads en de referentie positie.
+
+De exacte parameters van Freebayes staat niet in hun handleiding maar uit de lessen van Bio-informatica thema5(https://rwedema.github.io/NGS-Genetics/mapping.html) kan ik er van uit gaan dat een variant minstens een covarige van 20 reads nodig heeft om geclassificeerd te worden als variant. Onder 20 reads is het namelijk lastig om het statistisch te verantwoorden dat het een varriant is of een technische fout. 
+
+#### Variant anotatie uitleg *nog uitbreiden
+annotatie is metadata t
+#### SNPeff *nog uitbreiden
+
+#### Floris zijn code
+```{bash eval=FALSE}
+# Voor een bestand:
+/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_SRR26980549.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 30" > filtered_SRR26980549.vcf
+ 
+ 
+# Met parallel: 
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna samtools_output/dedup_{}.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 30" > variant_calling/filtered_{}.vcf' &
+ 
+ # Variant calling zonder direct te filteren:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna samtools_output/dedup_{}.bam > variant_calling/variants{}.vcf' &
+```
+
+```{bash eval=FALSE}
+# Voor een bestand:
+/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_SRR26980549.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 30" > filtered_SRR26980549.vcf
+ 
+ 
+# Met parallel: 
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna samtools_output/dedup_{}.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f "QUAL > 30" > variant_calling/filtered_{}.vcf' &
+ 
+ # Variant calling zonder direct te filteren:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel '/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
+ -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna samtools_output/dedup_{}.bam > variant_calling/variants{}.vcf' &
+```
+
+```{bash eval=FALSE}
+samtools faidx GCA_000001635.9_GRCm39_genomic.fna
+```
+
+```{bash eval=FALSE}
+# Test voor een enkel .bam bestand: 
+/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static -f GCA_000001635.9_GRCm39_genomic.fna \ /students/2024-2025/Thema05/3dconformatieChromatine/aligned_sorted_SRR26980549.bam > \ /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf
+```
+```{bash eval=FALSE}
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'java -jar /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -I variant_calling/variants{}.vcf --minQualScore 30 --outputVcf variant_calling/filterd_variant_{}.vcf'
+```
+
+```{bash eval=FALSE}
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'bamToBed -i dedup_{}.bam > dedeup_{}.bed'
+```
+
+```{bash eval=FALSE}
+# Test:
+/students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 filtered_variants.vcf > annotated_variants.vcf
+
+# Voor alle .vcf bestanden:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'java -jar \ /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/filterd_variant_{}.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants_{}.vcf'
+
+# Alleen het isec .vcf bestand:
+java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_isec.vcf
+```
+
+```{bash eval=FALSE}
+# Navigeer naar de directory waar de databases opgeslagen worden. 
+cd snpEff/snpEff/data/
+
+# Download het .gff bestand:
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/635/GCF_000001635.27_GRCm39/GCF_000001635.27_GRCm39_genomic.gff.gz
+```
+
+```{bash eval=FALSE}
+# Downloaden van benodigde bestanden: 
+
+# Referentiegenoom (Refseq)
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/635/GCF_000001635.27_GRCm39/GCF_000001635.27_GRCm39_genomic.fna.gz
+
+# Annotatiebestand: (.GTF)
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/635/GCF_000001635.27_GRCm39/GCF_000001635.27_GRCm39_genomic.gtf.gz
+
+# protein.faa:
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/635/GCF_000001635.27_GRCm39/GCF_000001635.27_GRCm39_protein.faa.gz
+
+# Plaats bestanden in SnpEff/snpEff/data/mm39/
+
+# Hernoem bestand GCF_000001635.27_GRCm39_genomic.fna.gz --> sequences.fa
+
+# Hernoem bestand GCF_000001635.27_GRCm39_protein.faa.gz --> protein.fa
+```
+
+```{bash eval=FALSE}
+java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar build -gtf22 -nodownload -v  mm39
+```
+
+```{bash eval=FALSE}
+bgzip -c /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf.gz
+```
+
+```{bash eval=FALSE}
+tabix -p vcf /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf.gz
+```
+
+```{bash eval=FALSE}
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel \
+'bcftools annotate --rename-chrs /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/names.txt /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/filterd_variant_{}.vcf.gz > /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/hernoemd_{}.vcf'
+```
+
+```{bash eval=FALSE}
+java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar -v -stats /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_annotatie.html mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/hernoemd_SRR26980549.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_SRR26980549.vcf
+```
+
+```{bash eval=FALSE}
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel \
+'java -Xmx80G -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar -v -stats /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/{}_annotatie.html mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/hernoemd_{}.vcf -threads 50 > /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_{}.vcf'
+```
+
+```{bash eval=FALSE}
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'bgzip annotated_{}.vcf'
+```
+
+```{bash eval=FALSE}
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'tabix -p vcf annotated_{}.vcf.gz'
+```
+
+```{bash eval=FALSE}
+bcftools isec -c all annotated_SRR26980549.vcf annotated_SRR26980550.vcf annotated_SRR26980551.vcf annotated_SRR26980552.vcf > isec.vcf
+```
+
+```{bash eval=FALSE}
+java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar -v -stats /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec_annotatie.html mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_isec.vcf
+```
+
+
 
 ## woensdag
 logboek review ronald
@@ -342,10 +533,9 @@ werken aan logboek
 werken aan logboek
 
 ## Dinsdag 
-Voorbereiding visualisatie
+Het doel van vandaag is het voorbereiden van de visualisatie.
 
-
-### lijst
+### lijst van mogenlijke visualisatie met bron
 genomics 1.1 les
 
 allel frequentie barplot
@@ -361,9 +551,10 @@ voor genome whole studie
 https://en.wikipedia.org/wiki/Manhattan_plot#:~:text=A%20Manhattan%20plot%20is%20a,GWAS)%20to%20display%20significant%20SNPs.
 
 ### woensdag
-note's 
+#### notitie extra visualisatie 
 principale compinenten theorie
 tsna umap niet relevant
+
 #### taakverdeling voor de week
 presntatie transcriptie presentatie floris
 veranderen van chromosomen van annotatie vcf bestand jarno
@@ -374,50 +565,100 @@ trackviewer bioconducter vcf + bam of bed backlog
 manhatten plot, volcano , lollipop plot jarno 
 
 ## Donderdag
-Begin gemaakt pricipale componenten
-jarno geholpen met
+Vandaag heb ik een begin gemaakt pricipale componenten analyse. Dit doe ik omdat ik wil zien hoe de variantie tussen de samples is op het gebied van het nog uit te selecterende meta data.
+Dit heb ik gedaan door de geanoteerde bestanden in te lezen en daarna Granges objecten van te maken om zo aan elke variant meta data mee te geven.
+
 ### Principale componenten analyse
 
+Isec bestand inladen *nog niet gebruikt 
 ```{r}
 # read isac
-an_isec <- read.delim("/Users/ivarl/Desktop/annotated_isec.vcf", skip = 5,header = FALSE, stringsAsFactors = FALSE)
+#an_isec <- read.delim("/Users/ivarl/Desktop/annotated_isec.vcf", skip = 5,header = FALSE, #stringsAsFactors = FALSE)
+```
+
+Sample's bestanden inladen
+```{r}
+# inladen data skip 129 lines aan metadata 
+ssr_549_an <- read.delim("/Users/ivarl/Desktop/annotated_SRR26980549.vcf", skip=129 ,stringsAsFactors = FALSE)
+ssr_550_an <- read.delim("/Users/ivarl/Desktop/annotated_SRR26980550.vcf", skip = 129, stringsAsFactors = FALSE)
+ssr_551_an <- read.delim("/Users/ivarl/Desktop/annotated_SRR26980551.vcf", skip = 129, stringsAsFactors = FALSE)
+ssr_552_an <- read.delim("/Users/ivarl/Desktop/annotated_SRR26980552.vcf", skip = 129, stringsAsFactors = FALSE)
+
 ```
 
 ```{r}
-an_var <- read.delim("/Users/ivarl/Desktop/annotated_variants.vcf", skip = 125, stringsAsFactors = FALSE)
+# check tabel
+head(ssr_549_an)
 ```
 
-
 ```{r}
-#unique(an_var$X.CHROM)
-vcf_list <- strsplit(an_var$INFO,split = ";")
-# split info voor allel freq
-
-# maak matrix
-info_matrix <- do.call(rbind, vcf_list)
-# verwijder AF= voor typecasting
-info_matrix <- gsub("AF=", replacement = "", x = info_matrix)
-allel_freq <- as.numeric(info_matrix[,2])
-
-# irange object op 1 positie want het is snip
-irange_object <- IRanges(start = an_var$POS,
-                         end = an_var$POS,
-                        names = an_var$X.CHROM
+# irange object
+irange_object_ssr_549 <- IRanges(start = ssr_549_an$POS,
+                         end = ssr_549_an$POS,
+                        names = ssr_549_an$X.CHROM
                          )
-# verander naar grange
-(grange_object <- GRanges(seqnames = an_var$X.CHROM,
-                          ranges = irange_object))
+# grange object
+grange_object_ssr_549 <- GRanges(seqnames = ssr_549_an$X.CHROM,
+                          ranges = irange_object_ssr_549)
+grange_object_ssr_549
 ```
 
 ```{r}
-
+# info lijst splitten
+info_list_ssr_549 <- strsplit(ssr_549_an$INFO,split = ";")
+# matrix maken
+info_matrix_ssr_549 <- do.call(rbind, info_list_ssr_549)
+#info_matrix_ssr_549
 ```
 
+```{r}
+# meta data selectie
+# allel freqwentie
+info_matrix_ssr_549 <- gsub("AF=", replacement = "", x = info_matrix_ssr_549)
+#info_matrix_ssr_549[,4]
 
+# numeric maken voor latere analyse
+allel_freq_ssr_549 <- as.numeric(info_matrix_ssr_549[,4])
+# correctie NA gegeneerd door "0.5 0.5" in vector
+allel_freq_ssr_549 <- replace_na(allel_freq_ssr_549, 0.5)
+head(allel_freq_ssr_549)
 
+# read depth
+info_matrix_ssr_549 <- gsub("DP=", replacement = "", x = info_matrix_ssr_549)
+read_dept_ssr_549 <- as.numeric(info_matrix_ssr_549[,8])
+#read_dept_ssr_549
+# lijst om toe te voegen
+# moet Allel lengte 
+# maybe Mean number of unique non-reference allele observations
+```
+Wat hier opvalt is dat de alle allel frequenties 0.5 of 1.0 zijn. In de praktijk zou dit niet mogelijk zijn dat alles zo'n strakke uitkomst heeft, vermoedelijk komt dit door een setting in freebayes.
 
+## Vrijdag
+Het doel van vandaag was verder werken aan de pca analyse. maar naar overleg met marcel is besloten dat een pca mischien iets te ambitieus is en voorlopig gedowngrade word naar een Venn diagram
 
+### Venn diagram
 
+```{r }
+new_col_549 <- paste(as.character(ssr_549_an$POS), ssr_549_an$ALT, sep = "-")
+new_col_550 <- paste(as.character(ssr_550_an$POS), ssr_550_an$ALT, sep = "-")
+new_col_551 <- paste(as.character(ssr_551_an$POS), ssr_551_an$ALT, sep = "-")
+new_col_552 <- paste(as.character(ssr_552_an$POS), ssr_552_an$ALT, sep = "-")
+
+ggVennDiagram(list(new_col_549,new_col_550,new_col_551,new_col_552),
+              category.names = c("SRA 549", "SRA 550", "SRA 551", "SRA 552"),
+              set_size = 3.5) + 
+  ggplot2::scale_fill_gradient(high = "#085078", low = "#24C6DC")+ 
+  labs(title = "Overlappende mutatie's per SRA sample",
+       caption = "Overlappende mutatie's per sra sample op basis van de positie en alternatieve nucleotide.\n Gemaakt met de geanoteerde vcf bestanden van deze samples.")+
+  theme(plot.caption = element_text(hjust = 0))
+```
+
+Hierboven zie je de ven diagram van de overlappende mutaties per sample op basis van alternatieve nucleotide. Wat hier opvalt is dat de totale hoeveelheid gedeelde mutatie's maar 8% geteeld is over alle mutatie's heen, en dat alle samples op zich zelf toch wel een een significante hoeveelheid mutatie's hebben.
+
+# Week 6
+
+## maandag
+Het doel van vandaag is verder werken aan de ven diagram
 
 
 # bibliografie 
@@ -442,5 +683,9 @@ Versie ?
 https://multiqc.info/
 
 [6]BWA-mem2
-Versie 
+Versie ?
 https://github.com/bwa-mem2/bwa-mem2
+
+[7]Freebayes
+versie ?
+https://github.com/freebayes/freebayes

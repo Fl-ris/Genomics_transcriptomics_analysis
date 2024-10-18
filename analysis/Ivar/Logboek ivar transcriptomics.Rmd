@@ -13,6 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #
 libs
+
+
 ```{r}
 library("DESeq2")
 ```
@@ -29,7 +31,7 @@ library("DESeq2")
 
 names vector van floris
 ```{r}
-transcrip_table <- read.delim("/students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/featurecounts_output/count.out",header = FALSE,skip = 2)
+transcrip_table <- read.delim("/Users/ivarl/Desktop/count.out",header = FALSE,skip = 2)
 
 names(transcrip_table) <- c("Gene_id","Chr","Start","End","Strand","Length","SRR21754408","SRR21754418","SRR21754419","SRR21754420","SRR21754421","SRR21754422","SRR21754423")
 transcrip_table
@@ -56,7 +58,8 @@ conditie_matrix <- data.frame(
 transpose <- data.frame(t(conditie_matrix))
 # corigeer frame voor input functie deseq2
 # condities moeten factoren zijn voor input functie
-conditie_matrix <- data.frame(as.factor(transpose$X1),as.factor(transpose$X2),as.factor(transpose$X3)
+conditie_matrix <- data.frame(as.factor(transpose$X1),as.factor(transpose$X2),as.factor(transpose$X3))
+                              
 names(conditie_matrix) <- c("sample","group","type")
 head(conditie_matrix)
 ```
@@ -79,12 +82,88 @@ dds <- DESeqDataSetFromMatrix(countData = cts,
                               design = ~ group)
 dds
 ```
-```{r}
+
 
 ```{r}
 deseq <- DESeq(dds)
 results(deseq)
 ```
+
+
+```{r}
+# vergelijk groep
+#resultaat_deseq <- results(deseq, name = "group_young_vs_old")
+resultaat_deseq <- results(deseq, contrast = c("group", "young","old"))
+resultaat_deseq
+```
+
+```{r}
+resultsNames(deseq)
+```
+
+```{r}
+deseq_shrink <- lfcShrink(deseq, coef = "group_young_vs_old", type = "apeglm")
+deseq_shrink
+```
+
+```{r}
+#deseq_orderd <- resultaat_deseq[order(resultaat_deseq$padj)]
+```
+
+```{r}
+summary(deseq)
+```
+
+```{r}
+sum(resultaat_deseq$padj < 0.1, na.rm=TRUE)
+```
+
+```{r}
+deseq_05 <- results(deseq, alpha=0.05)
+summary(deseq_05)
+```
+
+```{r}
+plotMA(resultaat_deseq, ylim=c(-2,2))
+```
+
+```{r}
+plotMA(deseq_shrink, ylim=c(-3,3))
+```
+```{r}
+#BiocManager::install("EnhancedVolcano")
+library("EnhancedVolcano")
+```
+
+```{r}
+EnhancedVolcano(deseq_shrink, x="log2FoldChange", y = "padj",lab = rownames(deseq_shrink), title = "young versus old", pCutoff = 0.05,FCcutoff = 2, ylim = c(0,50),legendPosition = "none",subtitle = "FDR <= 0.05 and absolute FC >= 2")
+```
+
+
+```{r}
+
+## Simple function for plotting a Volcano plot, returns a ggplot object
+deseq.volcano <- function(res, datasetName) {
+  return(EnhancedVolcano(res, x = 'log2FoldChange', y = 'padj',
+                         lab=rownames(res),
+                         title = paste(datasetName, "young vs old"),
+                         subtitle = bquote(italic('FDR <= 0.05 and absolute FC >= 2')),
+                         # Change text and icon sizes
+                         labSize = 3, pointSize = 1.5, axisLabSize=10, titleLabSize=12,
+                         subtitleLabSize=8, captionLabSize=10,
+                         # Disable legend
+                         legendPosition = "none",
+                         ylim = c(0, 50),
+                         # Set cutoffs
+                         pCutoff = 0.05, FCcutoff = 2))
+}
+
+## Note: input data is the corrected DESeq2 output using the 'lfcShrink' function (see chapter 4)
+deseq.volcano(res = deseq_shrink, datasetName = "test",)
+```
+
+```{r}
+plotCounts(deseq_shrink, "Phactr3", intgroup = "group")
 ```
 
 
