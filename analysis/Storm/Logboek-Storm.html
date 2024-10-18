@@ -359,6 +359,7 @@ display: none;
 
 <pre class="r"><code>library(knitr)
 library(fastqcr)</code></pre>
+<pre><code>## Warning: package &#39;fastqcr&#39; was built under R version 4.4.1</code></pre>
 <pre class="r"><code># geeft een telling van regels, woorden, karakters en leestijd weer
 wordcountaddin:::text_stats()</code></pre>
 <table>
@@ -372,32 +373,31 @@ wordcountaddin:::text_stats()</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">Word count</td>
-<td align="left">11312</td>
-<td align="left">9086</td>
+<td align="left">11994</td>
+<td align="left">9734</td>
 </tr>
 <tr class="even">
 <td align="left">Character count</td>
-<td align="left">63785</td>
-<td align="left">69650</td>
+<td align="left">68016</td>
+<td align="left">74099</td>
 </tr>
 <tr class="odd">
 <td align="left">Sentence count</td>
-<td align="left">989</td>
+<td align="left">1037</td>
 <td align="left">Not available</td>
 </tr>
 <tr class="even">
 <td align="left">Reading time</td>
-<td align="left">56.6 minutes</td>
-<td align="left">45.4 minutes</td>
+<td align="left">60 minutes</td>
+<td align="left">48.7 minutes</td>
 </tr>
 </tbody>
 </table>
 <div id="inleiding" class="section level1">
 <h1>Inleiding</h1>
-<p>(WAT MOET ER IN DE INLEIDING?)</p>
-</div>
-<div id="week-1-opzetten-onderzoek" class="section level1">
-<h1>Week 1 | Opzetten Onderzoek</h1>
+<p>(WAT MOET ER IN DE INLEIDING?) (BVOEG LIJST TOE MET TOOLS EN VERSIE)
+(REFEREER GESTOLEN AFBEELDINGEN, in caption) # Week 1 | Opzetten
+Onderzoek</p>
 <div id="maken-onderzoeksteam" class="section level2">
 <h2>Maken Onderzoeksteam</h2>
 <p>Het team waarin wij het genomics &amp; transcriptomics onderzoek
@@ -664,8 +664,9 @@ gebruikt wordt.</p>
 
 /students/2024-2025/Thema05/3dconformatieChromatine/SRA/ --max-size 200G </code></pre>
 <p>Hierboven zie je het bash script voor het downloaden van de SRA
-bestanden. Dit script is geschreven door Jarno. In de eerste regel wordt
-een SRA accesion lijst aangegeven in de vorm van een .csv bestand
+bestanden.(WELKE SRA BESTANDEN, ZODAT ANDERE DIE OOK KAN VINDEN) Dit
+script is geschreven door Jarno. In de eerste regel wordt een SRA
+accesion lijst aangegeven in de vorm van een .csv bestand
 <em>(SraAccList.csv)</em>. Dit is een tekstbestand dat een lijst met de
 namen van de benodigde SRA bestanden bevat. Door deze lijst aan te geven
 wordt er op de NCBI database gezocht naar de bestanden die in het .csv
@@ -702,7 +703,8 @@ gerelateerde taken.</p>
 van onze plan van aanpak. Daarin heeft Floris verteld over het onderzoek
 in het artikel dat wij hebben gekozen. Daarbij heeft hij verteld wat de
 onderzoekers hebben gedaan in het onderzoek, de gebruikte materialen en
-methoden uitgelegd, en wat wij als team met dit onderzoek gaan doen.</p>
+methoden uitgelegd, en wat wij als team met dit onderzoek gaan doen.
+(LINK NAAR DE PRESENTATIE. BESTADN IN REPO)</p>
 </div>
 <div id="uitpakken-van-de-data" class="section level2">
 <h2>Uitpakken van de data</h2>
@@ -879,12 +881,9 @@ waarden</li>
 <li>De blauwe lijn geeft de gemiddelde kwaliteit weer</li>
 </ul>
 <p>De y-as bestaat uit de kwaliteitsscores. De achtergrond van de
-grafiek geeft deelt de y-as op in 3 verschillende kwaliteitsgroepen:</p>
-<ul>
-<li>Goed (Groen)</li>
-<li>Redelijk (Oranje)</li>
-<li>Slecht (Rood)</li>
-</ul>
+grafiek geeft deelt de y-as op in 3 verschillende kwaliteitsgroepen:
+(PROCENTUELE ZEKERHEID TOEVOEGEN) * Goed (Groen) * Redelijk (Oranje) *
+Slecht (Rood)</p>
 <p>FastQC geeft een waarschuwing op dit onderdeel als het onderste
 kwartiel voor een base lager is dan 10, of als de mediaan voor een base
 lager is dan 25. FastQC levert een fout op bij dit onderdeel als het
@@ -1081,6 +1080,7 @@ cd ../
 cd fastqc_output
 pwd
 multiqc .</code></pre>
+<p>(WELK FOLDER IS HET STARTPUNT)</p>
 <p>Het script hierboven is het script dat wij hebben gebruikt om multiqc
 uit te voeren. De pwd commando’s zijn er om de huidige working directory
 te printen en zijn dus irrelevant. Vervolgens gaan wij met een paar cd
@@ -1139,12 +1139,12 @@ MultiQC</em> </small></div>
 de reads. Uit de grafiek is meteen te identificeren welke lijn bij welke
 groep hoort door de lengte van de lijnen. De rode, langere lijnen
 behoren tot de samples met veel duplicaten en een lengte van 250bp. De
-groene, kortere lijnen behoren tot de samples met normale niveaus. Wat
-meteen opvalt, is dat de samples met veel duplicaten niet passeren bij
-dit onderdeel. Een sample passeert niet bij dit deel als het onderste
-kwartiel voor een base kleiner is dan 5 of als de mediaan voor een base
-kleiner is dan 20. Bij de gefaalde samples zien wij in ieder geval dat
-de mediaan op een duur lager is dan 20.</p>
+groene, kortere lijnen behoren tot de samples met normale niveaus.(WAT
+IS NORMAAL) Wat meteen opvalt, is dat de samples met veel duplicaten
+niet passeren bij dit onderdeel. Een sample passeert niet bij dit deel
+als het onderste kwartiel voor een base kleiner is dan 5 of als de
+mediaan voor een base kleiner is dan 20. Bij de gefaalde samples zien
+wij in ieder geval dat de mediaan op een duur lager is dan 20.</p>
 <p>Wat nog meer opvalt bij deze grafiek, is dat de kwaliteit van de
 gefaalde samples plots een stuk dalen rond het 105bp tot 115bp gebied.
 Waardoor dit komt, is niet zeker te zeggen. Een mogelijke verklaring is
@@ -2817,6 +2817,8 @@ script dat Ivar en ik hebben geschreven ziet er als volgt uit:</p>
                   &#39;ILLUMINACLIP:/students/2024-2025/Thema05/3dconformatieChromatineTrimmomatic/adapters/TruSeq3-SE.fa:2:30:10 &#39; \
                   &#39;MINLEN:40 &#39; \
                   &#39;SLIDINGWINDOW:4:20&#39;</code></pre>
+<p>(NOTEER HOEVEEL READS ZIJN GEDROPT OF OCERLEFD) (RESULTATEN MISLUKTE
+POGINGEN)</p>
 <p>Als input geven wij Trimmomatic 2 bestanden: de forward- en de
 reverse-reads. Wij geven 2 input bestanden, omdat onze data paired-end
 data is. Als ouptput geeft Trimmomatic 4 .fastq bestanden:
@@ -3144,6 +3146,8 @@ samtools index -@80 dedup_SRR26980549.bam dedup_SRR26980549.bai  &amp;
 # Met parallel:
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;samtools index -@80 samtools_output/dedup_{}.bam samtools_output/dedup_{}.bai&#39; &amp;
 </code></pre>
+<p>Voor een duidelijker en uitgebreider uitleg over deze stap, kan je in
+het logboek van Floris kijken.</p>
 </div>
 <div id="variant-calling" class="section level2">
 <h2>Variant Calling</h2>
@@ -3176,6 +3180,273 @@ gebruiken. Een score van 30 zou betekenen dat er met 99.999% zekerheid
 een variant zit.</p>
 <p><em>Dit script is geschreven door Floris</em></p>
 <pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;java -jar /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -I variant_calling/variants{}.vcf --minQualScore 30 --outputVcf variant_calling/filterd_variant_{}.vcf&#39;</code></pre>
+<p><br />
+<br />
+</p>
+</div>
+</div>
+<div id="week-4-variant-filtering-visualisatie" class="section level1">
+<h1>Week 4 | Variant Filtering &amp; Visualisatie</h1>
+<div id="filteren-.vcf-op-.bed" class="section level2">
+<h2>Filteren .vcf op .bed</h2>
+<p>Variant filtering is een stap die bestaat uit het identificeren van
+zeer betrouwbare varianten en het verwijderen van varianten die
+incorrect worden aangeroepen. De variant filtering werd vroeger meestal
+buiten beschouwing gelaten bij diepere tests, ook al is aangetoond dat
+deze de nauwkeurigheid van variantoproepen aanzienlijk verbetert.</p>
+<p>Er zijn verschillende factoren waarop varianten gefilterd worden,
+zoals betrouwbaarheid of gelijkenis. Op deze factoren kunnen gefilterd
+worden om verschillende vragen te beantwoorden, zoals “Welke varianten
+worden gedeeld over verschillende samples”. Deze vraag ga ik
+beantwoorden door de varianten te filteren op gelijkenis, met doel om
+alleen de varianten over te houden die alle 4 van onze samples delen.
+Hiervoor heb ik r gebruikt, omdat r een goed programma is om data in te
+bekijken en bewerken. Ook omdat ik enige ervaring heb in r.</p>
+<p>Om deze taak te kunnen voltooien heb ik gebruik gemaakt van de
+library GenomicRanges. Dit is een library die behoort tot de
+bioconductor biblioheek. Met GenomicRanges kan een class gemaakt worden
+die ranges van coördinaten op en genomische schaal bevatten. Ook bevat
+de library methoden om GenomicRanges te verwerken.</p>
+<p>Hieronder staat de code die geschreven is voor het filteren van een
+enkel bestand:</p>
+<pre class="r"><code># lees het .vcf bestand in
+variants49 &lt;- read.delim(&quot;/students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_SRR26980549.vcf&quot;,
+                       header = TRUE, 
+                       # zet de seperator op \t zodat de kolommen juist opgesplitst worden
+                       sep = &quot;\t&quot;,
+                       stringsAsFactors = FALSE,
+                       # sla de header over
+                       skip = 129)</code></pre>
+<p>Meestal worden bestanden gesplit op “,” of “;”, maar de opmaak van
+vcf v4.2 is zo opgezet dat je op “ moet splitsen voor de info over
+ranges, en”;” voor extra informatie.</p>
+<hr />
+<p>Hier een klein voorbeeld van de twee seperators op een .vcf
+bestand:</p>
+<pre><code>##        X.CHROM     POS ID REF ALT QUAL FILTER
+## 1  NC_000067.7 3050000  .   N   A  133      .
+## 2  NC_000067.7 3050782  .   A   T   37      .
+## 3  NC_000067.7 3050791  .   A   G   45      .
+## 4  NC_000067.7 3050978  .   C   G   83      .
+## 5  NC_000067.7 3051032  .   G   A   40      .
+## 6  NC_000067.7 3051423  .   T   G  129      .
+## 7  NC_000067.7 3051521  .   A   G   58      .
+## 8  NC_000067.7 3051575  .   T   C   58      .
+## 9  NC_000067.7 3051585  .   T   G  116      .
+## 10 NC_000067.7 3051647  .   A   G   98      .
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   INFO
+## 1  AB=0;ABP=0;AC=2;AF=1;AN=2;AO=5;CIGAR=1X;DP=5;DPB=5;DPRA=0;EPP=3.44459;EPPR=0;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=0;NS=1;NUMALT=1;ODDS=11.5366;PAIRED=0.4;PAIREDR=0;PAO=0;PQA=0;PQR=0;PRO=0;QA=173;QR=0;RO=0;RPL=0;RPP=13.8677;RPPR=0;RPR=5;RUN=1;SAF=2;SAP=3.44459;SAR=3;SRF=0;SRP=0;SRR=0;TYPE=snp;ANN=A|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3050000C&gt;A||||||,A|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3050000G&gt;A||||||,A|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3050000T&gt;A||||||
+## 2                                                                                                                                                                                                          AB=0.363636;ABP=4.78696;AC=1;AF=0.5;AN=2;AO=4;CIGAR=1X;DP=11;DPB=11;DPRA=0;EPP=5.18177;EPPR=5.80219;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=60;NS=1;NUMALT=1;ODDS=8.59209;PAIRED=0.5;PAIREDR=0.571429;PAO=0;PQA=0;PQR=0;PRO=0;QA=124;QR=235;RO=7;RPL=2;RPP=3.0103;RPPR=3.32051;RPR=2;RUN=1;SAF=3;SAP=5.18177;SAR=1;SRF=3;SRP=3.32051;SRR=4;TYPE=snp;ANN=T|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3050782A&gt;T||||||
+## 3                                                                                                                                                                                                              AB=0.307692;ABP=7.18621;AC=1;AF=0.5;AN=2;AO=4;CIGAR=1X;DP=13;DPB=13;DPRA=0;EPP=11.6962;EPPR=7.35324;GTI=0;LEN=1;MEANALT=2;MQM=60;MQMR=60;NS=1;NUMALT=1;ODDS=10.5497;PAIRED=0.5;PAIREDR=0.5;PAO=0;PQA=0;PQR=0;PRO=0;QA=148;QR=232;RO=8;RPL=1;RPP=5.18177;RPPR=4.09604;RPR=3;RUN=1;SAF=3;SAP=5.18177;SAR=1;SRF=3;SRP=4.09604;SRR=5;TYPE=snp;ANN=G|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3050791A&gt;G||||||
+## 4                                                                                                                                                                                                    AB=0.357143;ABP=5.49198;AC=1;AF=0.5;AN=2;AO=5;CIGAR=1X;DP=14;DPB=14;DPRA=0;EPP=3.44459;EPPR=3.25157;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=58.2222;NS=1;NUMALT=1;ODDS=19.2662;PAIRED=0.6;PAIREDR=0.888889;PAO=0;PQA=0;PQR=0;PRO=0;QA=185;QR=333;RO=9;RPL=2;RPP=3.44459;RPPR=9.04217;RPR=3;RUN=1;SAF=2;SAP=3.44459;SAR=3;SRF=4;SRP=3.25157;SRR=5;TYPE=snp;ANN=G|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3050978C&gt;G||||||
+## 5                                                                                                                                                                                                              AB=0.375;ABP=4.09604;AC=1;AF=0.5;AN=2;AO=3;CIGAR=1X;DP=8;DPB=8;DPRA=0;EPP=3.73412;EPPR=6.91895;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=60;NS=1;NUMALT=1;ODDS=9.22813;PAIRED=0.666667;PAIREDR=0.6;PAO=0;PQA=0;PQR=0;PRO=0;QA=111;QR=185;RO=5;RPL=2;RPP=3.73412;RPPR=6.91895;RPR=1;RUN=1;SAF=1;SAP=3.73412;SAR=2;SRF=2;SRP=3.44459;SRR=3;TYPE=snp;ANN=A|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3051032G&gt;A||||||
+## 6                                                                                                                                                                                                                AB=0.6;ABP=3.87889;AC=1;AF=0.5;AN=2;AO=6;CIGAR=1X;DP=10;DPB=10;DPRA=0;EPP=3.0103;EPPR=5.18177;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=60;NS=1;NUMALT=1;ODDS=14.6295;PAIRED=0.833333;PAIREDR=0.75;PAO=0;PQA=0;PQR=0;PRO=0;QA=222;QR=148;RO=4;RPL=3;RPP=3.0103;RPPR=3.0103;RPR=3;RUN=1;SAF=2;SAP=4.45795;SAR=4;SRF=3;SRP=5.18177;SRR=1;TYPE=snp;ANN=G|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3051423T&gt;G||||||
+## 7                                                                                                                                                                                                                         AB=0.75;ABP=5.18177;AC=1;AF=0.5;AN=2;AO=3;CIGAR=1X;DP=4;DPB=4;DPRA=0;EPP=3.73412;EPPR=5.18177;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=60;NS=1;NUMALT=1;ODDS=2.32893;PAIRED=1;PAIREDR=1;PAO=0;PQA=0;PQR=0;PRO=0;QA=111;QR=37;RO=1;RPL=2;RPP=3.73412;RPPR=5.18177;RPR=1;RUN=1;SAF=0;SAP=9.52472;SAR=3;SRF=0;SRP=5.18177;SRR=1;TYPE=snp;ANN=G|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3051521A&gt;G||||||
+## 8                                                                                                                                                                                                                         AB=0.75;ABP=5.18177;AC=1;AF=0.5;AN=2;AO=3;CIGAR=1X;DP=4;DPB=4;DPRA=0;EPP=3.73412;EPPR=5.18177;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=60;NS=1;NUMALT=1;ODDS=2.32893;PAIRED=1;PAIREDR=1;PAO=0;PQA=0;PQR=0;PRO=0;QA=111;QR=37;RO=1;RPL=0;RPP=9.52472;RPPR=5.18177;RPR=3;RUN=1;SAF=2;SAP=3.73412;SAR=1;SRF=0;SRP=5.18177;SRR=1;TYPE=snp;ANN=C|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3051575T&gt;C||||||
+## 9                                                                                                                                                                                                                                                          AB=0;ABP=0;AC=2;AF=1;AN=2;AO=4;CIGAR=1X;DP=4;DPB=4;DPRA=0;EPP=3.0103;EPPR=0;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=0;NS=1;NUMALT=1;ODDS=10.1503;PAIRED=1;PAIREDR=0;PAO=0;PQA=0;PQR=0;PRO=0;QA=148;QR=0;RO=0;RPL=0;RPP=11.6962;RPPR=0;RPR=4;RUN=1;SAF=2;SAP=3.0103;SAR=2;SRF=0;SRP=0;SRR=0;TYPE=snp;ANN=G|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3051585T&gt;G||||||
+## 10                                                                                                                                                                                                                     AB=0.5;ABP=3.0103;AC=1;AF=0.5;AN=2;AO=5;CIGAR=1X;DP=10;DPB=10;DPRA=0;EPP=3.44459;EPPR=13.8677;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=60;NS=1;NUMALT=1;ODDS=19.05;PAIRED=0.8;PAIREDR=0.8;PAO=0;PQA=0;PQR=0;PRO=0;QA=185;QR=185;RO=5;RPL=3;RPP=3.44459;RPPR=6.91895;RPR=2;RUN=1;SAF=3;SAP=3.44459;SAR=2;SRF=4;SRP=6.91895;SRR=1;TYPE=snp;ANN=G|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3051647A&gt;G||||||
+##                     FORMAT                          unknown
+## 1  GT:AD:AO:DP:PL:QA:QR:RO     1/1:0,5:5:5:159,15,0:173:0:0
+## 2  GT:AD:AO:DP:PL:QA:QR:RO  0/1:7,4:4:11:82,0,182:124:235:7
+## 3  GT:AD:AO:DP:PL:QA:QR:RO  0/1:8,4:4:13:99,0,174:148:232:8
+## 4  GT:AD:AO:DP:PL:QA:QR:RO 0/1:9,5:5:14:128,0,260:185:333:9
+## 5  GT:AD:AO:DP:PL:QA:QR:RO   0/1:5,3:3:8:79,0,146:111:185:5
+## 6  GT:AD:AO:DP:PL:QA:QR:RO 0/1:4,6:6:10:173,0,107:222:148:4
+## 7  GT:AD:AO:DP:PL:QA:QR:RO     0/1:1,3:3:4:91,0,25:111:37:1
+## 8  GT:AD:AO:DP:PL:QA:QR:RO     0/1:1,3:3:4:91,0,25:111:37:1
+## 9  GT:AD:AO:DP:PL:QA:QR:RO     1/1:0,4:4:4:137,12,0:148:0:0
+## 10 GT:AD:AO:DP:PL:QA:QR:RO 0/1:5,5:5:10:140,0,140:185:185:5</code></pre>
+<p>Hierboven zie je de vorm van een .vcf (V4.2) bestand gesplit op “/t”.
+Er zijn 8 verschillende kolommen die belangrijk kunnen zijn bij het
+filteren. Hieronder een tabel waarin staat wat de kolommen
+betekenen:</p>
+<table>
+<colgroup>
+<col width="3%" />
+<col width="96%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Kolom</th>
+<th>Informatie</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>X.CHROM</td>
+<td>De naam van de sequentie (meestal een chromosoom) waarop de variant
+wordt aangeroepen. Deze sequentie staat gewoonlijk bekend als ‘de
+referentiesequentie’, dat wil zeggen de sequentie waartegen het gegeven
+sample varieert.</td>
+</tr>
+<tr class="even">
+<td>POS</td>
+<td>De positie van de variatie op de gegeven sequentie.</td>
+</tr>
+<tr class="odd">
+<td>REF</td>
+<td>De referentiebasis (of basen in het geval van een indel) op de
+gegeven positie op de gegeven referentie sequentie.</td>
+</tr>
+<tr class="even">
+<td>ALT</td>
+<td>De lijst met alternatieve allelen op deze positie.</td>
+</tr>
+<tr class="odd">
+<td>ID</td>
+<td>De identificatie van de variant, bijvoorbeeld een dbSNP
+rs-identificator, of, indien onbekend, een “.”. Meerdere ID’s worden
+gesplit op “;”.</td>
+</tr>
+<tr class="even">
+<td>QUAL</td>
+<td>Een kwaliteitsscore die verband houdt met de gevolgtrekking van de
+gegeven allelen.</td>
+</tr>
+<tr class="odd">
+<td>FILTER</td>
+<td>Een flag die aangeeft welke van een bepaalde set filters de variatie
+heeft gefaald of PASS als alle filters met succes zijn geslaagd.</td>
+</tr>
+<tr class="even">
+<td>INFO</td>
+<td>Een uitbreidbare lijst met key-value pairs (velden) die de variatie
+beschrijven. Meerdere velden worden gescheiden door puntkomma’s met
+optionele waarden in de notatie: <key>=<data>[,data].</td>
+</tr>
+</tbody>
+</table>
+<p><small> <em>Figuur 35: Uitleg kolommen .vcf bestand</em> </small></p>
+<p>Met de informatie uit deze kolommen kan je een GRange object maken.
+Daarom heb ik “/t” als seperator gebruikt.</p>
+<p><br />
+</p>
+<p>Ook is “;” te gebruiken als seperator. Hierdoor krijg je de kolommen
+met overige informatie te zien.</p>
+<pre><code>##                                                                V1          V2
+## 1  #CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tunknown            
+## 2                   NC_000067.7\t3050000\t.\tN\tA\t133.0\t.\tAB=0       ABP=0
+## 3             NC_000067.7\t3050782\t.\tA\tT\t37.0\t.\tAB=0.363636 ABP=4.78696
+## 4             NC_000067.7\t3050791\t.\tA\tG\t45.0\t.\tAB=0.307692 ABP=7.18621
+## 5             NC_000067.7\t3050978\t.\tC\tG\t83.0\t.\tAB=0.357143 ABP=5.49198
+## 6                NC_000067.7\t3051032\t.\tG\tA\t40.0\t.\tAB=0.375 ABP=4.09604
+## 7                 NC_000067.7\t3051423\t.\tT\tG\t129.0\t.\tAB=0.6 ABP=3.87889
+## 8                 NC_000067.7\t3051521\t.\tA\tG\t58.0\t.\tAB=0.75 ABP=5.18177
+## 9                 NC_000067.7\t3051575\t.\tT\tC\t58.0\t.\tAB=0.75 ABP=5.18177
+## 10                  NC_000067.7\t3051585\t.\tT\tG\t116.0\t.\tAB=0       ABP=0
+##      V3     V4   V5   V6       V7    V8     V9    V10         V11          V12
+## 1                                                                             
+## 2  AC=2   AF=1 AN=2 AO=5 CIGAR=1X  DP=5  DPB=5 DPRA=0 EPP=3.44459       EPPR=0
+## 3  AC=1 AF=0.5 AN=2 AO=4 CIGAR=1X DP=11 DPB=11 DPRA=0 EPP=5.18177 EPPR=5.80219
+## 4  AC=1 AF=0.5 AN=2 AO=4 CIGAR=1X DP=13 DPB=13 DPRA=0 EPP=11.6962 EPPR=7.35324
+## 5  AC=1 AF=0.5 AN=2 AO=5 CIGAR=1X DP=14 DPB=14 DPRA=0 EPP=3.44459 EPPR=3.25157
+## 6  AC=1 AF=0.5 AN=2 AO=3 CIGAR=1X  DP=8  DPB=8 DPRA=0 EPP=3.73412 EPPR=6.91895
+## 7  AC=1 AF=0.5 AN=2 AO=6 CIGAR=1X DP=10 DPB=10 DPRA=0  EPP=3.0103 EPPR=5.18177
+## 8  AC=1 AF=0.5 AN=2 AO=3 CIGAR=1X  DP=4  DPB=4 DPRA=0 EPP=3.73412 EPPR=5.18177
+## 9  AC=1 AF=0.5 AN=2 AO=3 CIGAR=1X  DP=4  DPB=4 DPRA=0 EPP=3.73412 EPPR=5.18177
+## 10 AC=2   AF=1 AN=2 AO=4 CIGAR=1X  DP=4  DPB=4 DPRA=0  EPP=3.0103       EPPR=0
+##      V13   V14       V15    V16          V17  V18      V19          V20
+## 1                                                                      
+## 2  GTI=0 LEN=1 MEANALT=1 MQM=60       MQMR=0 NS=1 NUMALT=1 ODDS=11.5366
+## 3  GTI=0 LEN=1 MEANALT=1 MQM=60      MQMR=60 NS=1 NUMALT=1 ODDS=8.59209
+## 4  GTI=0 LEN=1 MEANALT=2 MQM=60      MQMR=60 NS=1 NUMALT=1 ODDS=10.5497
+## 5  GTI=0 LEN=1 MEANALT=1 MQM=60 MQMR=58.2222 NS=1 NUMALT=1 ODDS=19.2662
+## 6  GTI=0 LEN=1 MEANALT=1 MQM=60      MQMR=60 NS=1 NUMALT=1 ODDS=9.22813
+## 7  GTI=0 LEN=1 MEANALT=1 MQM=60      MQMR=60 NS=1 NUMALT=1 ODDS=14.6295
+## 8  GTI=0 LEN=1 MEANALT=1 MQM=60      MQMR=60 NS=1 NUMALT=1 ODDS=2.32893
+## 9  GTI=0 LEN=1 MEANALT=1 MQM=60      MQMR=60 NS=1 NUMALT=1 ODDS=2.32893
+## 10 GTI=0 LEN=1 MEANALT=1 MQM=60       MQMR=0 NS=1 NUMALT=1 ODDS=10.1503
+##                V21              V22   V23   V24   V25   V26    V27    V28  V29
+## 1                                                                             
+## 2       PAIRED=0.4        PAIREDR=0 PAO=0 PQA=0 PQR=0 PRO=0 QA=173   QR=0 RO=0
+## 3       PAIRED=0.5 PAIREDR=0.571429 PAO=0 PQA=0 PQR=0 PRO=0 QA=124 QR=235 RO=7
+## 4       PAIRED=0.5      PAIREDR=0.5 PAO=0 PQA=0 PQR=0 PRO=0 QA=148 QR=232 RO=8
+## 5       PAIRED=0.6 PAIREDR=0.888889 PAO=0 PQA=0 PQR=0 PRO=0 QA=185 QR=333 RO=9
+## 6  PAIRED=0.666667      PAIREDR=0.6 PAO=0 PQA=0 PQR=0 PRO=0 QA=111 QR=185 RO=5
+## 7  PAIRED=0.833333     PAIREDR=0.75 PAO=0 PQA=0 PQR=0 PRO=0 QA=222 QR=148 RO=4
+## 8         PAIRED=1        PAIREDR=1 PAO=0 PQA=0 PQR=0 PRO=0 QA=111  QR=37 RO=1
+## 9         PAIRED=1        PAIREDR=1 PAO=0 PQA=0 PQR=0 PRO=0 QA=111  QR=37 RO=1
+## 10        PAIRED=1        PAIREDR=0 PAO=0 PQA=0 PQR=0 PRO=0 QA=148   QR=0 RO=0
+##      V30         V31          V32   V33   V34   V35         V36   V37   V38
+## 1                                                                          
+## 2  RPL=0 RPP=13.8677       RPPR=0 RPR=5 RUN=1 SAF=2 SAP=3.44459 SAR=3 SRF=0
+## 3  RPL=2  RPP=3.0103 RPPR=3.32051 RPR=2 RUN=1 SAF=3 SAP=5.18177 SAR=1 SRF=3
+## 4  RPL=1 RPP=5.18177 RPPR=4.09604 RPR=3 RUN=1 SAF=3 SAP=5.18177 SAR=1 SRF=3
+## 5  RPL=2 RPP=3.44459 RPPR=9.04217 RPR=3 RUN=1 SAF=2 SAP=3.44459 SAR=3 SRF=4
+## 6  RPL=2 RPP=3.73412 RPPR=6.91895 RPR=1 RUN=1 SAF=1 SAP=3.73412 SAR=2 SRF=2
+## 7  RPL=3  RPP=3.0103  RPPR=3.0103 RPR=3 RUN=1 SAF=2 SAP=4.45795 SAR=4 SRF=3
+## 8  RPL=2 RPP=3.73412 RPPR=5.18177 RPR=1 RUN=1 SAF=0 SAP=9.52472 SAR=3 SRF=0
+## 9  RPL=0 RPP=9.52472 RPPR=5.18177 RPR=3 RUN=1 SAF=2 SAP=3.73412 SAR=1 SRF=0
+## 10 RPL=0 RPP=11.6962       RPPR=0 RPR=4 RUN=1 SAF=2  SAP=3.0103 SAR=2 SRF=0
+##            V39   V40      V41
+## 1                            
+## 2        SRP=0 SRR=0 TYPE=snp
+## 3  SRP=3.32051 SRR=4 TYPE=snp
+## 4  SRP=4.09604 SRR=5 TYPE=snp
+## 5  SRP=3.25157 SRR=5 TYPE=snp
+## 6  SRP=3.44459 SRR=3 TYPE=snp
+## 7  SRP=5.18177 SRR=1 TYPE=snp
+## 8  SRP=5.18177 SRR=1 TYPE=snp
+## 9  SRP=5.18177 SRR=1 TYPE=snp
+## 10       SRP=0 SRR=0 TYPE=snp
+##                                                                                                                                                                                                                                                                                                                                                                                                                                         V42
+## 1                                                                                                                                                                                                                                                                                                                                                                                                                                          
+## 2  ANN=A|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3050000C&gt;A||||||,A|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3050000G&gt;A||||||,A|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3050000T&gt;A||||||\tGT:AD:AO:DP:PL:QA:QR:RO\t1/1:0,5:5:5:159,15,0:173:0:0
+## 3                                                                                                                                                                                                                                                   ANN=T|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3050782A&gt;T||||||\tGT:AD:AO:DP:PL:QA:QR:RO\t0/1:7,4:4:11:82,0,182:124:235:7
+## 4                                                                                                                                                                                                                                                   ANN=G|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3050791A&gt;G||||||\tGT:AD:AO:DP:PL:QA:QR:RO\t0/1:8,4:4:13:99,0,174:148:232:8
+## 5                                                                                                                                                                                                                                                  ANN=G|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3050978C&gt;G||||||\tGT:AD:AO:DP:PL:QA:QR:RO\t0/1:9,5:5:14:128,0,260:185:333:9
+## 6                                                                                                                                                                                                                                                    ANN=A|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3051032G&gt;A||||||\tGT:AD:AO:DP:PL:QA:QR:RO\t0/1:5,3:3:8:79,0,146:111:185:5
+## 7                                                                                                                                                                                                                                                  ANN=G|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3051423T&gt;G||||||\tGT:AD:AO:DP:PL:QA:QR:RO\t0/1:4,6:6:10:173,0,107:222:148:4
+## 8                                                                                                                                                                                                                                                      ANN=G|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3051521A&gt;G||||||\tGT:AD:AO:DP:PL:QA:QR:RO\t0/1:1,3:3:4:91,0,25:111:37:1
+## 9                                                                                                                                                                                                                                                      ANN=C|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3051575T&gt;C||||||\tGT:AD:AO:DP:PL:QA:QR:RO\t0/1:1,3:3:4:91,0,25:111:37:1
+## 10                                                                                                                                                                                                                                                     ANN=G|intergenic_region|MODIFIER|CHR_START-Gm26206|CHR_START-Gm26206|intergenic_region|CHR_START-Gm26206|||n.3051585T&gt;G||||||\tGT:AD:AO:DP:PL:QA:QR:RO\t1/1:0,4:4:4:137,12,0:148:0:0</code></pre>
+<p>Zoals je kan zien, zijn er heel veel kolommen aan overige informatie.
+Hiermee zijn verschillende dingen te bereiken, bijvoorbeeld filteren van
+varianten op berouwbaarheid door de allelfrequentie te gebruiken. Het
+filteren op betrouwbaarheid zijn in deze .vcf bestanden al gedaan, dus
+zijn deze kolommen verder niet meer nodig.</p>
+<hr />
+<p>Na het inladen van de data, maak een GRange object van de .vcf
+bestanden. Dat doe ik door het eerst in een IRange object te veranderen.
+Dat doe ik door de positie die in de POS kolom van elk .vcf bestand mee
+te geven aan zowel de start als end parameter. Wanneer het in een Irange
+object verandert,</p>
+<pre class="r"><code># maak een IRanges object van de .vcf data
+variants49_ranges &lt;- IRanges(start = variants49$POS,
+                  end = variants49$POS,)
+
+# maak een GRanges object van de .vcf data
+variant49_granges &lt;- GRanges(seqnames = variants49$X.CHROM,
+                   ranges = variants49_ranges)</code></pre>
+<pre class="r"><code># lees het .bed bestand in
+bed49 &lt;- read.delim(&quot;/students/2024-2025/Thema05/3dconformatieChromatine/samtools_output/dedeup_SRR26980549.bed&quot;, 
+                       header = FALSE, 
+                       stringsAsFactors = FALSE, 
+                       col.names = c(&quot;ID&quot;, &quot;Begin&quot;, &quot;End&quot;, &quot;File&quot;, &quot;Count&quot;, &quot;Strand&quot;))</code></pre>
+<pre class="r"><code># maak een IRanges object van de .bed data
+iranges_bed49 &lt;- IRanges(start = bed49$Begin,
+                         end = bed49$End)
+
+# maak een GRanges object van de .bed data
+granges_bed49 &lt;- GRanges(seqnames = bed49$ID,
+                      ranges = iranges_bed49)</code></pre>
+<pre class="r"><code># zoekt naar overlappende granges tussen de .vcf en .bed bestanden
+overlaps49 &lt;- DataFrame(findOverlaps(variant49_granges, granges_bed49))</code></pre>
+<pre class="r"><code># pak de kolom met rijnummers van overlappende granges
+# tel 130 rijen bij de rijnummers op om de header over te slaan
+queryhits49 &lt;- overlaps49$queryHits + 130</code></pre>
+<pre class="r"><code># lees het bestand in als tekst
+vcf49_tekst &lt;- readLines(&quot;/students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_SRR26980549.vcf&quot;)
+
+# lees alleen de header in
+vcf49_header &lt;- readLines(&quot;/students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_SRR26980549.vcf&quot;, n=130)</code></pre>
+<pre class="r"><code>setwd(&quot;/students/2024-2025/Thema05/3dconformatieChromatine/vcf_gedeelde_varianten&quot;)
+write(vcf49_header, &quot;gefilterd_SRR26980549.vcf&quot;)
+write(vcf49_tekst, &quot;gefilterd_SRR26980549.vcf&quot;, append = TRUE)</code></pre>
+<pre class="r"><code>gefilterd49 &lt;- read.delim(&quot;/students/2024-2025/Thema05/3dconformatieChromatine/vcf_gedeelde_varianten/gefilterd_SRR26980549.vcf&quot;,
+                          stringsAsFactors = FALSE,
+                          sep = &quot;\t&quot;,
+                          skip = 259)</code></pre>
 </div>
 </div>
 <div id="referenties" class="section level1">

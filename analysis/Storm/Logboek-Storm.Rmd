@@ -6,12 +6,18 @@ output:
   html_document:
 ---
 
-```{r}
-library(knitr)
-library(fastqcr)
+```{r, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
 ```
 
-```{r, message=FALSE}
+
+```{r, eval=TRUE}
+library(knitr)
+library(fastqcr)
+library(GenomicRanges)
+```
+
+```{r, eval=TRUE, message=FALSE}
 # geeft een telling van regels, woorden, karakters en leestijd weer
 wordcountaddin:::text_stats()
 ```
@@ -173,7 +179,7 @@ Om fouten te voorkomen die veroorzaakt kunnen worden door data van slechte kwali
 
 Dit is hoe de RawData bestanden eruit zien: 
 
-```{r}
+```{r, eval=TRUE}
 # lees de eerste 15 regels van het bestand
 FastQC_RawData_44 <- readLines("Afbeeldingen/FastQC_on_data_44__Webpage/Sample1_0394321_L001_R1_001_fastq_gz_fastqc/fastqc_data.txt", n =15)
 
@@ -304,7 +310,7 @@ FastQC geeft een waarschuwing bij dit onderdeel als een sequentie aanwezig is in
 
 Om FastQC op onze fastq bestanden met de genomics data uit te voeren is er geen moeilijk script vereist. Om fastq uit te kunnen voeren op onze data was het volgende script nodig:
 
-```{r, eval=FALSE}
+```{r}
 # zet de working directory naar de map met de fastq bestanden
 setwd("/students/2024-2025/Thema05/3dconformatieChromatine/fastq")
 
@@ -810,7 +816,8 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 ```
 
-(REFEREER NAAR ANDERE LOGBOEK)
+Voor een duidelijker en uitgebreider uitleg over deze stap, kan je in het logboek van Floris kijken.
+
 
 ## Variant Calling
 
@@ -836,6 +843,161 @@ Met --minQualScore wordt gefilterd op de waarschijnlijkheid dat de variant er da
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'java -jar /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -I variant_calling/variants{}.vcf --minQualScore 30 --outputVcf variant_calling/filterd_variant_{}.vcf'
 ```
 
+\
+\
+
+# Week 4 | Variant Filtering & Visualisatie
+
+## Filteren .vcf op .bed
+
+Variant filtering is een stap die bestaat uit het identificeren van zeer betrouwbare varianten en het verwijderen van varianten die incorrect worden aangeroepen. De variant filtering werd vroeger meestal buiten beschouwing gelaten bij diepere tests, ook al is aangetoond dat deze de nauwkeurigheid van variantoproepen aanzienlijk verbetert.
+
+Er zijn verschillende factoren waarop varianten gefilterd worden, zoals betrouwbaarheid of gelijkenis. Op deze factoren kunnen gefilterd worden om verschillende vragen te beantwoorden, zoals "Welke varianten worden gedeeld over verschillende samples". Deze vraag ga ik beantwoorden door de varianten te filteren op gelijkenis, met doel om alleen de varianten over te houden die alle 4 van onze samples delen. Hiervoor heb ik r gebruikt, omdat r een goed programma is om data in te bekijken en bewerken. Ook omdat ik enige ervaring heb in r.
+
+Om deze taak te kunnen voltooien heb ik gebruik gemaakt van de library GenomicRanges. Dit is een library die behoort tot de bioconductor biblioheek. Met GenomicRanges kan een class gemaakt worden die ranges van coördinaten op en genomische schaal bevatten. Ook bevat de library methoden om GenomicRanges te verwerken.
+
+Hieronder staat de code die geschreven is voor het filteren van een enkel bestand:
+
+```{r}
+# lees het .vcf bestand in
+variants49 <- read.delim("/students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_SRR26980549.vcf",
+                       header = TRUE, 
+                       # zet de seperator op \t zodat de kolommen juist opgesplitst worden
+                       sep = "\t",
+                       stringsAsFactors = FALSE,
+                       # sla de header over
+                       skip = 129)
+```
+
+Meestal worden bestanden gesplit op "," of ";", maar de opmaak van vcf v4.2 is zo opgezet dat je op "\t" moet splitsen voor de info over ranges, en ";" voor extra informatie.
+
+---
+
+Hier een klein voorbeeld van de twee seperators op een .vcf bestand:
+
+```{r, eval=TRUE, echo=FALSE}
+# lees het .vcf bestand in
+variants_demo <- read.delim("C:/Users/Gebruiker/Desktop/Genomics_transcriptomics_analysis/analysis/Storm/Data/variant_filter_demo.vcf",
+                       header = TRUE, 
+                       # zet de seperator op \t zodat de kolommen juist opgesplitst worden
+                       sep = "\t",
+                       stringsAsFactors = FALSE,
+                       # sla de header over
+                       skip = 129)
+
+# laat alleen de eerste 10 regels van het bestand zien
+head(variants_demo, n=10)
+```
+
+Hierboven zie je de vorm van een .vcf (V4.2) bestand gesplit op "/t". Er zijn 8 verschillende kolommen die belangrijk kunnen zijn bij het filteren. Hieronder een tabel waarin staat wat de kolommen betekenen:
+
+| Kolom   | Informatie                                                                                                                                                                                                                     |
+|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| X.CHROM | De naam van de sequentie (meestal een chromosoom) waarop de variant wordt aangeroepen. Deze sequentie staat gewoonlijk bekend als 'de referentiesequentie', dat wil zeggen de sequentie waartegen het gegeven sample varieert. |
+| POS     | De positie van de variatie op de gegeven sequentie.                                                                                                                                                                            |
+| REF     | De referentiebasis (of basen in het geval van een indel) op de gegeven positie op de gegeven referentie sequentie.                                                                                                             |
+| ALT     | De lijst met alternatieve allelen op deze positie.                                                                                                                                                                             |
+| ID      | De identificatie van de variant, bijvoorbeeld een dbSNP rs-identificator, of, indien onbekend, een ".". Meerdere ID's worden gesplit op ";".                                                                                   |
+| QUAL    | Een kwaliteitsscore die verband houdt met de gevolgtrekking van de gegeven allelen.                                                                                                                                            |
+| FILTER  | Een flag die aangeeft welke van een bepaalde set filters de variatie heeft gefaald of PASS als alle filters met succes zijn geslaagd.                                                                                          |
+| INFO    | Een uitbreidbare lijst met key-value pairs (velden) die de variatie beschrijven. Meerdere velden worden gescheiden door puntkomma's met optionele waarden in de notatie: <key>=<data>[,data].                                  |
+<small> *Figuur 35: Uitleg kolommen .vcf bestand* </small>
+
+Met de informatie uit deze kolommen kan je een GRange object maken. Daarom heb ik "/t" als seperator gebruikt.
+
+\
+
+Ook is ";" te gebruiken als seperator. Hierdoor krijg je de kolommen met overige informatie te zien. 
+
+```{r, eval=TRUE, echo=FALSE}
+# lees het .vcf bestand in
+variants_demo_slecht <- read.delim("C:/Users/Gebruiker/Desktop/Genomics_transcriptomics_analysis/analysis/Storm/Data/variant_filter_demo.vcf",
+                       header = FALSE, 
+                       # zet de seperator op ; zodat de kolommen onjuist opgesplitst worden
+                       sep = ";",
+                       stringsAsFactors = FALSE,
+                       # sla de header over
+                       skip = 129)
+
+# laat alleen de eerste 10 regels van het bestand zien
+head(variants_demo_slecht, n=10)
+```
+
+Zoals je kan zien, zijn er heel veel kolommen aan overige informatie. Hiermee zijn verschillende dingen te bereiken, bijvoorbeeld filteren van varianten op berouwbaarheid door de allelfrequentie te gebruiken. Het filteren op betrouwbaarheid zijn in deze .vcf bestanden al gedaan, dus zijn deze kolommen verder niet meer nodig.
+
+---
+
+Na het inladen van de data, maak een GRange object van de .vcf bestanden. Dat doe ik door het eerst in een IRange object te veranderen. Dat doe ik door de positie die in de POS kolom van elk .vcf bestand mee te geven aan zowel de start als end parameter. Wanneer het in een Irange object verandert, is het 
+
+
+
+```{r, eval=TRUE,echo=FALSE}
+# maak een IRanges object van de .vcf data
+variants_demo_ranges <- IRanges(start = variants_demo$POS,
+                  end = variants_demo$POS,)
+```
+
+
+
+```{r}
+# maak een IRanges object van de .vcf data
+variants49_ranges <- IRanges(start = variants49$POS,
+                  end = variants49$POS,)
+
+# maak een GRanges object van de .vcf data
+variant49_granges <- GRanges(seqnames = variants49$X.CHROM,
+                   ranges = variants49_ranges)
+```
+
+```{r}
+# lees het .bed bestand in
+bed49 <- read.delim("/students/2024-2025/Thema05/3dconformatieChromatine/samtools_output/dedeup_SRR26980549.bed", 
+                       header = FALSE, 
+                       stringsAsFactors = FALSE, 
+                       col.names = c("ID", "Begin", "End", "File", "Count", "Strand"))
+```
+
+```{r}
+# maak een IRanges object van de .bed data
+iranges_bed49 <- IRanges(start = bed49$Begin,
+                         end = bed49$End)
+
+# maak een GRanges object van de .bed data
+granges_bed49 <- GRanges(seqnames = bed49$ID,
+                      ranges = iranges_bed49)
+```
+
+```{r}
+# zoekt naar overlappende granges tussen de .vcf en .bed bestanden
+overlaps49 <- DataFrame(findOverlaps(variant49_granges, granges_bed49))
+```
+
+```{r}
+# pak de kolom met rijnummers van overlappende granges
+# tel 130 rijen bij de rijnummers op om de header over te slaan
+queryhits49 <- overlaps49$queryHits + 130
+```
+
+```{r}
+# lees het bestand in als tekst
+vcf49_tekst <- readLines("/students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_SRR26980549.vcf")
+
+# lees alleen de header in
+vcf49_header <- readLines("/students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_SRR26980549.vcf", n=130)
+```
+
+```{r}
+setwd("/students/2024-2025/Thema05/3dconformatieChromatine/vcf_gedeelde_varianten")
+write(vcf49_header, "gefilterd_SRR26980549.vcf")
+write(vcf49_tekst, "gefilterd_SRR26980549.vcf", append = TRUE)
+```
+
+```{r}
+gefilterd49 <- read.delim("/students/2024-2025/Thema05/3dconformatieChromatine/vcf_gedeelde_varianten/gefilterd_SRR26980549.vcf",
+                          stringsAsFactors = FALSE,
+                          sep = "\t",
+                          skip = 259)
+```
 
 
 
