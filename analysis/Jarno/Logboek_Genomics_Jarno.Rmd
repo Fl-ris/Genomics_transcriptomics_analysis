@@ -16,6 +16,8 @@ knitr::opts_chunk$set(out.width = '100%', dpi=500) # configuratie voor figuur gr
 library(dplyr)
 library(ggplot2)
 library(ggpubr)
+library(VariantAnnotation)
+
 
 ```
 
@@ -798,7 +800,7 @@ bamToBed -i aligned_sorted_SRR26980549.bam > aligned_sorted_SRR26980549.bed
 
 verschillende soorten visualisatie proberen
 
-```{r}
+```{r, echo=FALSE }
 #hier vraag ik of Biocmananger al is geinstaleerd en of het nodig is zo ja dan wordt het geinstalleerd met de quitly=TRUE wordt dit op de achtergrond gedaan.
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -808,9 +810,8 @@ BiocManager::install("VariantAnnotation")
 
 VariantAnnotation is een library die kijkt naar VCF files en er bepaalde dingen uit kan lezen die te maken hebben met Varianten. Dit wordt gehost door Biocoductor <https://bioconductor.org/packages/release/bioc/html/VariantAnnotation.html> er staat een kort maar krachtige uitleg van wat het kan: Annotatering van varianten, computeert amino zuur codering veranderiongen, voorspelling uitkomst van codering.
 
-```{r, }
+```{r}
 #hier wordt de eerder geinstaleerde Variannotatie library aangeroepen
-library(VariantAnnotation)
 
 #hier worden de 4 files in een variabele gezet met de sample code
 vcf_file_552 <- "/Users/Gebruiker/Desktop/data_genomics_SRR/annotated_SRR26980552.vcf"
@@ -824,10 +825,9 @@ vcf_data_file_551 <- readVcf(vcf_file_551, genome="GRCm39")
 vcf_data_file_550 <- readVcf(vcf_file_550, genome="GRCm39")
 vcf_data_file_549 <- readVcf(vcf_file_549, genome="GRCm39")
 
-head
 ```
 
-```{r, Figuuur 6:}
+```{r, fig.cap="Figuur 6:varianten types 4 samples"}
 #Dit zorgt ervoor dat de 4 barplots in 1 plaatje weergegeven worden
 par(mfrow=c(2,2))
 
@@ -894,8 +894,7 @@ Hier is een afkorting te lezen, deze afkorting geeft aan wat voor type variant d
 
 Deze tabel is gemaakt door floris en kan terug gevonden worden in zijn logboek.
 
-```{r, Figuuur 7:}
-library(ggplot2)
+```{r, fig.cap="Figuur 7:Distriebutie van Variant Posities"}
 
 #hier gebruik ik rowranges om de positie van de varianten uit de vcf data te krijgen en dan start() om de start positie er uit te halen.
 variable_poisitions <- start(rowRanges(vcf_data_file_552))
@@ -903,7 +902,7 @@ variable_poisitions <- start(rowRanges(vcf_data_file_552))
 #ggplot gebruik ik hier opmerkelijk is de binwidth deze is 1000000 Dit betekent dat elk bin (balkje) een breedte heeft van 1 miljoen (1,000,000) posities
 ggplot(data.frame(variable_poisitions), aes(x = variable_poisitions)) +
   geom_histogram(binwidth = 1000000, fill = "skyblue", color = "black") +
-  labs(title = "Distriebutie van Variant Positions",
+  labs(title = "Distriebutie van Variant Posities",
        x = "Position op het chromosoom",
        y = "tellingvan Varianten") +
   theme_minimal()
@@ -911,7 +910,7 @@ ggplot(data.frame(variable_poisitions), aes(x = variable_poisitions)) +
 
 Hier is een grafiek te zien waar de variant positie wordt weergegeven op het chromosoom. Deze grafiek is echter niet goed, dit is omdat alle chromosomen worden weergegeven en niet iets specifiek waardoor je eigenlijk alle varianten ziet op elk chromosoom door elkaar. Er is wel een piek wat opmerkelijk is.
 
-```{r, Figuuur 8:}
+```{r,}
 
 #hier lees ik de data op een andere manier in met read.delim dit is een tab-delimeneted wat betekent dat het door tabs gescheiden is, ook lees ik hem im vanaf lijn 129 omdat ik de header wil skippen dit is omdat hier geen info staat die ik nodig heb voor visualisatie ook wel een header. stringsafactors false zodat R de strings als characters laat en niet in factors om zet. 
 vcf_data_549 <- read.delim("/Users/Gebruiker/Desktop/data_genomics_SRR/annotated_SRR26980549.vcf", skip=129 ,stringsAsFactors = FALSE)
@@ -921,18 +920,18 @@ vcf_data_552 <- read.delim("/Users/Gebruiker/Desktop/data_genomics_SRR/annotated
 
 ```
 
-```{r, Figuuur 9:}
+```{r, fig.cap="Figuur 8: head voor chr inhoud"}
 #hier gebruik ik head om de eerste 6 lijnen te bekijken en de $X.chromosoom om te zien of ze allemaal met dezelfde chromosoom beginnen
-head(vcf_data_549$X.CHROM)
-head(vcf_data_550$X.CHROM)
-head(vcf_data_551$X.CHROM)
-head(vcf_data_552$X.CHROM)
+head(vcf_data_549)
+head(vcf_data_550)
+head(vcf_data_551)
+head(vcf_data_552)
 
 ```
 
 Ik voer deze head uit voor alle 4 samples omdat ik wil zien of ze allemaal dezelfde chr bevatten waardoor ik weet of ik die kan gebruiken voor de filter stap in de volgende code.
 
-```{r, Figuuur 10:}
+```{r, fig.cap="Figuur 9: Distributie van Variant posities Ebf1"}
 
 #Hier gebruik ik grepl niet grep omdat grepl kijkt in de kollomen of NC_000067.7 voorkomt en dan specifiek de vcf_data_549$X.CHROM kolom als deze true is word de hele row die deze bevat meegegeven aan de nieuwe variable.
 vcf_data_549_filterd <- vcf_data_549[grepl("NC_000077.7", vcf_data_549$X.CHROM),] 
@@ -984,7 +983,7 @@ Hier is de plot van sample 552 te zien, er is te zien dat aan het begin er een g
 
 ggplot2 is een library in R die gebruikt kan worden om uitgebreidere plots te maken dan dat base R dat kan. Dit houd in dat alles aan te passen is, van kleuren tot labels tot titels en nog veel meer andere stijl aanpassingen.
 
-```{r, Figuuur 11: Distributie van Variant posities Ebf1 over vier verschillende samples}
+```{r, fig.cap="Figuuur 10: Distributie van Variant posities Ebf1 over vier verschillende samples"}
 
 #hier wordt ggarrange gebruikt om de verschillende plots samen in 1 frame te zetten waardoor het makkelijker te vergelijken is in 1 opzicht. labels en de rows zorgen voor verduidelijking van wat de samples zijn en hoe de plots geordend zijn
 multi_pos_plot <- ggarrange(p_549, p_550, p_551, p_552,
@@ -996,14 +995,10 @@ annotate_figure(multi_pos_plot, top = text_grob("Distributie van Variant positie
                color = "black", size = 14))
 ```
 
-Hier zijn 4 plots te zien waar de positie van varianten zijn te zien in het Ebf1 gen (NC_000070.7).\
+Hier in figuur 10 zijn 4 plots te zien waar de positie van varianten zijn te zien in het Ebf1 gen (NC_000070.7).\
 Er is te zien dat er grote interessante pieken zijn waar dieper in moet worden gekeken wat voor varianten het zijn en of het op een exon zit of niet.
 
-```{r}
-head(vcf_data_549)
-```
-
-```{r, Figuuur 12: Distributie van Variant posities pax5}
+```{r, fig.cap="Figuur 11: Distributie van Variant posities pax5"}
 
 #Hier gebruik ik grepl niet grep omdat grepl kijkt in de kollomen of NC_000067.7 voorkomt en dan specifiek de vcf_data_549$X.CHROM kolom als deze true is word de hele row die deze bevat meegegeven aan de nieuwe variable.
 vcf_data_549_pax5 <- vcf_data_549[grepl("NC_000070.7", vcf_data_549$X.CHROM),] 
@@ -1051,9 +1046,9 @@ p_552 <- ggplot(data.frame(variable_poisitions_552), aes(x = variable_poisitions
 p_552
 ```
 
-In figuur 12 is een histogram te zien waar de distrubutie van varianten over chromosoom "NC_000070.7" wordt weergegeven. Dit sample heeft opmerkelijk 3 pieken aan het begin en 2 aan het einde. dit kan wijzen op een hotspot voor mutaties. Nu kijken of het bij de andere samples hetzelfde is.
+In figuur 11 is een histogram te zien waar de distrubutie van varianten over chromosoom "NC_000070.7" wordt weergegeven. Dit sample heeft opmerkelijk 3 pieken aan het begin en 2 aan het einde. dit kan wijzen op een hotspot voor mutaties. Nu kijken of het bij de andere samples hetzelfde is.
 
-```{r, Figuur 13: distributie van variantposities op pax5 over vier verschillende samples}
+```{r, fig.cap="Figuur 12: distributie van variantposities op pax5 over vier verschillende samples"}
 
 #hier wordt ggarrange gebruikt om de verschillende plots samen in 1 frame te zetten waardoor het makkelijker te vergelijken is in 1 opzicht. labels en de rows zorgen voor verduidelijking van wat de samples zijn en hoe de plots geordend zijn
 multi_pos_plot <- ggarrange(p_549, p_550, p_551, p_552,
@@ -1065,7 +1060,7 @@ annotate_figure(multi_pos_plot, top = text_grob("Distributie van Variant positie
                color = "black", size = 14))
 ```
 
-In figuur 13 zijn de 4 plots van varianten op de NC_000070.7 ook wel de Pax5. Er is te zien dat er 3 pieken zijn. Aan het begin en 2 aan het einde van de samples. Wat wel opmerkelijk is dat in sample 552 bij verre de hoogste peak heeft deze tikt bijna 1000 varianten aan op 1 positie. Wat het dus een interessante hotspot maakt en zegt dat er rond deze positie een diepere analyse moet gebeuren.
+In figuur 12 zijn de 4 plots van varianten op de NC_000070.7 ook wel de Pax5. Er is te zien dat er 3 pieken zijn. Aan het begin en 2 aan het einde van de samples. Wat wel opmerkelijk is dat in sample 552 bij verre de hoogste peak heeft deze tikt bijna 1000 varianten aan op 1 positie. Wat het dus een interessante hotspot maakt en zegt dat er rond deze positie een diepere analyse moet gebeuren.
 
 ## Week 5 - **Chromosoom namen wijzigen**
 
@@ -1132,7 +1127,7 @@ SnpEff is een tool voor het annoteren van varianten. SnpEff voegt analyses toe z
 
 ## Resultaten / Visualisatie logboek teamgenoten
 
-![Figuur 14: Resulaten SnpEff](images/clipboard-1549627657.png)
+![Figuur 13: Resulaten SnpEff](images/clipboard-1549627657.png)
 
 Dit zijn de resultaten uit het logboek van Floris. Uit deze tabellen is te halen dat het grootste deel van de varianten in sample SRR26980549 zijn inserties of een snp (Single-Nucleotide Polymorphism). Deze varianten zijn grotendeel missense of silent. Dit betekent dat wanneer deze mutaties op een exon zitten het problemen kan geven in de expressie van het gen.
 
