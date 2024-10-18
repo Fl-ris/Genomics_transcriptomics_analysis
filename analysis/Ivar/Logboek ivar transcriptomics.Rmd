@@ -55,12 +55,14 @@ conditie_matrix <- data.frame(
                               )
 transpose <- data.frame(t(conditie_matrix))
 # corigeer frame voor input functie deseq2
+# condities moeten factoren zijn voor input functie
 conditie_matrix <- data.frame(as.factor(transpose$X1),as.factor(transpose$X2),as.factor(transpose$X3)
-names(conditie_matrix) <- c("sample","condition","type")
+names(conditie_matrix) <- c("sample","group","type")
 head(conditie_matrix)
 ```
 
 ```{r}
+# samples in een nieuw dataframe 
 cts <- data.frame(count_matrix$SRR21754408, count_matrix$SRR21754418, count_matrix$SRR21754419, count_matrix$SRR21754420, count_matrix$SRR21754421, count_matrix$SRR21754422, count_matrix$SRR21754423)
 # verander colnames en rownames
 # colnames moet gelijk zijn aan rownames conditie matrix
@@ -70,13 +72,21 @@ row.names(cts) <- count_matrix$Gene_ID
 head(cts)
 ```
 
-Condietie moet factor zijn
+
 ```{r}
 dds <- DESeqDataSetFromMatrix(countData = cts,
                               colData = conditie_matrix,
-                              design = ~ condition)
+                              design = ~ group)
 dds
 ```
+```{r}
+
+```{r}
+deseq <- DESeq(dds)
+results(deseq)
+```
+```
+
 
 # bibliografi
 
