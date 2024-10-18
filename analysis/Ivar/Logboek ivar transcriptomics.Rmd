@@ -1,0 +1,85 @@
+---
+title: "logboek ivar transcriptomics"
+author: "Ivar"
+date: "2024-10-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# intro
+
+#
+libs
+```{r}
+library("DESeq2")
+```
+# Week 6 
+# maandag
+
+## fastqc trimm
+
+## mapp alignment star
+
+## feature qounts 
+
+## deseq2
+
+names vector van floris
+```{r}
+transcrip_table <- read.delim("/students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/featurecounts_output/count.out",header = FALSE,skip = 2)
+
+names(transcrip_table) <- c("Gene_id","Chr","Start","End","Strand","Length","SRR21754408","SRR21754418","SRR21754419","SRR21754420","SRR21754421","SRR21754422","SRR21754423")
+transcrip_table
+```
+
+```{r}
+count_matrix <- data.frame(transcrip_table$Gene_id, transcrip_table$SRR21754408,transcrip_table$SRR21754418,transcrip_table$SRR21754419,transcrip_table$SRR21754420,transcrip_table$SRR21754421,transcrip_table$SRR21754422,transcrip_table$SRR21754423)
+names(count_matrix) <- c("Gene_ID","SRR21754408","SRR21754418","SRR21754419","SRR21754420","SRR21754421","SRR21754422","SRR21754423")
+head(count_matrix)
+```
+
+conditie
+```{r}
+# condition data frame
+conditie_matrix <- data.frame(
+                              c("SRR21754408","young","PE"),
+                              c("SRR21754418","young","PE"),
+                              c("SRR21754419","young","PE"),
+                              c("SRR21754420","old","PE"),
+                              c("SRR21754421","old","PE"),
+                              c("SRR21754422","old","PE"),
+                              c("SRR21754423","old","PE")
+                              )
+transpose <- data.frame(t(conditie_matrix))
+# corigeer frame voor input functie deseq2
+conditie_matrix <- data.frame(as.factor(transpose$X1),as.factor(transpose$X2),as.factor(transpose$X3)
+names(conditie_matrix) <- c("sample","condition","type")
+head(conditie_matrix)
+```
+
+```{r}
+cts <- data.frame(count_matrix$SRR21754408, count_matrix$SRR21754418, count_matrix$SRR21754419, count_matrix$SRR21754420, count_matrix$SRR21754421, count_matrix$SRR21754422, count_matrix$SRR21754423)
+# verander colnames en rownames
+# colnames moet gelijk zijn aan rownames conditie matrix
+colnames(cts) <- c("SRR21754408","SRR21754418","SRR21754419","SRR21754420","SRR21754421","SRR21754422","SRR21754423")
+# rownames voor de gene names
+row.names(cts) <- count_matrix$Gene_ID
+head(cts)
+```
+
+Condietie moet factor zijn
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = cts,
+                              colData = conditie_matrix,
+                              design = ~ condition)
+dds
+```
+
+# bibliografi
+
+
+
+

@@ -12,11 +12,6 @@ knitr::opts_chunk$set(echo = TRUE)
 # project introductie
 Dit logboek is voor het project genomics en transcriptomics in het thema aging. Hiervoor hebben wij het onderzoek Three-dimensional chromatin reorganization regulates B cell development during ageing gebruikt. Hiervan nemen wij de genomische en transcriptomische onderdelen voor onze onderzoeksvraag "Zijn er genetische varianten te vinden in het embf1 en pax5 gen te vinden dat het vorige onderzoek kan beinvloeden"
 
-#opzet
-
-doel van de dag, wat en hoe heb je gedaan, commando's, resultaten
-
-
 # Library chunk
 ```{r}
 library(fastqcr)
@@ -48,9 +43,29 @@ B compartement.
 het B compartement is het laagactieve compartiment. Hierin zitten vaak de onderdrukte genen en/of unieke/"junk" genen.
 
 ## Vrijdag 
-gezamenlijk de genomics data van ons onderzoek gedownload als SRA files en onze project map neergezet om volgende week uit te pakken zodat we dit kunnen gebruiken in ons onderzoek.
-De SRA files staan in de SRA map "/students/2024-2025/Thema05/3Dchromatine/SRA"
-SRA staat voor Sequence Read Archives het is een ruw data archief voor sequencing bestanden met met een kwaliteits score per sequence zoals fastq bestanden. (https://www.ncbi.nlm.nih.gov/sra/docs/submitformats/).
+Vandag hebben wij gezamenlijk de genomics data van ons onderzoek gedownload als SRA files via Floris zijn laptop en onze project map neergezet om volgende week uit te pakken zodat we dit kunnen gebruiken in ons onderzoek.
+
+SRA staat voor Sequence Read Archives het is een ruw data archief voor sequencing bestanden met met een kwaliteits score per sequence zoals fastq bestanden die zwaar gecomprimeerd zijn.  (https://www.ncbi.nlm.nih.gov/sra/docs/submitformats/). 
+
+Hiervoor hebben wij de tool prefetch gebruikt uit de NCBI SRA toolkit[3]. We hebben hier voor gekozen omdat dit geadviseerd werd door Ronald en Marcel met als beredenering dat deze tool de ondersteunde manier is van onder andere NCBI om je data op een efficiënte manier te downloaden en uit te pakken.
+
+
+```{bash, eval=FALSE}
+export PATH="/home/floris/Documenten/Applicaties/sratoolkit.3.1.1-ubuntu64/bin/:$PATH"
+
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/
+
+prefetch $(</run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/SraAccList.csv) \
+--output-directory "/run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/" --max-size 200G
+```
+
+### SraAccList
+De SraAccList is een lijst waar de SRA samples van ons onderzoek in staan. Uit de dataset van ons gekozen onderzoek hebben wij alleen de genomics samples hier in gezet.
+In dit geval wordt deze lijst gebruikt om uit het SRA archiev onze gekozen samples te downloaden.
+Later wordt deze lijst meerdere keren in bash scripts gebruikt voor het automatiseren van bepaalde tools op onze gehele data set.
+
+De SRA files staan in de SRA map "/students/2024-2025/Thema05/3Dchromatine/SRA" in onze project map.
+
 
 ## resultaten
 onderzoek links
@@ -64,22 +79,38 @@ SRA files in de map "/students/2024-2025/Thema05/3Dchromatine/SRA"
 # Week 2
 
 ## Maandag 
-Na de groepenpresentaties hebben wij we gezamenlijk de genomics data uitgepakt met de tool fasterqdump via floris zijn laptop.
-# floris zijn code
-```{r EVAL=FALSE}
+# presentatie linkin in logboek
+Na de groepenpresentaties hebben wij we gezamenlijk de genomics data uitgepakt met de tool fasterq-dump van de SRA toolkit[1] via floris zijn laptop.
 
+```{r EVAL=FALSE}
+# Eerst nieuwe map maken voor fastq
+# Locale test: (niet op de assemblix server) 
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
+
+
+find /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA -name "*.sra" | \
+  parallel fasterq-dump -O /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/FASTQ {}
+
+
+# parallel gebruiken: cat accessionlist.txt | parallel ls -lah SRA/{}/{}.sra
 ```
 
 ### seqtk test dataset 
-Met floris zijn code een fastq data set gemaakt met 10 000 lines 
-deze hoeveelhijd lines hebben wij gedaan op advies van ronald 
+Met floris zijn code een fastq data set gemaakt met 1,000,000 lines. Dit hebben we gedaan met de tool Seqtk[4]. 
+Deze tool hebben we gekozen omdat het een makkelijke manier is om een subset van data te genereren. Dit heeft als doel al onze data proccesing tools te testen op een kleiner bestand dat wel representatief is.
+Ookal is 10,000 de gegeven standaard voor Seqtk wij hebben gekozen voor 1,000,000 een reden hiervoor is dat een grotere kans heeft om representatief te zijn voor de hele pipeline.
+Een voorbeeld hiervan is Fastqc het standaard programma voor kwaliteitscontrole. Een van de proccesen hiervan kijkt voor sequenties die over-gerepresenteerd zijn maar dat is alleen voor sequenties die in de eerste 100,000 sequenties van het bestand voorkomen. en dus door een groter bestand te genereren kan dit procces beter getest worden voordat de echte dataset dit analyseerd. (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/8%20Duplicate%20Sequences.html)
 
-# floris zijn code
+
 ```{r EVAL=FALSE}
 
+cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
+
+seqkit head -n 1000000 SRR26980527_1.fastq > subset_SRR26980527_1.fastq
+seqkit head -n 1000000 SRR26980527_2.fastq > subset_SRR26980527_2.fastq
 ```
 
-### fastqc en trimmomatic edit uitleg fastqc en trimmotic wat gedaan
+### fastqc en trimmomatic 
 ik en storm hebben wij de taken fastqc en trimmomatic pipeline gekregen omdat wij vorig jaar in een eerder project hiermee hebben gewerkt. Fastqc[1] gebruiken wij om de kwaliteit van de sequentie's te analyseren en Trimmomatic[2] gebruiken wij om de sequenties de van te lage kwaliteit zijn te verwijderen.
 
 ### Resultaten
@@ -95,10 +126,10 @@ FastQC is een kwaliteits controle programma voor sequentie data gegeneerd uit ne
 Het doet dit doormiddel van het analyseren van de fastq file die gegenereerd word door de sequincer. dit bestand bestaad uit een header begginnent met @ gevolgd door een identifier en een optionele input, in de volgende rij komt de sequentie letters. De derde rij begint met een + bevat optioneel de identifier, en de vierde rij bevat een kwaliteit score per base in ASCII caracters aan de hand van hoe zeker de sequencer is per base.
 1 van deze plots die fastqc weergeeft is de "per base sequence quality" dit plot geeft de algemene kwaliteit per nucleotide base weer aan de hand van hoe zeker het sequencer apparaat dit heeft meegegeven in de fastq file.
 Aan de hand hiervan kun je de gemiddelde kwaliteit van jouw sample bestuderen en beslissen of jouw data betrouwbaar is of niet.
-Versie 
+
 
 #### Uitleg MultiQC
-Het doel van MultiQC is om in 1 bestand een overzicht te krijgen als je meerdere bestanden hebt waarvan je de kwaliteit wil weten, Dit programma maakt hiervoor een overzicht
+Het doel van MultiQC[5] is om in 1 bestand een overzicht te krijgen als je meerdere bestanden hebt waarvan je de kwaliteit wil weten, Dit programma maakt hiervoor een overzicht
 
 ### Uitleg Trimmomatic
 Trimmomatic is een data procesing programma voor fastq files. Wat trimmomatic doet is aan de hand van de meegegeven opties verwijderd sequentie data dat van eventuele slechte kwaliteit is. voorbeelden van de opties die je mee kunt geven aan dit programme zijn:
@@ -109,20 +140,26 @@ Iluminaclip verwijderd adapters en andere ilumina specifieke sequenties van de r
 Hieronder het automation script voor fastqc run in de fastq map
 
 ```{r eval=FALSE}
-# getwd
+# Set working directory naar de map met fastq bestanden
 setwd("/students/2024-2025/Thema05/3dconformatieChromatine/fastq")
 (x = getwd())
+# Fastqc run commando
+# fq.dir is de input map, qc.dir is de output map
+# fastqc.path is het pad naar het fastqc programma[1]
 fastqc(fq.dir = x, qc.dir = "/students/2024-2025/Thema05/3dconformatieChromatine/fastqc_output/", fastqc.path = "/usr/bin/fastqc", threads = 100)
 ```
 
 MultiQC command
 
 ```{bash, eval=FALSE}
+# Verander current working directory naar de fastqc output map
 pwd
 cd ../
 cd fastqc_output
 pwd
+# De "." zorgt neemt alle fastqc mappen in de curren working directory als input 
 multiqc .
+# Output word in de current working directory gegenereerd
 ```
 
 ### multiqc resultaten
@@ -166,7 +203,7 @@ FastQC + Multiqc analyse gedaan, bestanden staan in /students/2024-2025/Thema05/
 Het doel van vandaag is samen met storm en Jarno aan het automatische bwa-mem commando werken. 
 
 ### mapping bijproduct
-Om uit te vinden van wat de 4 eerste samples zijn hadden wij het idee om het sample te mappen tegen een referentie genoom om te kijken wat deze samples zouden kunnen zijn. uiteindelijk hebben wij hier niks mee gedaan vanwege de slechte kwaliteit van deze samples. Dit wordt later in het logboek uitgelegt.
+Om uit te vinden van wat de 4 eerste samples zijn hadden wij het idee om het sample te mappen tegen een referentie genoom om te kijken wat deze samples zouden kunnen zijn. uiteindelijk hebben wij hier niks mee gedaan vanwege de slechte kwaliteit van deze samples. Dit wordt later in het logboek uitgelegd.
 Gezamenlijk zijn wij bezig geweest met het BWA-MEM commando en hebben dit ook gerunt. maar vervolgens hebben wij hier niks me gedaan. de uitleg hiervoor komt later in het bestand
 
 
@@ -175,13 +212,23 @@ Vandaag is het doel om samen met storm het trimmomatic commando af te maken zoda
 
 ### Trimmomatic settings
 minlen 40 
-standaard
+standaard, verwijdert alle reads weg met een lengte van onder de 40
+
 slidingwindow 4 : 20 
-standaard
+standaard verwijdert alle sequenties als de gemmiddelde kwaliteit per 4 sequenties onder de 20 komt.
+
+Ilumina clip: /pad/TruSeq3 
+Voor het verwijderen van adapters hiervoor hebben we de door trimmomatic meegeven TruSeq3 adapters gebruikt omdat de dit standaard adapters zijn door HiSeq en MiSeq sequencer aparaten. In ons geval is de nieuwe NovaSeq 6000 gebruikt. Zoals het lijkt zijn de standaard adapters hiervoor niet veranderd.
+(https://www.researchgate.net/post/Have_Illumina_adapter_sequences_changed_for_NovaSeq_6000)
+
+threads -80 hoeveelheid instructies die gestuurd kunnen worden naar de CPU's.
 
 Trimmomatic command
-
+het orginele commando bestaad uit:
+TrimmomaticPE voor paired end, threads, input bestand forward, input bestand reverse, paired output_1 , unpaired output_1, paired output_2, unpaired output_2, opties         
 ```{bash eval=FALSE}
+# parralel runnen op de SraAcc list zodat er maar 1 run is per sample en deze gepaard blijven
+# doormiddel van {}_1 en {}_2
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | \
   parallel 'TrimmomaticPE -threads 80 ' \
                   '/students/2024-2025/Thema05/3dconformatieChromatine/fastq/{}_1.fastq ' \
@@ -211,11 +258,20 @@ Als groep hebben we besloten om de samples 527,528,529,530 te verwijderen uit ve
 Trimmomatic 2 pogingen met en zonder de optie headcrop + fastqc en multiqc voor controle van de getrimde data.
 verdere opties:
 minlen 40
+zo als beschreven in het vorige trimmomatic commando
 
 slidingwindow 4:20
+zo als beschreven in het vorige trimmomatic commando
+
+Iluminaclip Truseq3
+zo als beschreven in het vorige trimmomatic commando
+
+Headcrop: 10
+Het idee hierachter was de eerste 10 bases te verwijderen in het geval er nog veel over-gerepresenteerde sequences waren en bij de samples die later vandaag verwijderd zijn. aangezien een aantal van deze sequences op adapters leken en of in elk geval heel erg op elkaar leken dachten we dat het verwijderen van de eerste 10 bases met een potentieële adapter en identificator sequentie te verwijderen om de samples mogenlijk bruikbaar te maken.
 
 circa 95% van de reads per sample overleven het als gepaarde read.
-In de trimmomatic output stond dat het headcrop argument was gefaald en niet is meegenomen in het trimmen.
+In de trimmomatic output stond dat het headcrop argument was gefaald en niet is meegenomen in het trimmen. Dit beinvloed ons verder niet omdat we de samples waarvoor we de headcrop wouden gebruiken verwijderd zijn.
+
 ![general stats trimd](../Logboek_recources/fastqc/multiqc_trimd_gen_stats.png)
 Bij de standaard statistieken zie ik dat de CG percentages iets uit elkaar liggen mijn eerste gedachte hierbij was dat de samples misschien gecontamineerd is maar volgens Ronald is het normaal dat CG% 1% of 2% uit elkaar kunnen liggen aan de hand van het type cell dus dit hoeft geen probleem te zijn. 
 Het gemmiddelde CG percentage van een muis is 42% (GRCm39 reffrence genome. https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001635.27/). Het chromosome met het hoogste CG% is 44% op chromosome 11. 
@@ -258,9 +314,16 @@ Als groep hadden wij tot vandaag nog geen onderzoeksvraag. Na overleg met Ronald
 "Zijn er genetische varianten te vinden in het embf1 en pax5 gen te vinden dat het vorige onderzoek kan beinvloeden" die in het genoom van rag2(-/-) muizen
 
 ### BWA mapping
-via Floris bwa gerund en via Jarno freebayes zie hun logboek
+Voor een voledige uitleg van bwa-mem2 mappen zie het logboek van Jarno en Floris. 
+Voor het Mappen gebruiken wij BWA-mem2 [6]
+
+#### Mapping en Aligment uitleg
+Mappen is het procces
+
+#### Alignen
 
 ### Freebayes variant calling
+Voor een voledige uitleg van Freebayes varriant calling zie het logboek van Jarno en Floris 
 
 ## woensdag
 logboek review ronald
@@ -273,6 +336,90 @@ werken aan logboek
 ## Maandag 
 werken aan logboek
 
+# Week 5
+
+## maandag
+werken aan logboek
+
+## Dinsdag 
+Voorbereiding visualisatie
+
+
+### lijst
+genomics 1.1 les
+
+allel frequentie barplot
+varianten per gene
+varianten van interesse vinden met snipshift
+
+tjerk les
+volcanono plot
+https://en.wikipedia.org/wiki/Volcano_plot_(statistics)
+
+manhatten plot
+voor genome whole studie 
+https://en.wikipedia.org/wiki/Manhattan_plot#:~:text=A%20Manhattan%20plot%20is%20a,GWAS)%20to%20display%20significant%20SNPs.
+
+### woensdag
+note's 
+principale compinenten theorie
+tsna umap niet relevant
+#### taakverdeling voor de week
+presntatie transcriptie presentatie floris
+veranderen van chromosomen van annotatie vcf bestand jarno
+isec vcf varianten op de bed file filteren. storm
+pca op de hele anotatie [granges] ivar
+isac, annotated variant + bed galaxy visualistaie backlog
+trackviewer bioconducter vcf + bam of bed backlog
+manhatten plot, volcano , lollipop plot jarno 
+
+## Donderdag
+Begin gemaakt pricipale componenten
+jarno geholpen met
+### Principale componenten analyse
+
+```{r}
+# read isac
+an_isec <- read.delim("/Users/ivarl/Desktop/annotated_isec.vcf", skip = 5,header = FALSE, stringsAsFactors = FALSE)
+```
+
+```{r}
+an_var <- read.delim("/Users/ivarl/Desktop/annotated_variants.vcf", skip = 125, stringsAsFactors = FALSE)
+```
+
+
+```{r}
+#unique(an_var$X.CHROM)
+vcf_list <- strsplit(an_var$INFO,split = ";")
+# split info voor allel freq
+
+# maak matrix
+info_matrix <- do.call(rbind, vcf_list)
+# verwijder AF= voor typecasting
+info_matrix <- gsub("AF=", replacement = "", x = info_matrix)
+allel_freq <- as.numeric(info_matrix[,2])
+
+# irange object op 1 positie want het is snip
+irange_object <- IRanges(start = an_var$POS,
+                         end = an_var$POS,
+                        names = an_var$X.CHROM
+                         )
+# verander naar grange
+(grange_object <- GRanges(seqnames = an_var$X.CHROM,
+                          ranges = irange_object))
+```
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
 # bibliografie 
 [1]Fastqc
 Versie 0.12
@@ -282,4 +429,18 @@ https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
 Versie 0.39
 http://www.usadellab.org/cms/?page=trimmomatic 
 
+[3]SRA Toolkit
+Versie 3.1.1 
+https://github.com/ncbi/sra-tools/wiki/08.-prefetch-and-fasterq-dump
 
+[4]Seqtk
+Versie ?
+https://github.com/lh3/seqtk
+
+[5]MultiQC
+Versie ?
+https://multiqc.info/
+
+[6]BWA-mem2
+Versie 
+https://github.com/bwa-mem2/bwa-mem2
