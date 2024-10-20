@@ -43,7 +43,7 @@ Volgens de website van Cufflinks is StringTie accurater en veel efficiënter.
 
 **De volgende R libraries en commandline tools zijn gebruikt voor de analyse:** Samtools: 1.16.1
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, warning=FALSE, message=FALSE}
 
 library(tidyverse)
 library(GEOquery)
@@ -62,6 +62,29 @@ De gebruikte accention list staat in de github repository.
 prefetch $(</students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt) \
 --output-directory "/students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/" --max-size 200G
 ```
+
+### Gebruikte samples: ###
+Er zijn twee groepen, oude muizen van 100 tot 110 weken oud en jonge muizen van 8 tot 10 weken oud. 
+Deze twee groepen hebben allebei vier replicaten.
+
+**Oude muizen: (Genotype: Rag2-/-)** \
+
+SRR21754423 \
+SRR21754422 \
+SRR21754421 \
+SRR21754420 \
+
+
+**Jonge muizen: (Genotype: Rag2-/-)** \
+SRR21754408 \
+SRR21754417 \
+SRR21754418 \
+SRR21754419 \
+
+Deze bovenstaande samples zijn allemaal verkregen met een Illumina NextSeq 500.
+
+	
+
 
 
 ```{r, eval=FALSE}
@@ -205,29 +228,106 @@ Header = True werkte niet... daarom zelf namen gegeven.
 
 ```{r, eval=FALSE}
 
-counts <- read.delim(file = "/home/floris/Documenten/Data_set/PRJNA885415/Transcriptomics/featurecounts/featurecounts_output.csv", header = F)
+#counts <- read.delim(file = "/home/floris/Documenten/Data_set/PRJNA885415/Transcriptomics/featurecounts/featurecounts_output.csv", header = F)
+
+counts = read.csv( "/home/floris/Documenten/Data_set/PRJNA885415/Transcriptomics/featurecounts/featurecounts_output.csv", sep="", head=T, skip=1)
 
 # Geef namen aan de kolomen
-names(counts) <- c("Gene_id","Chr","Start","End","Strand","Length","SRR21754408","SRR21754418","SRR21754419","SRR21754420","SRR21754421","SRR21754422","SRR21754423")
+names(counts) <- c("Gene_id", "Chr","Start","End","Strand","Length","SRR21754408","SRR21754418","SRR21754419","SRR21754420","SRR21754421","SRR21754422","SRR21754423")
 
 #counts <- subset(counts, row)
-counts <- counts[-c(1,2), ]
+#counts <- counts[-c(1,2), ]
 
-head(counts)
+glimpse(counts)
 ```
+
+Het aantal reads met een coverage van meer dan 0 van de jonge muizen: 14315
+```{r}
+length(which(counts$SRR21754408 > 0 & counts$SRR21754418 > 0 & counts$SRR21754419))
+```
+
+Het aantal reads met een coverage van meer dan 0 van de oude muizen: 15247
+```{r}
+length(which(counts$SRR21754420 > 0 & counts$SRR21754421 > 0 & counts$SRR21754422 & counts$SRR21754423 > 0))
+```
+
 
 ### Differential expression met DESeq2 ###
 Deseq2
 
-```{r, eval=F}
-#filtered_counts <- counts[which(rowSums(counts) > 50), ]
+**Jonge muizen: (Genotype: Rag2-/-)** \
+SRR21754408 \
+SRR21754417 \
+SRR21754418 \
+SRR21754419 \
 
-# Filteren:
-filtered_counts <- counts %>%  
-  select(c(SRR21754408:SRR21754423)) %>% 
-  filter(rowSums() > 50)
+
+In het volgende codeblok worden de kolomen geselecteerd waarin de jonge en oude muizen staan.
+
+```{r}
+
+oude_muizen <- counts[,c(10,11,12,13)]
+
+# To-do: nog een kolom met jonge_muis data toevoegen.
+jonge_muizen <- counts[,c(7,8,9)]
+```
+
+```{r}
+
+# DF met alle rijen waarbij de jonge muizen een coverage hoger dan 0 hebben voor alle samples:
+jonge_muizen_df <- counts[which(counts$SRR21754408 > 0 & counts$SRR21754418 > 0 & counts$SRR21754419), ]
+
+# DF met alle rijen waarbij de oude muizen een coverage hoger dan 0 hebben voor alle samples:
+oude_muizen_df <- counts[which(counts$SRR21754420 > 0 & counts$SRR21754421 > 0 & counts$SRR21754422 & counts$SRR21754423 > 0), ]
+
+
+```
+
+
+
+```{r lengte van genen, eval=FALSE}
+
+ggplot(data = jonge_muizen_df, mapping = aes(x = Gene_id, y = Length)) +
+  geom_bar(stat = "identity") + 
+  xlab(" ") + 
+  ylab("Length: (bp)") +
+  theme(axis.text.x = element_blank())
+
+```
+
+### DESeq2 ###
+
+
+**Statistische bewerkingen die door DESeq2 uitgevoerd worden:** \
+
+Een van de tests zorgt er voor dat er rekening gehouden wordt met de false discovery rate (FDR). Hiervoor is de Benjamini Hockberg compensatie uitgevoerd om hier rekening mee te houden.
+De false discovery rate is het aantal genen in dit geval die ondanks dat ze niet echt differentialy expressed zijn toch zo lijken. Dit zijn dus false positieven. Wanneer de p-waarde bijvoorbeeld 0.01 is en er 4000 genen zijn, zijn er 40 false positieven bij. De kans is namelijk 1% met een p-waarde van 0.01 of lager. 
+
+
+
+```{r deseq2 test, eval=F}
+
+dds <- DESeqDataSetFromMatrix(countData = counts,
+                              colData = counts[,jonge_muizen],
+                              design= ~ group)
+
+dds <- DESeq(dds)
+resultsNames(dds) # lists the coefficients
+res <- results(dds, name="condition_trt_vs_untrt")
+# or to shrink log fold changes association with condition:
+res <- lfcShrink(dds, coef="condition_trt_vs_untrt", type="apeglm")
   
 ```
 
+
+
+
+
+```{r}
+# indices voor kolomen maken voor groepen.
+
+
+
+```
 
 
