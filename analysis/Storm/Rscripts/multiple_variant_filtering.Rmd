@@ -1,0 +1,92 @@
+---
+title: "Multiple Variant Filtering"
+author: "Storm"
+date: "2024-10-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(GenomicRanges)
+```
+
+```{r}
+# maak een lijst met namen
+AccList <- list("SRR26980549", "SRR26980550", "SRR26980551", "SRR26980552")
+```
+
+```{r}
+for (name in AccList){
+  
+  path_vcf <- paste0("/students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_", name, ".vcf")
+  
+  # lees het .vcf bestand in
+variants <- read.delim( path_vcf,
+                       header = TRUE, 
+                       # zet de seperator op \t zodat de kolommen juist opgesplitst worden
+                       sep = "\t",
+                       stringsAsFactors = FALSE,
+                       # sla de header over
+                       skip = 129)
+  
+  # maak een IRanges object van de .vcf data
+variants_ranges <- IRanges(start = variants$POS,
+                  end = variants$POS,)
+
+# maak een GRanges object van de .vcf data
+variant_granges <- GRanges(seqnames = variants$X.CHROM,
+                   ranges = variants_ranges)
+  
+  
+
+path_bed <- paste0("/students/2024-2025/Thema05/3dconformatieChromatine/samtools_output/dedeup_", name, ".bed")
+
+# lees het .bed bestand in
+bed <- read.delim(path_bed, 
+                       header = FALSE, 
+                       stringsAsFactors = FALSE, 
+                       col.names = c("ID", "Begin", "End", "File", "Count", "Strand"))
+  
+  # maak een IRanges object van de .bed data
+iranges_bed <- IRanges(start = bed$Begin,
+                         end = bed$End)
+
+# maak een GRanges object van de .bed data
+granges_bed <- GRanges(seqnames = bed$ID,
+                      ranges = iranges_bed)
+  
+  
+  
+# zoekt naar overlappende granges tussen de .vcf en .bed bestanden
+overlaps <- DataFrame(findOverlaps(variant_granges, granges_bed))
+
+# pak de kolom met rijnummers van overlappende granges
+# tel 130 rijen bij de rijnummers op om de header over te slaan
+queryhits <- overlaps$queryHits + 130
+
+# lees het bestand in als tekst
+vcf_tekst <- readLines(path_vcf)
+
+# lees alleen de header in
+vcf_header <- readLines(path_vcf, n=130)
+
+
+name_output <- paste0("gefilterd_", name, ".vcf")
+
+setwd("/students/2024-2025/Thema05/3dconformatieChromatine/vcf_gedeelde_varianten")
+write(vcf_header, name_output)
+write(vcf_tekst, name_output, append = TRUE)
+}
+```
+
+
+
+
+
+
+
+
+
+
+

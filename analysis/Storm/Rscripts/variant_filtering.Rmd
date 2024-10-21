@@ -1,0 +1,122 @@
+---
+title: "Variant Filtering"
+author: "Storm"
+date: "2024-10-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(GenomicRanges)
+```
+
+```{r}
+# lees het .vcf bestand in
+variants49 <- read.delim("/students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_SRR26980549.vcf",
+                       header = TRUE, 
+                       # zet de seperator op \t zodat de kolommen juist opgesplitst worden
+                       sep = "\t",
+                       stringsAsFactors = FALSE,
+                       # sla de header over
+                       skip = 129)
+```
+
+```{r}
+variants49
+```
+
+```{r}
+# maak een IRanges object van de .vcf data
+variants49_ranges <- IRanges(start = variants49$POS,
+                  end = variants49$POS,)
+
+# maak een GRanges object van de .vcf data
+variant49_granges <- GRanges(seqnames = variants49$X.CHROM,
+                   ranges = variants49_ranges)
+```
+
+```{r}
+variant49_granges
+```
+
+
+
+
+
+```{r}
+# lees het .bed bestand in
+bed49 <- read.delim("/students/2024-2025/Thema05/3dconformatieChromatine/samtools_output/dedeup_SRR26980549.bed", 
+                       header = FALSE, 
+                       stringsAsFactors = FALSE, 
+                       col.names = c("ID", "Begin", "End", "File", "Count", "Strand"))
+```
+
+```{r}
+bed49
+```
+
+```{r}
+# maak een IRanges object van de .bed data
+iranges_bed49 <- IRanges(start = bed49$Begin,
+                         end = bed49$End)
+
+# maak een GRanges object van de .bed data
+granges_bed49 <- GRanges(seqnames = bed49$ID,
+                      ranges = iranges_bed49)
+```
+
+```{r}
+granges_bed49
+```
+
+
+
+
+
+```{r}
+# zoekt naar overlappende granges tussen de .vcf en .bed bestanden
+overlaps49 <- DataFrame(findOverlaps(variant49_granges, granges_bed49))
+```
+
+```{r}
+overlaps49
+```
+
+```{r}
+# pak de kolom met rijnummers van overlappende granges
+# tel 130 rijen bij de rijnummers op om de header over te slaan
+queryhits49 <- overlaps49$queryHits + 130
+```
+
+```{r}
+# lees het bestand in als tekst
+vcf49_tekst <- readLines("/students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_SRR26980549.vcf")
+
+# lees alleen de header in
+vcf49_header <- readLines("/students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_SRR26980549.vcf", n=130)
+```
+
+```{r}
+setwd("/students/2024-2025/Thema05/3dconformatieChromatine/vcf_gedeelde_varianten")
+write(vcf49_header, "gefilterd_SRR26980549.vcf")
+write(vcf49_tekst, "gefilterd_SRR26980549.vcf", append = TRUE)
+```
+
+```{r}
+gefilterd49 <- read.delim("/students/2024-2025/Thema05/3dconformatieChromatine/vcf_gedeelde_varianten/gefilterd_SRR26980549.vcf",
+                          stringsAsFactors = FALSE,
+                          sep = "\t",
+                          skip = 259)
+```
+
+```{r}
+gefilterd49
+```
+
+
+
+
+
+
+

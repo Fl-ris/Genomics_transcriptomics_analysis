@@ -10,27 +10,55 @@ output:
 knitr::opts_chunk$set(eval = FALSE)
 ```
 
-
-```{r, eval=TRUE}
+```{r, eval=TRUE, message=FALSE}
 library(knitr)
 library(fastqcr)
 library(GenomicRanges)
 ```
 
-```{r, eval=TRUE, message=FALSE}
+```{r, eval=TRUE, message=FALSE, echo=FALSE}
 # geeft een telling van regels, woorden, karakters en leestijd weer
 wordcountaddin:::text_stats()
 ```
 
 # Inleiding
 
-(WAT MOET ER IN DE INLEIDING?)
-(BVOEG LIJST TOE MET TOOLS EN VERSIE)
-(REFEREER GESTOLEN AFBEELDINGEN, in caption)
+In dit logboek wordt de vraag "Zijn er varianten aanwezig van PAX5 en Ebf1 in het genoom van de rag2 knockout muizen die gebruikt zijn?" beantwoord. PAX5 en Ebf1 zijn betrokken bij de ontwikkeling van voorloper B cellen. Door te kijken naar variatie in DNA-seq data kunnen wij misschien observeren dat Ebf1 en PAX5 niet goed ontwikkelen, waardoor voorloper B cellen zich niet ontwikkelen tot B cellen wat voor fouten in ontwikkeling veroorzaakt.
+
+# Gebruikte Tools
+
+*Deze tabel is gemaakt door Jarno*
+
++---------------+----------------------------------------------------------------------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Tool          | Referentie                                                                       | Versie               | Waarom                                                                                                                                                                                                                                                                                                     |
++===============+==================================================================================+======================+============================================================================================================================================================================================================================================================================================================+
+| Featurecounts | <https://academic.oup.com/bioinformatics/article/30/7/923/232889?searchresult=1> |                      | Featurecounts is een zeer efficiënt algemeen "read" samenvattingsprogramma dat mapped reads telt voor genomische kenmerken zoals genen, exonen, promotor, genlichamen, genomische bins en chromosomale locaties. het kan worden gebruikt om zowel RNA-seq als genomische DNA-seq leesbewerkingen te tellen |
++---------------+----------------------------------------------------------------------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| FastQC        | <https://www.bioinformatics.babraham.ac.uk/projects/fastqc/>                     | 0.11.9               | FastQC wordt gebruikt om de kwaliteit te checken van de rauwe data, hier uit is te zien of de data gelijk te gebruiken is of dat deze moet worden getrimmed. De trimmer kan ook afgesteld worden op basis van de fastqc.                                                                                   |
++---------------+----------------------------------------------------------------------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| freebayes     | <https://github.com/freebayes/freebayes>                                         | 1.3.6 - linux versie | freebayes is een haplotype gebaseerde gen variant detector, ontworpen om kleine polymorfismes te detecteren, SNP's, inserties en deleties in het bijzonder. Dit programma gebruikt .BAM bestanden met een Phred+33 encoding.                                                                               |
++---------------+----------------------------------------------------------------------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| seqtk         | <https://github.com/lh3/seqtk>                                                   |                      | seqtk wordt gebruikt voor het proceseren van sequences in het FASTA of FASTQ formaat. het "seamlessly parses" beide FASTA en FASTQ welke dan ook optimaal compressed wordt door gzip                                                                                                                       |
++---------------+----------------------------------------------------------------------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Trimmomatic   | <https://github.com/usadellab/Trimmomatic>                                       | 0.39                 | Trimmomatic wordt gebruikt om de data op te schonen nadat dez uit FastQC komt. Deze haalt de slechte kwaliteit paren af van de streng waardoor een hoge kwaliteit RNA- of DNA-streng overblijft die gebruikt kan worden.                                                                                   |
++---------------+----------------------------------------------------------------------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| bwa mem2      | <https://github.com/bwa-mem2/bwa-mem2?tab=readme-ov-file>                        | 2.2.1                | Bwa mem2 wordt gebruikt om DNA en RNA reads te alignen tegen een gekozen referentie genoom.                                                                                                                                                                                                                |
++---------------+----------------------------------------------------------------------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Samtools      | <https://www.htslib.org>                                                         | 1.16.1               | samtools is een set van "utilities" dat alignments in de SAM, Bam en CRAM formatten kan manipuleren. het kan veranderen tussen de formats, sorteren, samenvoegen en indexen, ook kan het "reads" snel vinden in elke regio                                                                                 |
++---------------+----------------------------------------------------------------------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| R             | <https://www.r-project.org>                                                      | 4.4.1                | R is de code taal die gebruikt wordt om alle statistieken testen te doen en tevens de visualisatie van de data die komt uit het onderzoek                                                                                                                                                                  |
++---------------+----------------------------------------------------------------------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| R-studio      | <https://posit.co>                                                               | 2023.12.1+402        | R studio is het programma wat wordt gebruikt als IDE voor R                                                                                                                                                                                                                                                |
++---------------+----------------------------------------------------------------------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| NCBI-GEO      | <https://www.ncbi.nlm.nih.gov/geo/>                                              |                      | NCBI-GEO is gebruikt om het originele onderzoek te vinden waar dit onderzoek inspiratie vanaf neemt                                                                                                                                                                                                        |
++---------------+----------------------------------------------------------------------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
 # Week 1 | Opzetten Onderzoek
 
 
 ## Maken Onderzoeksteam
+##### 02-09-2024
 
 Het team waarin wij het genomics & transcriptomics onderzoek uitvoeren bestaat uit 4 man: Ivar Lotman, Floris Menninga, Jarno Duiker en ik (Storm Steller). Wij hebben als team het doel om een goed product neer te zetten uit een leuk en interessant onderwerp. 
 
@@ -77,6 +105,7 @@ De taken die ik voor deze week kreeg was om het gekozen artikel over 3d chromati
 
 
 ## Gebruikte Programma's/Libraries
+##### 03-09-2024
 
 | Naam                             | Versie  | Uitleg                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Gebruik                                                 | Link                                                                   |
 |----------------------------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|------------------------------------------------------------------------|
@@ -125,6 +154,7 @@ In de chart kan je in de rijen onze taken zien en de weken in de kolommen. De kl
 
 
 ## Presentatie
+##### 9-9-2024
 
 Wij begonnen deze week met het presenteren van het genomics gedeelte van onze plan van aanpak. Daarin heeft Floris verteld over het onderzoek in het artikel dat wij hebben gekozen. Daarbij heeft hij verteld wat de onderzoekers hebben gedaan in het onderzoek, de gebruikte materialen en methoden uitgelegd, en wat wij als team met dit onderzoek gaan doen. (LINK NAAR DE PRESENTATIE. BESTADN IN REPO)
 
@@ -151,6 +181,7 @@ Als het blijkt dat er mutaties of varianten van de genen aanwezig zijn, kan het 
 
 
 ## Genereren testdata
+16-09-2024
 
 Om te voorkomen dat een van onze scripts na een lange tijd geïnterrumpeerd wordt of foute resultaten geeft, hebben Floris en Jarno testdata gemaakt met seqtk. Testdata is belangrijk, omdat wij onze test runs daarop kunnen uitvoeren zonder onze data te comprimeren.
 
@@ -170,6 +201,7 @@ Hierboven staat het script voor het creëren van de testdata. Met dit script zij
 
 
 ## Kwaliteitscontrole
+##### 15-09-2024
 
 Om fouten te voorkomen die veroorzaakt kunnen worden door data van slechte kwaliteit, hebben wij een kwaliteitscontole uitgevoerd op onze data. Hiervoor hebben wij fastqc en multiqc. Fastq is een programma dat zowel single- als paired-end data kan controleren op de kwaliteit. Als output geeft Fastqc verschillende bestanden: Een rawdata bestand waarin de gegevens van de kwaliteit in een textbestand staan, een html bestand waarin meerdere grafieken en tabellen staan van de kwaliteit van de data, en alle afbeeldingen uit de html los in een mapje. Uitleg van de rawdata bestand en grafieken uit de html kan je hieronder lezen.
 
@@ -225,10 +257,10 @@ Hierboven zie je een grafiek van de per base sequence quality. Deze grafiek toon
 * De blauwe lijn geeft de gemiddelde kwaliteit weer
 
 De y-as bestaat uit de kwaliteitsscores. De achtergrond van de grafiek geeft deelt de y-as op in 3 verschillende kwaliteitsgroepen:
-(PROCENTUELE ZEKERHEID TOEVOEGEN)
-* Goed (Groen)
-* Redelijk (Oranje)
-* Slecht (Rood)
+
+* Goed (Groen) >28
+* Redelijk (Oranje) >20 en <28
+* Slecht (Rood) <20
 
 FastQC geeft een waarschuwing op dit onderdeel als het onderste kwartiel voor een base lager is dan 10, of als de mediaan voor een base lager is dan 25. FastQC levert een fout op bij dit onderdeel als het onderste kwatiel voor een base kleiner is dan 5, of als de mediaan voor een base kleiner is dan 20.
 
@@ -334,9 +366,8 @@ cd fastqc_output
 pwd
 multiqc .
 ```
-(WELK FOLDER IS HET STARTPUNT)
 
-Het script hierboven is het script dat wij hebben gebruikt om multiqc uit te voeren. De pwd commando's zijn er om de huidige working directory te printen en zijn dus irrelevant. Vervolgens gaan wij met een paar cd commando's naar de folder waar de fastqc rapporten van de fastqc bestanden met onze genomics data zich bevinden. Vervolgens voeren wij multiqc uit. De punt staat daar om het uit te voeren in onze huidige working directory. Zonder punt zou het ook werken, maar om het zeker te weten gebruiken wij de punt wel.
+Het script hierboven is het script dat wij hebben gebruikt om multiqc uit te voeren. De pwd commando's zijn er om de huidige working directory te printen en zijn dus irrelevant. De folder waar wij uit werken is: /students/2024-2025/Thema05/3dconformatieChromatine/fastq. Vervolgens gaan wij met een paar cd commando's naar de folder waar de fastqc rapporten van de fastqc bestanden met onze genomics data zich bevinden. Vervolgens voeren wij multiqc uit. De punt staat daar om het uit te voeren in onze huidige working directory. Zonder punt zou het ook werken, maar om het zeker te weten gebruiken wij de punt wel.
 
 Als output geeft multiqc een raport van alle fastq rapporten gecombineerd. Alle grafieken in de multiqc rapporten zijn hetzelfde als de grafieken in de fastqc rapporten. 
 
@@ -357,7 +388,7 @@ Het laatse wat meteen opvalt uit de algemene statistieken is dat de samples die 
 
 ![<small> *Figuur 15: Gemiddelde kwaliteit MultiQC* </small>](Afbeeldingen/MultiQC/avg_qual.png){width=75%}
 
-Hierboven zie je een grafiek met de gemiddelde kwaliteit per base van de reads. Uit de grafiek is meteen te identificeren welke lijn bij welke groep hoort door de lengte van de lijnen. De rode, langere lijnen behoren tot de samples met veel duplicaten en een lengte van 250bp. De groene, kortere lijnen behoren tot de samples met normale niveaus.(WAT IS NORMAAL) Wat meteen opvalt, is dat de samples met veel duplicaten niet passeren bij dit onderdeel. Een sample passeert niet bij dit deel als het onderste kwartiel voor een base kleiner is dan 5 of als de mediaan voor een base kleiner is dan 20. Bij de gefaalde samples zien wij in ieder geval dat de mediaan op een duur lager is dan 20. 
+Hierboven zie je een grafiek met de gemiddelde kwaliteit per base van de reads. Uit de grafiek is meteen te identificeren welke lijn bij welke groep hoort door de lengte van de lijnen. De rode, langere lijnen behoren tot de samples met veel duplicaten en een lengte van 250bp. De groene, kortere lijnen behoren tot de samples met normale niveaus, waaronder een gemiddelde kwaliteit van >28. Wat meteen opvalt, is dat de samples met veel duplicaten niet passeren bij dit onderdeel. Een sample passeert niet bij dit deel als het onderste kwartiel voor een base kleiner is dan 5 of als de mediaan voor een base kleiner is dan 20. Bij de gefaalde samples zien wij in ieder geval dat de mediaan op een duur lager is dan 20. 
 
 Wat nog meer opvalt bij deze grafiek, is dat de kwaliteit van de gefaalde samples plots een stuk dalen rond het 105bp tot 115bp gebied. Waardoor dit komt, is niet zeker te zeggen. Een mogelijke verklaring is dat het signaal van de sequencer op dat moment verzwakte, waardoor die minder goed de read af kan lezen. Dit kan veroorzaakt worden door afbrekende fluoforen die worden gebruikt om de base te bepalen, waardoor de proportie van het uitgezonden signaal met elke cyclus van het sequencen afneemt. Nog een mogelijke verklaring is phasing, waarbij de sequencer niet meer synchroon loopt met de reads. Dit resulteert in een dalende kwaliteit richting de 3'kant van een read. 
 
@@ -558,6 +589,7 @@ Hierboven zie je een tabel van de blast resultaten van sample SRR26980530_1. Uit
 Na het bekijken van onze genomics data hebben wij besloten dat wij de eerste 4 samples, de samples met veel duplicaten en lage kwalitei, niet verder gaan gebruiken vanwege de kwaliteit van de samples. De rest van onze samples lijken van goede kwaliteit en gaan wij verder gebruiken in het onderzoek. Wij hebben besloten de goede samples wel te trimmen, omdat het de kans op false uitkokmsten door de kwaliteit voorkomt.
 
 ## Indexeren & Alignen
+##### 14-09-2024
 
 De genomics data die wij gebruiken worden niet beschreven in het arikel waar wij het vandaan hebben. Met enkel een fastq bestand is ook niet te achterhalen waar in het genoom de reads uit deze fastq bestanden vandaan komen. Hier kunnen wij achter komen door middel van read mapping. Met read mapping worden reads uit de fastq bestanden van onze genomics data vergeleken met een bekend genoom, in ons geval het genoom van mus musculus GRCm39, zodat hun locatie in het genoom bekend wordt. Om hier achter te komen hebben wij BWA-mem2 gebruikt. 
 
@@ -595,6 +627,7 @@ Uit het indexeren en alignen krijgen wij een .sam bestand. Dit bestand bevat de 
 
 
 ## Trimmen
+##### 20-09-2024
 
 Om onze data te trimmen gebruiken wij Trimmomatic. Trimmomatic is een snel, multithreaded programma waarmee Illumina (FASTQ)-data getrimmed kunnen worden en om adapters verwijderd kunnen worden. 
 
@@ -604,7 +637,7 @@ Er zijn twee versies van het programma: de paired-end (PE) en de single-end (SE)
 
 Hoe paired-end mode precies werkt, staat in de flowchart hieronder:
 
-![<small> *Figuur 23: Flowchart paired-end Trimmomatic* </small>](Afbeeldingen/flowchart_trimmomatic.png){width=50%}
+![<small> *Figuur 23: Flowchart paired-end Trimmomatic <http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf>* </small>](Afbeeldingen/flowchart_trimmomatic.png){width=50%}
 
 In paired-end mode bekijkt Trimmomatic naar twee bestanden: forward- en reverse reads. Als zowel de forward als de reverse read voldoen aan de eisen, worden ze behouden als paired reads. Als slechts een van de reads niet voeldoet aan de eisen, wordt die ene read laten vallen en de overlevende read als unpaired read bewaard. Na het trimmen geeft Trimmomatic 4 outputs: forward_paired, forward_unpaired, reverse_paired, reverse_unpaired.
 
@@ -635,9 +668,6 @@ cat data/GSE149995_Sra_RunInfo.csv | \
                   'MINLEN:40 ' \
                   'SLIDINGWINDOW:4:20'
 ```
-(NOTEER HOEVEEL READS ZIJN GEDROPT OF OCERLEFD)
-(RESULTATEN MISLUKTE POGINGEN)
-
 
 Als input geven wij Trimmomatic 2 bestanden: de forward- en de reverse-reads. Wij geven 2 input bestanden, omdat onze data paired-end data is. Als ouptput geeft Trimmomatic 4 .fastq bestanden: forward_paired, forward_unpaired, reverse_paired, reverse_unpaired. De ILLUMINACLIP geeft het pad aan naar een betand dat adapter sequenties bevat voor Illumina adapters.
 
@@ -648,6 +678,7 @@ Als input geven wij Trimmomatic 2 bestanden: de forward- en de reverse-reads. Wi
 
 
 ## Data Verwijderen
+##### 23-39-2024
 
 Na overleg hebben wij besloten om samples SRR26980527, SRR26980528, SRR26980529 en SRR26980530 verder niet meer te gebruiken. Deze bestanden bevatten wild type data. Deze gaan wij niet gebruiken, omdat wij alles vergelijken met een referentiegenoom en niet met de wild type data. Verder werken wij alleen nog met samples SRR26980549, SRR26980550, SRR26980551 en SRR26980552. Deze samples bevatten Rag2(-/-) knockout data.
 
@@ -829,6 +860,7 @@ Voor variant calling, wordt freebayes gebruikt. Freebayes is een genetische vari
 ```{bash freebayes_test, eval=FALSE}
 /students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static -f GCA_000001635.9_GRCm39_genomic.fna \ /students/2024-2025/Thema05/3dconformatieChromatine/aligned_sorted_SRR26980549.bam > \ /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf
 ```
+
 In het script hierboven staat een script dat werd gebruikt om freebayes te testen. Hieruit kregen wij de gewenste .vcf bestanden met de varianten en mutaties, maar wij willen ze ook filteren op kwaliteit.
 
 
@@ -842,6 +874,91 @@ Met --minQualScore wordt gefilterd op de waarschijnlijkheid dat de variant er da
 ```{bash, eval=FALSE}
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'java -jar /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -I variant_calling/variants{}.vcf --minQualScore 30 --outputVcf variant_calling/filterd_variant_{}.vcf'
 ```
+
+
+## Variant Annotation
+
+Na het variant calling hebben wij nu bestanden die het verschil tussen onze samples en het gebruikt referentiegenoom (mm39) aantoont. 
+
+Om verdere vragen te kunnen beantwoorden, zoals "Zit een mutatie op een exon?", moeten wij de verkregen .vcf bestanden annoteren. Hiervoor is SnpEff gebruikt. Met SnpEff kunnen onze .vcf bestanden met een referentiedatabase geannoteerd worden. Hierbij worden genen geannoteerd zodat ze leesbaarder zijn. Zo wordt gen SRR26980549.46263152/2 naar Ebf1 veranderd. 
+
+Om de .vcf bestanden te annoteren heeft Floris dit script geschreven:
+
+```{bash, eval=FALSE}
+# Test:
+/students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 filtered_variants.vcf > annotated_variants.vcf
+
+# Voor alle .vcf bestanden:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel 'java -jar \ /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/filterd_variant_{}.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants_{}.vcf'
+
+# Alleen het isec .vcf bestand:
+java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_isec.vcf
+
+```
+
+Bij het annoteren van de .vcf bestanden hebben wij het genoom mm39 aangegeven. Hierbij gaf SnpEff een foutmelding waarbij het programma genoom mm39 niet kan downloaden. Dit komt door de sourceforge van de databases. De laatste versie komt uit 2018, voordat genoom mm39 bestond. Om dit op te lossen kunnen wij genoom mm10 gebruikten, die verouderd is vergeleken met mm39, of zelf een database bouwen voor SnpEff. Uiteindelijk hebben wij ervoor gekozen om een database te downloaden, omdat wij voor alle voorgaande stappen ook mm39 hebben gebruikt. 
+
+### Database Bouwen SnpEff
+
+Om de database voor genoom mm39 te bouwen zijn de instructies van de SnpEff website gevolgd: <https://pcingola.github.io/SnpEff/snpeff/build_db/>
+
+*Dit script is geschreven door Floris*
+```{bash, eval=FALSE}
+# Navigeer naar de directory waar de databases opgeslagen worden. 
+cd snpEff/snpEff/data/
+
+# Download het .gff bestand:
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/635/GCF_000001635.27_GRCm39/GCF_000001635.27_GRCm39_genomic.gff.gz
+
+```
+
+Met het script hierboven is een database voor SnpEff gemaakt. Met deze database kunnen wij verder met het annoteren van onze .vcf bestanden verkregen bij het variant calling.
+
+Bij het proces van het maken van de database zijn een aantal problemen geweest. Om die te zien, kan je in het logboek van Floris kijken.
+
+### Hernoemen Chromosomen
+
+De namen van de chromosomen uit onze .vcf bestanden staan in de Genebank namen, terwijl SnpEff RefSeq namen verwacht. Om de namen te veranderen van de Genebank naar de RefSeq namen, hebben wij bcftools gebruikt. Om bcftools te gebruiken moeten de bestanden eerst gecompresserc worden met bgzip:
+
+*Dit script is geschreven door Floris*
+```{bash gzip, eval=FALSE}
+bgzip -c /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf.gz
+
+```
+
+Na het compresseren van de .vcf bestanden kunnen wij de .vcf bestanden indexeren en met bcftools de chromosoomnamen veranderen naar de RefSeq namen.
+
+*Dit script is geschreven door Floris*
+```{bash, eval=FALSE}
+tabix -p vcf /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf.gz
+```
+
+*Dit script is geschreven door Floris*
+```{bash, eval=FALSE}
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel \
+'bcftools annotate --rename-chrs /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/names.txt /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/filterd_variant_{}.vcf.gz > /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/hernoemd_{}.vcf'
+```
+
+Nu de chromosoomnamen naar de RefSeq namen zijn veranderd kunnen wij verder met het annoteren van de .vcf bestanden.
+
+### Annoteren .vcf bestanden
+
+*Dit script is geschreven door Floris*
+```{bash, eval=FALSE}
+java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar -v -stats /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_annotatie.html mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/hernoemd_SRR26980549.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_SRR26980549.vcf
+
+```
+
+*Dit script is geschreven door Floris*
+```{bash, eval=FALSE}
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel \
+'java -Xmx80G -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar -v -stats /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/{}_annotatie.html mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/hernoemd_{}.vcf -threads 50 > /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_{}.vcf'
+
+```
+
+Hierboven staan de scripts gebruikt voor het annoteren van de .vcf bestanden. Hierbij worden ook .html bestanden gegenereerd met statistieken over de annotatie.
+
+Nu we de geannoteerde .vcf bestanden hebben, kunnen wij er verdere analyses op uitvoeren.
 
 \
 \
@@ -871,13 +988,13 @@ variants49 <- read.delim("/students/2024-2025/Thema05/3dconformatieChromatine/va
 
 Meestal worden bestanden gesplit op "," of ";", maar de opmaak van vcf v4.2 is zo opgezet dat je op "\t" moet splitsen voor de info over ranges, en ";" voor extra informatie.
 
----
-
 Hier een klein voorbeeld van de twee seperators op een .vcf bestand:
 
-```{r, eval=TRUE, echo=FALSE}
+---
+
+```{r, eval=TRUE}
 # lees het .vcf bestand in
-variants_demo <- read.delim("C:/Users/Gebruiker/Desktop/Genomics_transcriptomics_analysis/analysis/Storm/Data/variant_filter_demo.vcf",
+variants_demo <- read.delim("Data/variant_filter_demo.vcf",
                        header = TRUE, 
                        # zet de seperator op \t zodat de kolommen juist opgesplitst worden
                        sep = "\t",
@@ -886,8 +1003,10 @@ variants_demo <- read.delim("C:/Users/Gebruiker/Desktop/Genomics_transcriptomics
                        skip = 129)
 
 # laat alleen de eerste 10 regels van het bestand zien
-head(variants_demo, n=10)
+head(variants_demo[1:7], n=10)
 ```
+
+---
 
 Hierboven zie je de vorm van een .vcf (V4.2) bestand gesplit op "/t". Er zijn 8 verschillende kolommen die belangrijk kunnen zijn bij het filteren. Hieronder een tabel waarin staat wat de kolommen betekenen:
 
@@ -909,9 +1028,11 @@ Met de informatie uit deze kolommen kan je een GRange object maken. Daarom heb i
 
 Ook is ";" te gebruiken als seperator. Hierdoor krijg je de kolommen met overige informatie te zien. 
 
-```{r, eval=TRUE, echo=FALSE}
+---
+
+```{r, eval=TRUE}
 # lees het .vcf bestand in
-variants_demo_slecht <- read.delim("C:/Users/Gebruiker/Desktop/Genomics_transcriptomics_analysis/analysis/Storm/Data/variant_filter_demo.vcf",
+variants_demo_slecht <- read.delim("Data/variant_filter_demo.vcf",
                        header = FALSE, 
                        # zet de seperator op ; zodat de kolommen onjuist opgesplitst worden
                        sep = ";",
@@ -920,24 +1041,42 @@ variants_demo_slecht <- read.delim("C:/Users/Gebruiker/Desktop/Genomics_transcri
                        skip = 129)
 
 # laat alleen de eerste 10 regels van het bestand zien
-head(variants_demo_slecht, n=10)
+head(variants_demo_slecht[1:12], n=10)
 ```
-
-Zoals je kan zien, zijn er heel veel kolommen aan overige informatie. Hiermee zijn verschillende dingen te bereiken, bijvoorbeeld filteren van varianten op berouwbaarheid door de allelfrequentie te gebruiken. Het filteren op betrouwbaarheid zijn in deze .vcf bestanden al gedaan, dus zijn deze kolommen verder niet meer nodig.
 
 ---
 
-Na het inladen van de data, maak een GRange object van de .vcf bestanden. Dat doe ik door het eerst in een IRange object te veranderen. Dat doe ik door de positie die in de POS kolom van elk .vcf bestand mee te geven aan zowel de start als end parameter. Wanneer het in een Irange object verandert, is het 
+Zoals je kan zien, zijn er heel veel kolommen aan overige informatie. Hiermee zijn verschillende dingen te bereiken, bijvoorbeeld filteren van varianten op berouwbaarheid door de allelfrequentie te gebruiken. Het filteren op betrouwbaarheid zijn in deze .vcf bestanden al gedaan, dus zijn deze kolommen verder niet meer nodig.
 
+Na het inladen van de data, maak een GRange object van de .vcf bestanden. Dat doe ik door het eerst in een IRange object te veranderen. Dat doe ik door de positie die in de POS kolom van elk .vcf bestand mee te geven aan zowel de start als end parameter. Wanneer het in een Irange object verandert, kan je de begin- en eindranges zien van de rijen in het bestand. Dat ziet er zo uit:
 
+---
 
-```{r, eval=TRUE,echo=FALSE}
+```{r, eval=TRUE}
 # maak een IRanges object van de .vcf data
 variants_demo_ranges <- IRanges(start = variants_demo$POS,
                   end = variants_demo$POS,)
+
+variants_demo_ranges
 ```
 
+---
 
+Om meer informatie te krijgen, zoals gennaam of locatie (chromosoom), moeten we het IRanges object veranderen in een GRanges object. Hierbij zijn niet allen de ranges, net zoals bij een IRanges object, te zien, maar ook de naam van het gen waar de ranges bij horen en op welk chromosoom het zit. Dat ziet er zo uit:
+
+---
+
+```{r, eval=TRUE}
+# maak een GRanges object van de .vcf data
+variants_demo_granges <- GRanges(seqnames = variants_demo$X.CHROM,
+                   ranges = variants_demo_ranges)
+
+variants_demo_granges
+```
+
+---
+
+Hieronder maak ik IRanges en GRanges in een chunk, omdat ik de IRanges niet apart nodig heb voor iets anders.
 
 ```{r}
 # maak een IRanges object van de .vcf data
@@ -948,6 +1087,8 @@ variants49_ranges <- IRanges(start = variants49$POS,
 variant49_granges <- GRanges(seqnames = variants49$X.CHROM,
                    ranges = variants49_ranges)
 ```
+
+Nu we de GRanges van het .vcf bestand hebben, doen we hetzelfde voor het .bed bestand. Met de GRanges van beide bestanden kunnen we ze later vergelijken.
 
 ```{r}
 # lees het .bed bestand in
@@ -967,10 +1108,14 @@ granges_bed49 <- GRanges(seqnames = bed49$ID,
                       ranges = iranges_bed49)
 ```
 
+Nu we beide het .bed en het .vcf bestand in een GRanges object hebben, kunnen we ze met elkaar vergelijken. Hiermee kunnen wij kijken welke varianten in beide bestanden zitten. Varianten die niet in beide bestanden zitten worden eruit gefilterd, omdat die niet gedeeld worden door alle 4 de samples. Hier maak ik gebruik van findOverlaps() om overlappende varianten tussen het .bed en .vcf bestand te vinden. Hieruit krijgen we een dataframe met regels uit de bestanden die met elkaar overlappen. Met deze regels 
+
 ```{r}
 # zoekt naar overlappende granges tussen de .vcf en .bed bestanden
-overlaps49 <- DataFrame(findOverlaps(variant49_granges, granges_bed49))
+overlaps49 <- data.frame(findOverlaps(variant49_granges, granges_bed49))
 ```
+
+De dataframe verkregen uit de vorige stap bestaat uit twee kolommen: Queryhits en Subjecthits. In de queryhits kolom staan de regelnummers van de overlappende varianten tussen het .vcf en .bed bestand. Met deze regelnummers kunnen wij de varianten gedeeld door alle 4 verschillende samples halen. Dit doen wij door de regels met de overap in een nieuw bestand te schrijven.
 
 ```{r}
 # pak de kolom met rijnummers van overlappende granges
@@ -986,48 +1131,95 @@ vcf49_tekst <- readLines("/students/2024-2025/Thema05/3dconformatieChromatine/va
 vcf49_header <- readLines("/students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_SRR26980549.vcf", n=130)
 ```
 
+Hierboven lees ik het .vcf bestand van sample SRR26980549 in met readLines(). Hier kan ik de overlappende regels uit halen.
+
 ```{r}
 setwd("/students/2024-2025/Thema05/3dconformatieChromatine/vcf_gedeelde_varianten")
 write(vcf49_header, "gefilterd_SRR26980549.vcf")
 write(vcf49_tekst, "gefilterd_SRR26980549.vcf", append = TRUE)
 ```
 
+Hierboven maak ik een nieuw .vcf bestand aan die ik opvul met overlappende regels. De header was opgeslagen in een ander variabel en voeg ik voor de overlappende regels toe aan het nieuw bestand.
+
+Nu hebben we de varianten gedeeld door alle 4 van onze samples in een .vcf bestand. Maar dit moeten wij voor alle bestanden doen. Dit kan door deze stap 4 keer te halen, maar ik heb de code hierboven omgeschreven in een for-loop. Die ziet er zo uit:
+
 ```{r}
-gefilterd49 <- read.delim("/students/2024-2025/Thema05/3dconformatieChromatine/vcf_gedeelde_varianten/gefilterd_SRR26980549.vcf",
-                          stringsAsFactors = FALSE,
-                          sep = "\t",
-                          skip = 259)
+# maak een lijst met namen
+AccList <- list("SRR26980549", "SRR26980550", "SRR26980551", "SRR26980552")
 ```
 
+```{r}
+for (name in AccList){
+  
+  path_vcf <- paste0("/students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_", name, ".vcf")
+  
+  # lees het .vcf bestand in
+variants <- read.delim( path_vcf,
+                       header = TRUE, 
+                       # zet de seperator op \t zodat de kolommen juist opgesplitst worden
+                       sep = "\t",
+                       stringsAsFactors = FALSE,
+                       # sla de header over
+                       skip = 129)
+  
+  # maak een IRanges object van de .vcf data
+variants_ranges <- IRanges(start = variants$POS,
+                  end = variants$POS,)
+
+# maak een GRanges object van de .vcf data
+variant_granges <- GRanges(seqnames = variants$X.CHROM,
+                   ranges = variants_ranges)
+  
+  
+
+path_bed <- paste0("/students/2024-2025/Thema05/3dconformatieChromatine/samtools_output/dedeup_", name, ".bed")
+
+# lees het .bed bestand in
+bed <- read.delim(path_bed, 
+                       header = FALSE, 
+                       stringsAsFactors = FALSE, 
+                       col.names = c("ID", "Begin", "End", "File", "Count", "Strand"))
+  
+  # maak een IRanges object van de .bed data
+iranges_bed <- IRanges(start = bed$Begin,
+                         end = bed$End)
+
+# maak een GRanges object van de .bed data
+granges_bed <- GRanges(seqnames = bed$ID,
+                      ranges = iranges_bed)
+  
+  
+  
+# zoekt naar overlappende granges tussen de .vcf en .bed bestanden
+overlaps <- DataFrame(findOverlaps(variant_granges, granges_bed))
+
+# pak de kolom met rijnummers van overlappende granges
+# tel 130 rijen bij de rijnummers op om de header over te slaan
+queryhits <- overlaps$queryHits + 130
+
+# lees het bestand in als tekst
+vcf_tekst <- readLines(path_vcf)
+
+# lees alleen de header in
+vcf_header <- readLines(path_vcf, n=130)
 
 
+name_output <- paste0("gefilterd_", name, ".vcf")
 
+setwd("/students/2024-2025/Thema05/3dconformatieChromatine/vcf_gedeelde_varianten")
+write(vcf_header, name_output)
+write(vcf_tekst, name_output, append = TRUE)
+}
+```
 
+Hierboven zie je de code gebruikt om de gedeelde varianten van onze 4 samples omgeschreven in een for-loop zodat alle 4 de samples in een keer worden bewerkt.
 
+Om ervoor te zorgen dat het proces 4 keer gebeurd en op alle samples, heb ik een lijst aangemaakt met de namen van onze samples. Vervolgens maak ik met het paste0 een pad naar de map waar de .vcf bestanden van onze samples zich bevinden. Bij het naam van het bestand geef ik de naam aan van de lijst, zodat het na elke iteratie van de for-loop verandert. Hiervoor is paste0 handiger dan paste, omdat paste0 geen spaties tussen de verschillende argumenten plaatst. Bij paste ontstaat er wel een witregel tussen de verschillende argumenten, wat ervoor zorgt dat het pad verandert waardoor het .vcf bestand van onze samples niet gevonden kan worden.
 
+Vervolgens verlopen alle stappen precies hetzelfde als de code gebruikt voor 1 sample. Bij het specificeren van de naam van output heb ik ook paste0 gebruikt om de correcte naam van de sample toe te wijzen aan de output .vcf. De namen van de output bestanden zijn: "gefilterd_SRR26980549.vcf", "gefilterd_SRR26980550.vcf", "gefilterd_SRR26980551.vcf", "gefilterd_SRR26980552.vcf".
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\
+\
 
 # Referenties
 
