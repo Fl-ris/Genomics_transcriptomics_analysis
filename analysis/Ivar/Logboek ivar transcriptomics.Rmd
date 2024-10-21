@@ -15,9 +15,11 @@ knitr::opts_chunk$set(echo = TRUE)
 libs
 
 
-```{r}
+```{r echo=FALSE}
 library("DESeq2")
+library("EnhancedVolcano")
 ```
+
 # Week 6 
 # maandag
 
@@ -29,21 +31,25 @@ library("DESeq2")
 
 ## deseq2
 
-names vector van floris
+Inlezen van de feature counts data inclusief de metadata collomen
 ```{r}
+# inlezen
+# skip 2 lines met import data
 transcrip_table <- read.delim("/Users/ivarl/Desktop/count.out",header = FALSE,skip = 2)
-
+# names vector van floris
 names(transcrip_table) <- c("Gene_id","Chr","Start","End","Strand","Length","SRR21754408","SRR21754418","SRR21754419","SRR21754420","SRR21754421","SRR21754422","SRR21754423")
-transcrip_table
+#print
+head(transcrip_table)
 ```
 
+De import data veranderen naar een count matrix voor de deseq functie
 ```{r}
 count_matrix <- data.frame(transcrip_table$Gene_id, transcrip_table$SRR21754408,transcrip_table$SRR21754418,transcrip_table$SRR21754419,transcrip_table$SRR21754420,transcrip_table$SRR21754421,transcrip_table$SRR21754422,transcrip_table$SRR21754423)
 names(count_matrix) <- c("Gene_ID","SRR21754408","SRR21754418","SRR21754419","SRR21754420","SRR21754421","SRR21754422","SRR21754423")
 head(count_matrix)
 ```
 
-conditie
+conditie data frame voor de factoren van de deseq functie
 ```{r}
 # condition data frame
 conditie_matrix <- data.frame(
@@ -63,7 +69,7 @@ conditie_matrix <- data.frame(as.factor(transpose$X1),as.factor(transpose$X2),as
 names(conditie_matrix) <- c("sample","group","type")
 head(conditie_matrix)
 ```
-
+Rownames transformatie voor het dataframe
 ```{r}
 # samples in een nieuw dataframe 
 cts <- data.frame(count_matrix$SRR21754408, count_matrix$SRR21754418, count_matrix$SRR21754419, count_matrix$SRR21754420, count_matrix$SRR21754421, count_matrix$SRR21754422, count_matrix$SRR21754423)
@@ -75,95 +81,88 @@ row.names(cts) <- count_matrix$Gene_ID
 head(cts)
 ```
 
-
+Deseq object aanmaak
 ```{r}
+# Cts de verwerkte fetuere counts matrix
+# conditie matrix is de metadata matrix voor de vergelijking
+# design is de colom (datatype=factor) van de conditie matrix.
 dds <- DESeqDataSetFromMatrix(countData = cts,
                               colData = conditie_matrix,
                               design = ~ group)
 dds
 ```
 
-
+deseq analyse object
 ```{r}
 deseq <- DESeq(dds)
 results(deseq)
 ```
 
-
+result deseq object
 ```{r}
 # vergelijk groep
-#resultaat_deseq <- results(deseq, name = "group_young_vs_old")
 resultaat_deseq <- results(deseq, contrast = c("group", "young","old"))
 resultaat_deseq
 ```
 
-```{r}
-resultsNames(deseq)
-```
 
+LFC shrinkage object
 ```{r}
 deseq_shrink <- lfcShrink(deseq, coef = "group_young_vs_old", type = "apeglm")
 deseq_shrink
 ```
 
+hoeveelheid p waardes onder de 0.01 van de 41079
 ```{r}
-#deseq_orderd <- resultaat_deseq[order(resultaat_deseq$padj)]
+sum(resultaat_deseq$padj < 0.01, na.rm=TRUE)
 ```
 
-```{r}
-summary(deseq)
-```
-
-```{r}
-sum(resultaat_deseq$padj < 0.1, na.rm=TRUE)
-```
-
+Resultaat p waardes onder de 0.05
 ```{r}
 deseq_05 <- results(deseq, alpha=0.05)
 summary(deseq_05)
 ```
 
+ma plot pre shrinkage
 ```{r}
 plotMA(resultaat_deseq, ylim=c(-2,2))
 ```
 
+ma plot met shrinkage
 ```{r}
 plotMA(deseq_shrink, ylim=c(-3,3))
 ```
-```{r}
-#BiocManager::install("EnhancedVolcano")
-library("EnhancedVolcano")
-```
 
+volcano plot
 ```{r}
 EnhancedVolcano(deseq_shrink, x="log2FoldChange", y = "padj",lab = rownames(deseq_shrink), title = "young versus old", pCutoff = 0.05,FCcutoff = 2, ylim = c(0,50),legendPosition = "none",subtitle = "FDR <= 0.05 and absolute FC >= 2")
 ```
 
 
 ```{r}
-
-## Simple function for plotting a Volcano plot, returns a ggplot object
-deseq.volcano <- function(res, datasetName) {
-  return(EnhancedVolcano(res, x = 'log2FoldChange', y = 'padj',
-                         lab=rownames(res),
-                         title = paste(datasetName, "young vs old"),
-                         subtitle = bquote(italic('FDR <= 0.05 and absolute FC >= 2')),
-                         # Change text and icon sizes
-                         labSize = 3, pointSize = 1.5, axisLabSize=10, titleLabSize=12,
-                         subtitleLabSize=8, captionLabSize=10,
-                         # Disable legend
-                         legendPosition = "none",
-                         ylim = c(0, 50),
-                         # Set cutoffs
-                         pCutoff = 0.05, FCcutoff = 2))
-}
-
-## Note: input data is the corrected DESeq2 output using the 'lfcShrink' function (see chapter 4)
-deseq.volcano(res = deseq_shrink, datasetName = "test",)
+plotCounts(dds, "Pax5", intgroup = "group")
 ```
 
 ```{r}
-plotCounts(deseq_shrink, "Phactr3", intgroup = "group")
+plotCounts(dds, "Ebf1", intgroup = "group")
+```
+
+
+exctracting transformd value voor pca
+
+```{r}
+vsd <- vst(dds, blind = FALSE)
+head(assay(vsd))
+```
+
+PCA plot waarbij je kunt zien dat de groepen verschillen en dat bij jong 1 outlyer is 
+ssr 21754408 (gevonden met het gecomente pca plot hieronder)
+```{r}
+# standaard pca
+plotPCA(vsd, intgroup="group", ntop = 40000)
+
+# sample identificatie
+#plotPCA(vsd, intgroup=c("group","sample"))
 ```
 
 
