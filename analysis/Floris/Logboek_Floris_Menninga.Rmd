@@ -40,6 +40,8 @@ library("ggVennDiagram")
 
 ```
 
+
+
 ### **Inleiding:** ###
 
 Het gekozen artikel: (@chromatine_conf) (<https://pubmed.ncbi.nlm.nih.gov/38866970/>) heeft betrekking tot de verandering in 3d conformatie van chromatine die leiden tot verminderde expressie van het gen Ebf1.
@@ -94,7 +96,7 @@ De nieuw verkregen fastq bestanden kunnen nu op kwaliteit gecontroleerd worden m
 Duplicaten kunnen verwijderd worden.
 
 
-### Log: ##3
+### Log: ###
 
 **02-09-2024**:\
 Het gekozen artikel: Three-dimensional chromatin reorganization regulates B cell development during ageing.
@@ -615,43 +617,28 @@ De .bin bestanden zijn gegenereerd na het maken van de database maar zonder de g
 Ook moeten er symlinks naar de bestanden in de mm39 map gemaakt worden. (Of de bestanden kopieren maar dat is minder net)
 Output van tree in de data/ map:
 
-├── genomes
-│   ├── genes.gtf.gz
-│   ├── mm39.fna.gz
-│   └── mmMUISJE.fna.gz
-├── mm10
-│   └── snpEffectPredictor.bin
-├── mm39
-│   ├── cds.fa
-│   ├── genes.gtf
-│   ├── mm39.fa
-│   ├── protein.fa
-│   ├── sequence.NC_000067.7.bin
-│   ├── sequence.NC_000068.8.bin
-│   ├── sequence.NC_000069.7.bin
-│   ├── sequence.NC_000070.7.bin
-│   ├── sequence.NC_000071.7.bin
-│   ├── sequence.NC_000072.7.bin
-│   ├── sequence.NC_000073.7.bin
-│   ├── sequence.NC_000074.7.bin
-│   ├── sequence.NC_000075.7.bin
-│   ├── sequence.NC_000076.7.bin
-│   ├── sequence.NC_000077.7.bin
-│   ├── sequence.NC_000078.7.bin
-│   ├── sequence.NC_000079.7.bin
-│   ├── sequence.NC_000080.7.bin
-│   ├── sequence.NC_000081.7.bin
-│   ├── sequence.NC_000082.7.bin
-│   ├── sequence.NC_000083.7.bin
-│   ├── sequence.NC_000084.7.bin
-│   ├── sequence.NC_000085.7.bin
-│   ├── sequence.NC_000086.8.bin
-│   ├── sequence.NC_000087.8.bin
-│   ├── sequence.bin
-│   ├── sequences.fa
-│   ├── snpEff_genes.txt
-│   ├── snpEff_summary.html
-│   └── snpEffectPredictor.bin
+**genomes:**
+Kopie of symlink naar de zelfde bestanden die in de mm39 map staan, zonder deze stap werkte het niet. 
+genes.gtf.gz
+mm39.fna.gz
+
+**mm10:**
+Dit is het oude referentiegenoom, mm10.
+snpEffectPredictor.bin
+
+**mm39:**
+De volgende bestanden zijn nodig, het proces om ze te verkrijgen is hierboven beschreven.
+cds.fa
+genes.gtf
+mm39.fa
+protein.fa
+sequences.fa
+
+De volgende bestanden zijn gegenereerd na het uitvoeren van snpEff build:
+snpEff_genes.txt
+snpEff_summary.html
+snpEffectPredictor.bin
+
 
 
 Hier worden de vereiste bestanden gedownload:
@@ -798,7 +785,6 @@ Nu er een bestand is dat alle varianten die de vier replicaten gemeen hebben bev
 ### **Visualisatie van de verkregen data:** ###
 
 # Test:
-
 ```{r, eval=FALSE}
 
 
@@ -816,9 +802,7 @@ Nu er een bestand is dat alle varianten die de vier replicaten gemeen hebben bev
 
 ```{r venn diagram test, eval=FALSE}
 
-# Todo:
-# DF met kolomen maken met POS, Chrom en variant:
-
+# Test venn diagram:
 
 A <- c("A","B")
 B <- c("C","B")
@@ -833,14 +817,13 @@ ggVennDiagram(x) +
 
 ```
 
+Lees de verkregen .vcf bestanden in om te gebruiken voor het Venn diagram. Kolom V2 is de locatie op het genoom, wanneer deze het zelfde of anders is tussen samples zal dit weergeven worden in het diagram. Dit hoeft echter niet te betekenen dat hier de zelfde mutatie zit, als er bijvoorbeeld een A -> C in het ene sample zit en op de zelfde locatie in het genoom in het andere sample een G -> T is dit niet de zelfde mutatie maar zal het wel "binnen" in het Venn diagram geplaatst worden omdat ze hier beiden een variant hebben. 
+```{r}
 
-```{r, eval=FALSE}
-
-#SRR26980549_vcf <- read.table(file = "/home/floris/Documenten/Data_set/PRJNA885415/annotated_SRR26980549.vcf")
-
-SRR26980550_vcf <- readVcf(file = "/home/floris/Documenten/Data_set/PRJNA885415/annotated_SRR26980550.vcf")
-SRR26980551_vcf <- readVcf(file = "/home/floris/Documenten/Data_set/PRJNA885415/annotated_SRR26980551.vcf")
-SRR26980552_vcf <- readVcf(file = "/home/floris/Documenten/Data_set/PRJNA885415/annotated_SRR26980552.vcf")
+#SRR26980549_vcf <- readVcf(file = "/home/floris/Documenten/Data_set/PRJNA885415/annotated_SRR26980549.vcf")
+#SRR26980550_vcf <- readVcf(file = "/home/floris/Documenten/Data_set/PRJNA885415/annotated_SRR26980550.vcf")
+#SRR26980551_vcf <- readVcf(file = "/home/floris/Documenten/Data_set/PRJNA885415/annotated_SRR26980551.vcf")
+#SRR26980552_vcf <- readVcf(file = "/home/floris/Documenten/Data_set/PRJNA885415/annotated_SRR26980552.vcf")
 
 SRR26980549_vcf <- read.table(file = "/home/floris/Documenten/Data_set/PRJNA885415/annotated_SRR26980549.vcf")
 SRR26980550_vcf <- read.table(file = "/home/floris/Documenten/Data_set/PRJNA885415/annotated_SRR26980550.vcf")
@@ -850,25 +833,32 @@ SRR26980552_vcf <- read.table(file = "/home/floris/Documenten/Data_set/PRJNA8854
 ```
 
 
-```{r, eval=FALSE}
+```{r}
 
-test3 <- list(SRR26980549_vcf$V2, SRR26980550_vcf$V2, SRR26980551_vcf$V2, SRR26980552_vcf$V2)
+overlap_list <- list(SRR26980549_vcf$V2, SRR26980550_vcf$V2, SRR26980551_vcf$V2, SRR26980552_vcf$V2)
 
-ggVennDiagram(x, set_color = c("green","yellow","black","purple"),
+ggVennDiagram(overlap_list, set_color = c("darkgreen","forestgreen","lightgreen","green"),
               category.names = c("SRR26980549","SRR26980550","SRR26980551", "SRR26980552"),
-              label_alpha=0.4) +
+              label_alpha=0.7) +
               scale_fill_gradient(low = "gray", high = "red")
  
 ```
 
+Het bovenstaande Venn diagram weergeeft de overlap tussen varianten in de vier biologische replicaten. Maar 9% van de varianten komen overeen tussen de vier samples. Daarnaast heeft SRR26980552 de meeste mutaties die de overige samples niet hebben. 
+
+Test:
+```{r, eval=FALSE}
+test <- unlist(strsplit(SRR26980549_vcf$V8,";"))
+
+test2 <- separate_rows(SRR26980549_vcf, V8, sep = ";")
+
+```
+Overige visualisaties staan in het logboek van Jarno.
+
 
 ## **Discussie:** ##
-Omdat de DNA-seq data niet gebruikt was in het originele onderzoek kunnen we de verkregen resultaten niet vergelijken met die van het onderzoek.
+Omdat de DNA-seq data niet gebruikt was in het originele onderzoek kunnen we de verkregen resultaten niet vergelijken met die van het onderzoek. Wel waren er meer varianten en meer verschil tussen de biologische replicaten dan ik had verwacht. 
+Daarnaast was het isec vcf bestand nog niet benut, al is het Venn diagram wel een visuele intersect tussen de samples. 
 
-
-**Feedback: Veel meer uitleg toevoegen, redenen waarom keuzes gemaakt zijn. Versies toevoegen van alle gebruikte software. Overal nog bronnen toevoegen. redenen waarom voor specifieke software gekozen is toevoegen.**
-
-
-Artikel 3d conformatie chromatine: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10329473/> Samtools: <http://www.htslib.org/> BWA-MEM2 <https://github.com/bwa-mem2/bwa-mem2> Trimmomatic: <http://www.usadellab.org/cms/?page=trimmomatic> FastQC: <https://www.bioinformatics.babraham.ac.uk/projects/fastqc/>
 
 ## **referenties**

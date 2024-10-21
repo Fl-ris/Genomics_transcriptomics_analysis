@@ -4,12 +4,21 @@ author: "Jarno Jacob Duiker"
 bibliography: Logboek_Genomics_Jarno.bib
 output:
   html_document:
+    code_folding: hide
+    code_download: true
+    toc: true
+    toc_float: true
     df_print: paged
 ---
 
 ```{r setup, message=FALSE, warning=FALSE, include=FALSE}
 knitr::opts_chunk$set(out.width = '100%', dpi=500) # configuratie voor figuur grootte en resolutie
+library(dplyr)
 library(ggplot2)
+library(ggpubr)
+library(VariantAnnotation)
+
+
 ```
 
 ## Introductie:
@@ -66,21 +75,17 @@ Hieronder is een overzicht te zien van de Tools die wij gaan gebruiken in ons on
 
 ![Planning - Tijd voor onderzoek Genomics & Transcriptomics](images/Scherm­afbeelding%202024-09-24%20om%2015.06.09.png){width="681"}
 
-# Genomics
+## Week 1 - Project Opzet
 
-# Project Opzet
+**Doelen van de week**
 
-## Week 1
+Het maken van een team & Onderzoeken zoeken met potentie
 
-### Doelen van de week
+Het maken van een samenvatting van de Methoden
 
-**Het maken van een team & Onderzoeken zoeken met potentie**
+Het downloaden van de data doormiddel van SRA
 
-**Het maken van een samenvatting van de Methoden**
-
-**Het downloaden van de data doormiddel van SRA**
-
-### Taken lijst - Week 1
+**Taken lijst - Week 1**
 
 -   Team maken
 -   Literatuur + data set zoeken
@@ -97,17 +102,17 @@ De Data set zoeken word gedaan via NCBI in de GEO datasets catagorie met de volg
 
 Aan deze query kan aan het einde nog een woord of onderwerp toegevoegd worden. In onze groep is besproken naar wat onze interesses waren en het hoofd idee was "aging" ook wel veroudering. Dit komt omdat gen expressie veranderd naarmate een organisme ouder word. Dit is anders in elk organisme en daardoor word er veel onderzoek naar gedaan. Wij zijn gekomen op 3 onderzoeken die uit eindelijk interessant waren
 
-#### Niet gekozen Onderzoeken
+### Niet gekozen Onderzoeken
 
 -   @Zhang2021 : MiniCAFE, a CRISPR/Cas9-based compact and potent transcriptional activator, elicits gene expression in vivo. Dit onderzoek gaat over CRISPR-bemiddelde gen activatie. Dit is een belovende gen veranderingstrategie die DNA kan veranderen zonder dat de dubbele helix breekt. Deze is laten controleren door de opdrachtgever en die zei het volgende "Interessant onderzoek en leuk artikel, maar volgens mij zijn er voor het RNA-Seq gedeelte voor de meeste groepen maar 2 replicaten beschikbaar terwijl we daar minimaal 3 willen hebben. Mochten jullie niet iets anders kunnen vinden dan kunnen we dit experiment alsnog gebruiken, maar daar zitten wel wat risico's aan." Hierdoor zijn we gaan kijken naar andere opties.
 
 -   @Takasugi2023 : Gene expressions associated with longer lifespan and aging exhibit similarity in mammals. Dit onderzoek hadden wij als tweede optie gevonden, het onderzoek gaat over gen expressie geassocieerd met langere levensspan en veroudering laten gelijkenis zien in zoogdieren. Dit onderzoek is niet gekozen door de onbeschikbaarheid van de DATA.\
 
-#### Gekozen onderzoek
+### Gekozen onderzoek
 
 -   @Ma2024 : Three-dimensional chromatin reorganization regulates B cell development during ageing. Dit is de keuze geworden door de aanwezigheid van veel data. Dit zijn in totaal 76 samples die genomen zijn van de jonge en oudere muizen. Deze samples zijn van meerdere catagorien maar voor ons belangrijk zijn de verschillende RNA samples. Het doel van dit onderzoek is ook erg interresant en wij hebben na het lezen gelijk al nieuwe dingen geleerd. Wat er uit sprong was de A/B compartenment in de nucleus. Dit is een recente ontdekking en zegt dat er een A compartement is waar de genen worden expressed maar in het B compartement worden de genen niet expressed. Deze twee compartementen zitten nouw bij elkaar en laat dus zien dat er wel structuur zit in waar een gen zit en waar het niet zit in de cel.
 
-#### Week planning
+### Week planning
 
 Door middel van het programma Trello is er een week planning gemaakt. Hier worden ook de taken verdeeld dit is te zien aan de foto's bij de tickets. De foto laat een gebruiker zien, dit gecombineerd met de datum waar voor het af moet zijn geeft ons een duidelijke verdeling. De datum toevoeging geeft de gebruiker die de ticket heeft ook een herinnering.
 
@@ -129,7 +134,7 @@ De methoden zijn belangrijk omdat hierin de benodigdheden staan voor replicatie 
 
 <https://trello.com>
 
-#### Methoden
+### Methoden
 
 Het weten van de methoden is belangrijk omdat wij moeten weten wat wij kunnen repliceren en wat te ver gegrepen is voor ons onderzoek en dit zou onze onderzoeksvraag kunnen beïnvloeden. Als we Hi-C als voorbeeld nemen dit is een hoge doorvoer techniek die chromatine conformatie vastlegt. Dit zouden wij niet in onze 5 weken kunnen doen op een goede manier. Dit is waarom wij kiezen voor de genoom analyse voor afwijkingen met het algemene referentie genoom.
 
@@ -163,7 +168,7 @@ Na alle methoden samengevat te hebben gingen wij als groepje kijken naar de mate
 
 -   **Freebayes**: Dit programma kijkt naar de alignement voor afwijkingen met het referentie genoom en geeft deze aan. De reden dat wij freebayes gebruiken is de goede documententatie en het makkelijke installatie proces. De bash scripts voor freebayes zijn makkelijk gemaakt en problemen kunnen snel worden verholpen met de documentatie die op de git staat.
 
-#### Download - SRA script met prefetch
+### Download - SRA script met prefetch
 
 Eerst werd ons gevraagd om naar de juiste map te gaan. Dit kan door de terminal te openen naar onze home te gaan en cd naar /students/2024-2025/Thema05/ en hier de map voor ons project aan te maken.\
 Of het kan geworden met de GUI waar je ook begint met het openen van de home folder en dan in de zoekbalk het volgende typen "/students/2024-2025/Thema05/" Hier hebben wij de map aangemaakt genaamd "3dconformatieChomatine" een verkorte benaming van de paper. Hier in moest nog een map gemaakt worden die SRA moest worden genoemd. De data moesten wij van de ncbi geo website afhalen door een SraAccList te downloaden. Deze bevatte de naam-codes die wij dan in het systeem kunnen oproepen om ze vervolgens daar te downloaden en unpacken.
@@ -190,24 +195,24 @@ SRR26980552
 
 Het zijn de namen van de samples netjes onder elkaar.
 
-## Week 2
+## Week 2 - Data download + Kwaliteit check
 
-### Doelen van de week
+**Doelen van de week**
 
-**De SRA data uitpakken en de FastQ bekijken**
+De SRA data uitpakken en de FastQ bekijken
 
-**Test data maken**
+Test data maken
 
-**Reads alignenen aan refentie genoom**
+Reads alignenen aan refentie genoom
 
-### Taken lijst
+**Taken lijst**
 
 -   Bash script schrijven voor het uitpakken
 -   Fastq quality checken
 -   Test data maken
 -   Reads alignenen
 
-#### Data uitpakken - fasterq-dump
+### Data uitpakken - fasterq-dump
 
 Om de SRA data naar fastq om te zetten gebruiken we fasterq-dump. fasterq-dump is een programma in de SRA toolkit, wij gebruiken Release 3.1.1, De reden voor het gebruik van fasterq-dump is de goede documentatie en de link met NCBI waar wij onze files vandaan halen. Fasterq-dump zit ook in de SRA toolkit deze staat geïnstalleerd op het systeem dit is makkelijk te doen door naar de git te kijken van Fasterq-dump ook wel de SRA toolkit git.
 
@@ -234,7 +239,7 @@ Hier is een voorbeeld van hoe de fasta file er uit kan zien:
 GATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT - DNAseq\
 + !''*((((***+))%%%++)(%%%%).1***-+*''))\*\*55CCF\>\>\>\>\>\>CCCCCCC65 - kwaliteit in ASCII
 
-#### FastaQC - Raw data run
+### FastaQC - Raw data run
 
 FastQC wordt gebruikt om de kwaliteit te checken van de rauwe data, hier uit is te zien of de data gelijk te gebruiken is of dat deze moet worden getrimmed. De trimmer kan ook afgesteld worden op basis van de Fastqc. @BabrahamBioinformatics
 
@@ -325,9 +330,30 @@ MultiQC wordt hier gebruikt om naar alle fastqc output files te kijken. Multiqc 
 
 Hier is MultiQC te zien, het overlapt alle grafieken en maakt hier 1 grote grafiek van waar wanneer deze wordt aangeklikt het allemaal dingen laat zien. Deze dingen zijn de naam van de sample, welke base positie het is en de kwaliteit. 1 ding wat ook nog anders is, is de score naast de titel. De score naast de titel laat zien dat 8 samples wel een goede kwaliteit hebben en 7 niet.
 
+**Ook zijn de volgende samples zijn niet gebruikt:**\
+B220+CD43+IgM- sorted primary pro-B cells.\
+Deze samples zijn verkregen met een Illumina MiSeq.
+
+SRR26980527\
+SRR26980528\
+SRR26980529\
+SRR26980530
+
+De reden hiervoor is dat het samples van WT muizen zijn, hier gaan we het referentiegenoom voor gebruiken.
+
+Ook was de kwaliteit van deze sequenties volgens fastqc veel slechter dan die van de onderstaande samples. Mogelijk komt dit omdat de reads te lang waren en de kwaliteit daardoor te snel naar beneden ging.
+
+**De volgende zijn wel gebruikt:**\
+Primary pro-B cells by CD19+ selection (Rag2-/-) Deze samples zijn verkregen met een Illumina NovaSeq 6000. SRR26980549\
+SRR26980550\
+SRR26980551\
+SRR26980552
+
+De onnodige samples zijn ook verwijderd uit de lijst (SraAccList.csv) omdat deze met de pipe operator aan de parallel opdracht gegeven wordt. Als de namen in de accession lijst.
+
 Om een gehele analyse te zien van de FastQC resultaten moet er gekeken worden naar de logboeken van Storm en Ivar
 
-#### Test data maken
+### Test data maken
 
 **Seqkit -** Is een veelzijdige tool voor het verwerken en analyseren van sequentiebestanden de inputs welke hij accepteert zijn FASTA en FASTQ. Het kan grote datasets efficiënt doorlopen en biedt meerdere functies zoals filtering, splitsen van sequenties, statistieken genereren, test data sets maken etc. De gebruikte versie op de bio inf assemblix server (waar de Rstudio commands op gerund worden) is op dit moment seqkit V2.3.0
 
@@ -365,7 +391,7 @@ head selecteert het deel van de originele data waarop de test-data moet worden g
 
 -n geeft de lengte aan van hoeveel reads in de test data moet zitten.
 
-#### Achtergrond Info verzameling
+### Achtergrond Info verzameling
 
 De reden om achtergrond informatie te verzamelen is om het onderzoek beter te kunnen uitleggen. Het referentie onderzoek gaat over verschillende dingen die niet vaak worden behandeld. 2 van die dingen zijn de A/B compartimenten. Deze hebben invloed op de activatie van het genooom. Pro-b cellen zijn ook een belangrijk onderwerp in het referentie onderzoek en ze zijn ook belangrijk voor ons onderzoek, dit is omdat wij kijken naar de EBF1 want de Pro-B cellen hebben dit nodig om te differentiëren van hematopoetische stamcellen naar volwassen B cellen. Wanneer dit gen dus minder voorkomt (ook wel tot expressie komt) kunnen de B cellen van de voorloper B cellen hebben.
 
@@ -392,11 +418,15 @@ Kritisch voor de generatie van het verschillend repertoire van b cellen capabel 
 
 @Nemazee2017
 
-#### Indexeren referentie genoom
+### Indexeren referentie genoom
+
+Met alleen een fastq bestand is het niet duidelijk waar in het genoom van de mm39 muis deze reads vandaan komen. Om hier achter te komen moet read mapping worden gebruikt, Hier worden de reads ook wel data-sequenties vergeleken met een bekend genoom. Het genoom in ons referentie onderzoek kwam uit 2012 het GRCm38 en dit onderzoek kijkt naar GRCm39 waardoor er dus verschillen kunnen zijn in de varianten
 
 Hier wordt ons gekozen referentie genoom ge indexeert. De reden voor het alignen van het referentie genoom is voor het gebruik van BWA-mem2. een geïndexeerde versie van het refentiegenoom moet dus gemaakt worden, dit kan met bwa-mem2 index. indexeren maakt het align proces veel sneller. De samples SRR26980528_1 en \_2 zijn gebruikt na het referentiegenoom te indexeren met BWA_MEM2. Het gebruikte referentie genoom is mm39 (GCF_000001635.27).
 
 In de onderstaande code chunk wordt het geïndexeerde muisgenoom "testnaam" genoemd. Daarna worden twee samples (forward read en reverse read) ge-aligned met het zojuist verkregen geïndexeerde referentiegenoom.
+
+D
 
 **Wat hier uit komt is een SAM file deze ziet er als volgt uit:\
 **\
@@ -534,25 +564,25 @@ De reden om een VCF-bestand ook wel Variant Call Format te maken is het opslaan 
 
 Hier is een voorbeeld van hoe een VCF-bestand er uit kan zien:
 
- ##fileformat=VCFv4.3 - Hier staat het Format en de versie\
- ##fileDate=20090805 - De datum van generatie van deze file\
- ##source=myImputationProgramV3.1 - source tool waarmee de VCF is genmaakt\
- ##reference=<file:///seq/references/1000GenomesPilot-NCBI36.fasta> - referentie genoom gebruikt voor variant zoeken\
- ##contig\<ID=20,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species="Homo sapiens",taxonomy=x\> - ID van chromosoom of scaffold + lengthe in base paren.\
- ##phasing=partial - het proces van toewijzen van allelen aan de chromosomen\
- ##INFO=\<ID=NS,Number=1,Type=Integer,Description="Number of Samples With Data"\> \
- ##INFO=\<ID=DP,Number=1,Type=Integer,Description="Total Depth"\> \
- ##INFO=\<ID=AF,Number=A,Type=Float,Description="Allele Frequency"\> \
- ##INFO=\<ID=AA,Number=1,Type=String,Description="Ancestral Allele"\> \
- ##INFO=\<ID=DB,Number=0,Type=Flag,Description="dbSNP membership, build 129"\> \
- ##INFO=\<ID=H2,Number=0,Type=Flag,Description="HapMap2 membership"\> \
- ##FILTER=\<ID=q10,Description="Quality below 10"\> \
- ##FILTER=\<ID=s50,Description="Less than 50% of samples have data"\> \
- ##FORMAT=\<ID=GT,Number=1,Type=String,Description="Genotype"\> \
- ##FORMAT=\<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality"\> \
- ##FORMAT=\<ID=DP,Number=1,Type=Integer,Description="Read Depth"\> \
- ##FORMAT=\<ID=HQ,Number=2,Type=Integer,Description="Haplotype Quality"\> \
- #CHROM POS      ID         REF   ALT    QUAL  FILTER   INFO                             FORMAT       NA00001         NA00002          NA00003 \
+##fileformat=VCFv4.3 - Hier staat het Format en de versie\
+##fileDate=20090805 - De datum van generatie van deze file\
+##source=myImputationProgramV3.1 - source tool waarmee de VCF is genmaakt\
+##reference=<file:///seq/references/1000GenomesPilot-NCBI36.fasta> - referentie genoom gebruikt voor variant zoeken\
+##contig\<ID=20,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species="Homo sapiens",taxonomy=x\> - ID van chromosoom of scaffold + lengthe in base paren.\
+##phasing=partial - het proces van toewijzen van allelen aan de chromosomen\
+##INFO=\<ID=NS,Number=1,Type=Integer,Description="Number of Samples With Data"\> \
+##INFO=\<ID=DP,Number=1,Type=Integer,Description="Total Depth"\> \
+##INFO=\<ID=AF,Number=A,Type=Float,Description="Allele Frequency"\> \
+##INFO=\<ID=AA,Number=1,Type=String,Description="Ancestral Allele"\> \
+##INFO=\<ID=DB,Number=0,Type=Flag,Description="dbSNP membership, build 129"\> \
+##INFO=\<ID=H2,Number=0,Type=Flag,Description="HapMap2 membership"\> \
+##FILTER=\<ID=q10,Description="Quality below 10"\> \
+##FILTER=\<ID=s50,Description="Less than 50% of samples have data"\> \
+##FORMAT=\<ID=GT,Number=1,Type=String,Description="Genotype"\> \
+##FORMAT=\<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality"\> \
+##FORMAT=\<ID=DP,Number=1,Type=Integer,Description="Read Depth"\> \
+##FORMAT=\<ID=HQ,Number=2,Type=Integer,Description="Haplotype Quality"\> \
+#CHROM POS      ID         REF   ALT    QUAL  FILTER   INFO                             FORMAT       NA00001         NA00002          NA00003 \
 20     14370    rs6054257  G     A      29    PASS    NS=3;DP=14;AF=0.5;DB;H2           GT:GQ:DP:HQ  0\|0:48:1:51,51  1\|0:48:8:51,51   1/1:43:5:.,. \
 20     17330    .          T     A      3     q10     NS=3;DP=11;AF=0.017               GT:GQ:DP:HQ  0\|0:49:3:58,50  0\|1:3:5:65,3     0/0:41:3 \
 20     1110696  rs6040355  A     G,T    67    PASS    NS=2;DP=10;AF=0.333,0.667;AA=T;DB GT:GQ:DP:HQ  1\|2:21:6:23,27  2\|1:2:0:18,2     2/2:35:4 \
@@ -590,25 +620,23 @@ bwa-mem2 mem roept het programma bwa-mem2 aan dit wordt gebruikt om de illumina 
 
 & dit zet het hele parallel-proces op de achtergrond zodat de shell beschikbaar is tijdens het proces.
 
-# Data Trimming
+## Week 3 - Data Trimming & 2de kwaliteit check
 
-## Week 3
+**Doelen van de week**
 
-### Doelen van de week
+Data trimmen
 
-**Data trimmen**
+Quality herchecken
 
-**Quality herchecken**
+Variantie detectie
 
-**Variantie detectie**
-
-### Taken lijst
+**Taken lijst**
 
 -   Fastq quality checken en kijken hoe de data moet worden getrimd
 -   Data trimmen
 -   Freebayes script schrijven
 
-#### Trimmomatic
+### Trimmomatic
 
 Trimmomatic is een flexibel trimsoftware voor illumina sequence data, het kan zowel paired-end als dsingle ended data aan. Er zijn verschillende stappen in het trimmen en verschillende parameters. Trimmomatic is een command line gerunde tool. De voordelen van trimmomatic zijn dat het goed omgaat met het "collapsing" en "trimming" van paired-end en sequencing van fragmenten die korten zijn dan de leeslengte, waarbij de leeslengte zich aan het einde van elke leeslengte uitstrekt tot in de adapters. Het zorgt ook dat terwijl het de data schoonmaakt zijn intergriteit behoud.
 
@@ -664,9 +692,7 @@ Voor diepere analyse check het logboek van Storm en Ivar
 
 Deze flowchart toont hoe Trimmomatic paired-end reads verwerkt. Het programma neemt beide reads als input en beoordeelt hun kwaliteit. Als zowel de forward als reverse reads voldoen aan de gekozen settings, blijven ze "paired" voor verdere analyse. Als één van de twee niet aan de kwaliteitsnormen voldoet wordt de slechte read verwijderd en de goede read als "unpaired" opgeslagen. Hierdoor onstaan vier mogelijkheden voor outputs: forward paired, reverse paired, forward unpaired en reverse unpaired. Allemaal afhankelijk van de kwaliteit van elke read.
 
-# Quality control - 2
-
-#### Fastqc run 2
+### Fastqc run 2
 
 Deze tweede FastQC run is gedaan na het mappen van de data.
 
@@ -680,11 +706,11 @@ De conclusie van de fastqc rapport is dat de samples 549, 550, 551, 551 goed zij
 
 Voor verdere analyse zie logboek van Ivar of Storm
 
-# Align data
+### Align data
 
 **Sorteren .sam bestanden**
 
-#### Bwa-mem2
+### Bwa-mem2
 
 BWA-MEM2 wordt gebruikt om zowel DNA- als RNA-reads te aligneren met een referentiegenoom. Het kan korte en middellange DNA- of RNA-reads alignen. Er zijn verschillende manieren waar dit voor gebruikt kan worden zoals, Whole genome sequencing, Exoomsequencing en RNA-seq. Voor ons is Whole genome sequencing interresant dit is omdat hierbij de genomen worden gescand en dan vergeleken met het gekozen referentie genoom (in ons geval mm39 - GCF_000001635.27) dit om genetische variaties te identificeren.
 
@@ -701,7 +727,7 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 De reden waarom wij bwa-mem2 gebruiken en niet STAR is omdat bwa-mem2 beter is voor DNA dit is omdat STAR gespecialiseerd is in RNA-seq ook is bwa-mem2 heel accuraat voor DNA sequences allignment, het gaat goed om met mismatches, kleine indels en langere reads. Het voordeel van bwa-mem2 is ook dat het minder zwaar is op de memory van de pc's.
 
-#### Converteer SAM naar BAM
+### Converteer SAM naar BAM
 
 ```{bash, eval=FALSE}
 samtools sort -n -O BAM -o aligned_sorted_SRR26980549.bam aligned_SRR26980549.sam
@@ -721,7 +747,7 @@ samtools sort -n -O BAM -o aligned_sorted\_{}.bam aligned\_{}.sam: dit is het so
 
 De reden om de aligned files om te zetten van .sam naar .bam is omdat deze worden gebruikt om een bed file te maken. Ook zijn er voordelen aan bam bestanden tegenover sam bestanden dit zijn: minder opslagruimte, meer compatibiliteit en sneller lees baar door verschillende tools.
 
-#### Freebayes - variant calling
+### Freebayes - variant calling
 
 @BioinformaticsWorkbook
 
@@ -756,7 +782,7 @@ chr1 195471971 52 60 61
 
 De reden om dit bestand te maken is voor noodzaak bij bepaalde tools down stream.
 
-## Week 4
+## Week 4 - Visualisatie
 
 ### Annotatie
 
@@ -774,7 +800,7 @@ bamToBed -i aligned_sorted_SRR26980549.bam > aligned_sorted_SRR26980549.bed
 
 verschillende soorten visualisatie proberen
 
-```{r}
+```{r, echo=FALSE }
 #hier vraag ik of Biocmananger al is geinstaleerd en of het nodig is zo ja dan wordt het geinstalleerd met de quitly=TRUE wordt dit op de achtergrond gedaan.
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -784,12 +810,8 @@ BiocManager::install("VariantAnnotation")
 
 VariantAnnotation is een library die kijkt naar VCF files en er bepaalde dingen uit kan lezen die te maken hebben met Varianten. Dit wordt gehost door Biocoductor <https://bioconductor.org/packages/release/bioc/html/VariantAnnotation.html> er staat een kort maar krachtige uitleg van wat het kan: Annotatering van varianten, computeert amino zuur codering veranderiongen, voorspelling uitkomst van codering.
 
-
-
-
-```{r, }
+```{r}
 #hier wordt de eerder geinstaleerde Variannotatie library aangeroepen
-library(VariantAnnotation)
 
 #hier worden de 4 files in een variabele gezet met de sample code
 vcf_file_552 <- "/Users/Gebruiker/Desktop/data_genomics_SRR/annotated_SRR26980552.vcf"
@@ -803,11 +825,9 @@ vcf_data_file_551 <- readVcf(vcf_file_551, genome="GRCm39")
 vcf_data_file_550 <- readVcf(vcf_file_550, genome="GRCm39")
 vcf_data_file_549 <- readVcf(vcf_file_549, genome="GRCm39")
 
-
 ```
 
-
-```{r, fig1}
+```{r, fig.cap="Figuur 6:varianten types 4 samples"}
 #Dit zorgt ervoor dat de 4 barplots in 1 plaatje weergegeven worden
 par(mfrow=c(2,2))
 
@@ -849,47 +869,32 @@ bp_v_549 <- barplot(variant_type_counts549,
         ylab = "Telling",
         col = "lightblue")
 ```
+
 Uit deze komen 4 barplots die naast elkaar worden gezet. De barplots geven per type variant weer hoeveel er zijn. er is in deze barplots te zien dat de meeste type varianten insertie varianten zijn en op 2de plaats 1 nucleotide veranderingen bij elke sample. Het verschil tussen de samples is wel dat sample 550 rond 8000 insertie varianten heeft en sample 549 rond de 5000 heeft. Het is niet te zien uit deze grafieken of deze varianten ook op het exon zitten.
 
 Het is belangrijk om dit te weten omdat sommige varianten meer impact hebben dan anderen. SNP varianten kunnen voor geen enkele veranderingen zorgen downstream, of ook juist wel door bijvoobeeld van een normale codon een stop codon te maken waardoor downstream de aminozuren niet goed worden getranscripteerd. De locatie is belangrijk om te weten omdat dit kan zeggen of het te maken heeft met onze onderzoeksvraag. Om terug te komen over waarom deze grafieken belangrijk zijn is om te laten zien dat er degelijk mutaties in de varianten zijn en dat sommige samples veel hebben.
 
-
-Wat voor info zit er in info(vcf_data_file_552)$TYPE
-CharacterList of length 225071
-[[1]] snp
-[[2]] snp
-[[3]] ins
-[[4]] snp
-[[5]] snp
-[[6]] snp
-[[7]] del
-[[8]] ins
-[[9]] snp
-[[10]] snp
-...
-<225061 more elements>
+Wat voor info zit er in info(vcf_data_file_552)\$TYPE CharacterList of length 225071 [[1]] snp [[2]] snp [[3]] ins [[4]] snp [[5]] snp [[6]] snp [[7]] del [[8]] ins [[9]] snp [[10]] snp ... \<225061 more elements\>
 
 Hier is een afkorting te lezen, deze afkorting geeft aan wat voor type variant dit is. Hier onder is een tabel te zien met welke afkorting wat doet.
 
++----------------+----------------------------------+--------------------------------------+
+| Soort mutatie: | Betekenis:                       | Voorbeeld:                           |
++================+==================================+======================================+
+| SNP            | Single-Nucleotide Polymorphism   | Reference = 'A', Sample = 'C'        |
++----------------+----------------------------------+--------------------------------------+
+| Ins            | Insertion                        | Reference = 'A', Sample = 'AGT'      |
++----------------+----------------------------------+--------------------------------------+
+| Del            | Deletion                         | Reference = 'AC', Sample = 'C'       |
++----------------+----------------------------------+--------------------------------------+
+| MNP            | Multiple-nucleotide polymorphism | Reference = 'ATA', Sample = 'GTC'    |
++----------------+----------------------------------+--------------------------------------+
+| MIXED          | Multiple-nucleotide and an InDel | Reference = 'ATA', Sample = 'GTCAGT' |
++----------------+----------------------------------+--------------------------------------+
 
-
-+-----------------+----------------------------------+--------------------------------------+
-| Soort mutatie:  | Betekenis:                       | Voorbeeld:                           |
-+=================+==================================+======================================+
-| SNP             | Single-Nucleotide Polymorphism   | Reference = 'A', Sample = 'C'        |
-+-----------------+----------------------------------+--------------------------------------+
-| Ins             | Insertion                        | Reference = 'A', Sample = 'AGT'      |
-+-----------------+----------------------------------+--------------------------------------+
-| Del             | Deletion                         | Reference = 'AC', Sample = 'C'       |
-+-----------------+----------------------------------+--------------------------------------+
-| MNP             | Multiple-nucleotide polymorphism | Reference = 'ATA', Sample = 'GTC'    |
-+-----------------+----------------------------------+--------------------------------------+
-| MIXED           | Multiple-nucleotide and an InDel | Reference = 'ATA', Sample = 'GTCAGT' |
-+-----------------+----------------------------------+--------------------------------------+
 Deze tabel is gemaakt door floris en kan terug gevonden worden in zijn logboek.
 
-```{r, fig2}
-library(ggplot2)
+```{r, fig.cap="Figuur 7:Distriebutie van Variant Posities"}
 
 #hier gebruik ik rowranges om de positie van de varianten uit de vcf data te krijgen en dan start() om de start positie er uit te halen.
 variable_poisitions <- start(rowRanges(vcf_data_file_552))
@@ -897,14 +902,15 @@ variable_poisitions <- start(rowRanges(vcf_data_file_552))
 #ggplot gebruik ik hier opmerkelijk is de binwidth deze is 1000000 Dit betekent dat elk bin (balkje) een breedte heeft van 1 miljoen (1,000,000) posities
 ggplot(data.frame(variable_poisitions), aes(x = variable_poisitions)) +
   geom_histogram(binwidth = 1000000, fill = "skyblue", color = "black") +
-  labs(title = "Distriebutie van Variant Positions",
+  labs(title = "Distriebutie van Variant Posities",
        x = "Position op het chromosoom",
        y = "tellingvan Varianten") +
   theme_minimal()
 ```
+
 Hier is een grafiek te zien waar de variant positie wordt weergegeven op het chromosoom. Deze grafiek is echter niet goed, dit is omdat alle chromosomen worden weergegeven en niet iets specifiek waardoor je eigenlijk alle varianten ziet op elk chromosoom door elkaar. Er is wel een piek wat opmerkelijk is.
 
-```{r, fig3}
+```{r,}
 
 #hier lees ik de data op een andere manier in met read.delim dit is een tab-delimeneted wat betekent dat het door tabs gescheiden is, ook lees ik hem im vanaf lijn 129 omdat ik de header wil skippen dit is omdat hier geen info staat die ik nodig heb voor visualisatie ook wel een header. stringsafactors false zodat R de strings als characters laat en niet in factors om zet. 
 vcf_data_549 <- read.delim("/Users/Gebruiker/Desktop/data_genomics_SRR/annotated_SRR26980549.vcf", skip=129 ,stringsAsFactors = FALSE)
@@ -912,74 +918,72 @@ vcf_data_550 <- read.delim("/Users/Gebruiker/Desktop/data_genomics_SRR/annotated
 vcf_data_551 <- read.delim("/Users/Gebruiker/Desktop/data_genomics_SRR/annotated_SRR26980551.vcf", skip=129 ,stringsAsFactors = FALSE)
 vcf_data_552 <- read.delim("/Users/Gebruiker/Desktop/data_genomics_SRR/annotated_SRR26980552.vcf", skip=129 ,stringsAsFactors = FALSE)
 
-head(vcf_data_549)
 ```
 
-```{r, fig4}
+```{r, fig.cap="Figuur 8: head voor chr inhoud"}
 #hier gebruik ik head om de eerste 6 lijnen te bekijken en de $X.chromosoom om te zien of ze allemaal met dezelfde chromosoom beginnen
-head(vcf_data_549$X.CHROM)
-head(vcf_data_550$X.CHROM)
-head(vcf_data_551$X.CHROM)
-head(vcf_data_552$X.CHROM)
+head(vcf_data_549)
+head(vcf_data_550)
+head(vcf_data_551)
+head(vcf_data_552)
 
 ```
-Ik voer deze head uit voor alle 4 samples omdat ik wil zien of ze allemaal dezelfde chr bevatten waardoor ik weet of ik die kan gebruiken voor de filter stap in de volgende code. 
 
-```{r, fig5}
-library(dplyr)
-library(ggplot2)
+Ik voer deze head uit voor alle 4 samples omdat ik wil zien of ze allemaal dezelfde chr bevatten waardoor ik weet of ik die kan gebruiken voor de filter stap in de volgende code.
+
+```{r, fig.cap="Figuur 9: Distributie van Variant posities Ebf1"}
 
 #Hier gebruik ik grepl niet grep omdat grepl kijkt in de kollomen of NC_000067.7 voorkomt en dan specifiek de vcf_data_549$X.CHROM kolom als deze true is word de hele row die deze bevat meegegeven aan de nieuwe variable.
-vcf_data_549 <- vcf_data_549[grepl("NC_000067.7", vcf_data_549$X.CHROM),] 
-variable_poisitions_549 <- vcf_data_549$POS
+vcf_data_549_filterd <- vcf_data_549[grepl("NC_000077.7", vcf_data_549$X.CHROM),] 
+variable_poisitions_549 <- vcf_data_549_filterd$POS
 
 #hier wordt een plot gemaakt waar ik van variable_poisitions_549 een dataframe maak zodat het werkt met ggplot dan zet ik de x ook naar het data frame en ik wil dat het een geom_histogram is weer met de binwidth deze is 1000000 Dit betekent dat elk bin (balkje) een breedte heeft van 1 miljoen (1,000,000) posities. daarna zet ik de x en y labels met labs en het thema van de grafiek
 p_549 <- ggplot(data.frame(variable_poisitions_549), aes(x = variable_poisitions_549)) +
   geom_histogram(binwidth = 1000000, fill = "blue", color = "blue") +
-  labs(x = "Positie (coördinaten) op NC_000067.7",
+  labs(x = "Positie (coördinaten) op NC_000077.7",
        y = "Aantal varianten")  +
     theme_minimal()
 
 #Hier gebruik ik grepl niet grep omdat grepl kijkt in de kollomen of NC_000067.7 voorkomt en dan specifiek de vcf_data_550$X.CHROM kolom als deze true is word de hele row die deze bevat meegegeven aan de nieuwe variable.
-vcf_data_550 <- vcf_data_550[grepl("NC_000067.7", vcf_data_550$X.CHROM),] 
-variable_poisitions_550 <- vcf_data_550$POS
+vcf_data_550_filterd <- vcf_data_550[grepl("NC_000077.7", vcf_data_550$X.CHROM),] 
+variable_poisitions_550 <- vcf_data_550_filterd$POS
 
 #hier wordt een plot gemaakt waar ik van variable_poisitions_550 een dataframe maak zodat het werkt met ggplot dan zet ik de x ook naar het data frame en ik wil dat het een geom_histogram is weer met de binwidth deze is 1000000 Dit betekent dat elk bin (balkje) een breedte heeft van 1 miljoen (1,000,000) posities. daarna zet ik de x en y labels met labs en het thema van de grafiek
 p_550 <- ggplot(data.frame(variable_poisitions_550), aes(x = variable_poisitions_550)) +
   geom_histogram(binwidth = 1000000, fill = "blue", color = "blue") +
-  labs(x = "Positie (coördinaten) op NC_000067.7",
+  labs(x = "Positie (coördinaten) op NC_000077.7",
        y = "Aantal varianten")  +
     theme_minimal()
 
 #Hier gebruik ik grepl niet grep omdat grepl kijkt in de kollomen of NC_000067.7 voorkomt en dan specifiek de vcf_data_551$X.CHROM kolom als deze true is word de hele row die deze bevat meegegeven aan de nieuwe variable.
-vcf_data_551 <- vcf_data_551[grepl("NC_000067.7", vcf_data_551$X.CHROM),] 
-variable_poisitions_551 <- vcf_data_551$POS
+vcf_data_551_filterd <- vcf_data_551[grepl("NC_000077.7", vcf_data_551$X.CHROM),] 
+variable_poisitions_551 <- vcf_data_551_filterd$POS
 
 #hier wordt een plot gemaakt waar ik van variable_poisitions_551 een dataframe maak zodat het werkt met ggplot dan zet ik de x ook naar het data frame en ik wil dat het een geom_histogram is weer met de binwidth deze is 1000000 Dit betekent dat elk bin (balkje) een breedte heeft van 1 miljoen (1,000,000) posities. daarna zet ik de x en y labels met labs en het thema van de grafiek
 p_551 <- ggplot(data.frame(variable_poisitions_551), aes(x = variable_poisitions_551)) +
   geom_histogram(binwidth = 1000000, fill = "blue", color = "blue") +
-  labs(x = "Positie (coördinaten) op NC_000067.7",
+  labs(x = "Positie (coördinaten) op NC_000077.7",
        y = "Aantal varianten")  +
     theme_minimal()
 
 #Hier gebruik ik grepl niet grep omdat grepl kijkt in de kollomen of NC_000067.7 voorkomt en dan specifiek de vcf_data_552$X.CHROM kolom als deze true is word de hele row die deze bevat meegegeven aan de nieuwe variable.
-vcf_data_552 <- vcf_data_552[grepl("NC_000067.7", vcf_data_552$X.CHROM),] 
-variable_poisitions_552 <- vcf_data_552$POS
+vcf_data_552_filterd <- vcf_data_552[grepl("NC_000077.7", vcf_data_552$X.CHROM),] 
+variable_poisitions_552 <- vcf_data_552_filterd$POS
 
 #hier wordt een plot gemaakt waar ik van variable_poisitions_552 een dataframe maak zodat het werkt met ggplot dan zet ik de x ook naar het data frame en ik wil dat het een geom_histogram is weer met de binwidth deze is 1000000 Dit betekent dat elk bin (balkje) een breedte heeft van 1 miljoen (1,000,000) posities. daarna zet ik de x en y labels met labs en het thema van de grafiek
 p_552 <- ggplot(data.frame(variable_poisitions_552), aes(x = variable_poisitions_552)) +
   geom_histogram(binwidth = 1000000, fill = "blue", color = "blue") +
-  labs(x = "Positie (coördinaten) op NC_000067.7 ",
+  labs(x = "Positie (coördinaten) op NC_000077.7 ",
        y = "Aantal varianten") +
     theme_minimal()
 p_552
 ```
-Hier is de plot van sample 552 te zien, het is niet super duidelijk te zien waar de waar de exacte positie is. Maar er is te zien dat er op 1 plek heel veel varianten zitten, het is handig om nu de andere grafieken te bekijken om te zien of deze ook een zelfde spike hebben waardoor we kunnen zien of dit een belangrijke variant is. 
+
+Hier is de plot van sample 552 te zien, er is te zien dat aan het begin er een grote piek is wat betekent dat er net minder dan 400 varianten op deze locatie zich bevinden. Uit deze plot is niet te halen wat voor type varianten het zijn of wat voor schade / geen schade ze aanbrengen. Deze plot zegt wel dat het begin van de Ebf1 proteine sequentie in de 552 sample veel varianten zitten dus interessant kan zijn voor diepere analyse . NC_000077.7 is de locatie van de Ebf1 proteine deze gaat van 44502738 - 44898923 aldus <https://www.ncbi.nlm.nih.gov/gene/13591>.
 
 ggplot2 is een library in R die gebruikt kan worden om uitgebreidere plots te maken dan dat base R dat kan. Dit houd in dat alles aan te passen is, van kleuren tot labels tot titels en nog veel meer andere stijl aanpassingen.
 
-```{r, fig6}
-library(ggpubr)
+```{r, fig.cap="Figuuur 10: Distributie van Variant posities Ebf1 over vier verschillende samples"}
 
 #hier wordt ggarrange gebruikt om de verschillende plots samen in 1 frame te zetten waardoor het makkelijker te vergelijken is in 1 opzicht. labels en de rows zorgen voor verduidelijking van wat de samples zijn en hoe de plots geordend zijn
 multi_pos_plot <- ggarrange(p_549, p_550, p_551, p_552,
@@ -987,23 +991,90 @@ multi_pos_plot <- ggarrange(p_549, p_550, p_551, p_552,
           ncol = 2, nrow = 2)
 
 #hier wordt de plot titel weergegeven 1 algemene titel inplaats van 4 dezelfde
-annotate_figure(multi_pos_plot, top = text_grob("Distributie van Variant posities", 
+annotate_figure(multi_pos_plot, top = text_grob("Distributie van Variant posities Ebf1 ", 
                color = "black", size = 14))
 ```
-Er is in alle barplots 1 grote piek te zien die lijkt te zitten opdezelfde positie wat dus betekent dat op die positie veel varianten zitten. Deze positie zullen we moeten achterhalen om te zien wat voor varianten er hier zitten met wat voor mutaties. Dit zou ons dichter bij het antwoorden van onze onderzoekds vraag kunnen brengen.
 
+Hier in figuur 10 zijn 4 plots te zien waar de positie van varianten zijn te zien in het Ebf1 gen (NC_000070.7).\
+Er is te zien dat er grote interessante pieken zijn waar dieper in moet worden gekeken wat voor varianten het zijn en of het op een exon zit of niet.
 
-## Week 5
+```{r, fig.cap="Figuur 11: Distributie van Variant posities pax5"}
+
+#Hier gebruik ik grepl niet grep omdat grepl kijkt in de kollomen of NC_000067.7 voorkomt en dan specifiek de vcf_data_549$X.CHROM kolom als deze true is word de hele row die deze bevat meegegeven aan de nieuwe variable.
+vcf_data_549_pax5 <- vcf_data_549[grepl("NC_000070.7", vcf_data_549$X.CHROM),] 
+variable_poisitions_549 <- vcf_data_549_pax5$POS
+
+#hier wordt een plot gemaakt waar ik van variable_poisitions_549 een dataframe maak zodat het werkt met ggplot dan zet ik de x ook naar het data frame en ik wil dat het een geom_histogram is weer met de binwidth deze is 1000000 Dit betekent dat elk bin (balkje) een breedte heeft van 1 miljoen (1,000,000) posities. daarna zet ik de x en y labels met labs en het thema van de grafiek
+p_549 <- ggplot(data.frame(variable_poisitions_549), aes(x = variable_poisitions_549)) +
+  geom_histogram(binwidth = 1000000, fill = "black", color = "black") +
+  labs(x = "Positie (coördinaten) op NC_000070.7",
+       y = "Aantal varianten")  +
+    theme_minimal()
+
+#Hier gebruik ik grepl niet grep omdat grepl kijkt in de kollomen of NC_000067.7 voorkomt en dan specifiek de vcf_data_550$X.CHROM kolom als deze true is word de hele row die deze bevat meegegeven aan de nieuwe variable.
+vcf_data_550_pax5 <- vcf_data_550[grepl("NC_000070.7", vcf_data_550$X.CHROM),] 
+variable_poisitions_550 <- vcf_data_550_pax5$POS
+
+#hier wordt een plot gemaakt waar ik van variable_poisitions_550 een dataframe maak zodat het werkt met ggplot dan zet ik de x ook naar het data frame en ik wil dat het een geom_histogram is weer met de binwidth deze is 1000000 Dit betekent dat elk bin (balkje) een breedte heeft van 1 miljoen (1,000,000) posities. daarna zet ik de x en y labels met labs en het thema van de grafiek
+p_550 <- ggplot(data.frame(variable_poisitions_550), aes(x = variable_poisitions_550)) +
+  geom_histogram(binwidth = 1000000, fill = "black", color = "black") +
+  labs(x = "Positie (coördinaten) op NC_000070.7",
+       y = "Aantal varianten")  +
+    theme_minimal()
+
+#Hier gebruik ik grepl niet grep omdat grepl kijkt in de kollomen of NC_000067.7 voorkomt en dan specifiek de vcf_data_551$X.CHROM kolom als deze true is word de hele row die deze bevat meegegeven aan de nieuwe variable.
+vcf_data_551_pax5 <- vcf_data_551[grepl("NC_000077.7", vcf_data_551$X.CHROM),] 
+variable_poisitions_551 <- vcf_data_551_pax5$POS
+
+#hier wordt een plot gemaakt waar ik van variable_poisitions_551 een dataframe maak zodat het werkt met ggplot dan zet ik de x ook naar het data frame en ik wil dat het een geom_histogram is weer met de binwidth deze is 1000000 Dit betekent dat elk bin (balkje) een breedte heeft van 1 miljoen (1,000,000) posities. daarna zet ik de x en y labels met labs en het thema van de grafiek
+p_551 <- ggplot(data.frame(variable_poisitions_551), aes(x = variable_poisitions_551)) +
+  geom_histogram(binwidth = 1000000, fill = "black", color = "black") +
+  labs(x = "Positie (coördinaten) op NC_000070.7",
+       y = "Aantal varianten")  +
+    theme_minimal()
+
+#Hier gebruik ik grepl niet grep omdat grepl kijkt in de kollomen of NC_000067.7 voorkomt en dan specifiek de vcf_data_552$X.CHROM kolom als deze true is word de hele row die deze bevat meegegeven aan de nieuwe variable.
+vcf_data_552_pax5 <- vcf_data_552[grepl("NC_000070.7", vcf_data_552$X.CHROM),] 
+variable_poisitions_552 <- vcf_data_552_pax5$POS
+
+#hier wordt een plot gemaakt waar ik van variable_poisitions_552 een dataframe maak zodat het werkt met ggplot dan zet ik de x ook naar het data frame en ik wil dat het een geom_histogram is weer met de binwidth deze is 1000000 Dit betekent dat elk bin (balkje) een breedte heeft van 1 miljoen (1,000,000) posities. daarna zet ik de x en y labels met labs en het thema van de grafiek
+p_552 <- ggplot(data.frame(variable_poisitions_552), aes(x = variable_poisitions_552)) +
+  geom_histogram(binwidth = 1000000, fill = "black", color = "black") +
+  labs(x = "Positie (coördinaten) op NC_000070.7",
+       y = "Aantal varianten") +
+    theme_minimal()
+p_552
+```
+
+In figuur 11 is een histogram te zien waar de distrubutie van varianten over chromosoom "NC_000070.7" wordt weergegeven. Dit sample heeft opmerkelijk 3 pieken aan het begin en 2 aan het einde. dit kan wijzen op een hotspot voor mutaties. Nu kijken of het bij de andere samples hetzelfde is.
+
+```{r, fig.cap="Figuur 12: distributie van variantposities op pax5 over vier verschillende samples"}
+
+#hier wordt ggarrange gebruikt om de verschillende plots samen in 1 frame te zetten waardoor het makkelijker te vergelijken is in 1 opzicht. labels en de rows zorgen voor verduidelijking van wat de samples zijn en hoe de plots geordend zijn
+multi_pos_plot <- ggarrange(p_549, p_550, p_551, p_552,
+          labels = c("Sample: 549", "Sample: 550", "Sample: 551", "Sample: 552"),
+          ncol = 2, nrow = 2)
+
+#hier wordt de plot titel weergegeven 1 algemene titel inplaats van 4 dezelfde
+annotate_figure(multi_pos_plot, top = text_grob("Distributie van Variant posities pax5", 
+               color = "black", size = 14))
+```
+
+In figuur 12 zijn de 4 plots van varianten op de NC_000070.7 ook wel de Pax5. Er is te zien dat er 3 pieken zijn. Aan het begin en 2 aan het einde van de samples. Wat wel opmerkelijk is dat in sample 552 bij verre de hoogste peak heeft deze tikt bijna 1000 varianten aan op 1 positie. Wat het dus een interessante hotspot maakt en zegt dat er rond deze positie een diepere analyse moet gebeuren.
+
+## Week 5 - **Chromosoom namen wijzigen**
+
+De chromosoomnamen waren in de .vcf bestanden met de GeneBank namen aangeduid terwijl SnpEff RefSeq namen verwacht. Deze moeten dus veranderd worden zodat SnpEff kan werken voor de analyse van wat de varianten inhouden.
 
 **Het omzetten van vcf naar een vcf.gz doormiddel van bgzip**
-
-
 
 ```{bash, eval=FALSE}
 #bgzip is een compressie programma wat vcf en andere genoische bestanden coprimeren het zorgt dat het compatible is met ons volgende programma tabix, -c zegt dat de output naar de standaard uitvoer moet sturen,in plaats van het bestand in te schrijven. Hierdoor kunnen we de output omleiden naar een nieuw bestand.
 bgzip -c /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants.vcf.gz
 
 ```
+
+De reden om de vcf te comprimeren is de pipeline die wij gebruiken voor Anotatie, tabix het volgende programma vraag om een input van een gecomprimeerd bestand dit is omdat het efficiënter kan zoeken en verwerken in dit format.
 
 **Indexering met tabix**
 
@@ -1012,6 +1083,8 @@ bgzip -c /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants.
 tabix -p vcf /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants.vcf.gz
 
 ```
+
+Tabix maakt een index van het gecomprimeerde VCF-bestand. Deze index is essentieel om snel specifieke bestanden in het bestand op te kunnen zoekn op basis van chromosoom en positie. Zonder deze index is het moeilijker om door het bestand te zoeken wat dus inefficiënt werken is ook is het lastiger en duurt het langer om dingen op te halen uit het bestand.
 
 **Hernaam chromosomen**
 
@@ -1029,7 +1102,7 @@ cat names.txt
 
 ```
 
-n deze names.text hebben we handmatig de goede chr positie uitgezocht voor de bijbehorende oudenamen waardoor de volgende structuur is ontstaan
+in deze names.text hebben we handmatig de goede chr positie uitgezocht voor de bijbehorende oudenamen waardoor de volgende structuur is ontstaan
 
 CM000994.3 Chr 1\
 CM000995.3 Chr 2\
@@ -1042,15 +1115,26 @@ Dit is gedaan doormiddel van <https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_0
 # bcftools annotate is een subcommando van bcftools dat vcf bestanden manipuleert, de --rename-chrs betekent dat ik de chromosomen wil hernomen.
 bcftools annotate --rename-chrs /homes/jjduiker/Desktop/Genomics_transcriptomics_analysis/analysis/Jarno/names.txt /students/2024-2025/Thema05/3dconformatieChromatine/annotated_variants.vcf.gz > /students/2024-2025/Thema05/3dconformatieChromatine/hernoemd_variant_calling.vcf
 ```
-De chromosomen moeten hernoemd worden omdat de downstream tools een andere benaming nodig hebben dan dat er nu in het bestand staat.
+
+Hier wordt het bestand names.txt gebruikt om de oude chromosoomnamen in het VCF-bestand te hernoemen naar de nieuwe namen. Dit is nodig omdat SnpEff RefSeq namen verwacht.
 
 ```{bash, eval=FALSE}
 #hier wordt een java programma uitgevoerd -Xmx8g zegt dat er max 8gb mag worden gebruikt, daarna wordt het bestand aangeroepen -v betekent verbose wat zegt dat de uitvoer gedetailleerd is.-stats zegt dat er op het volgende aangegeven path een html bestand moet aangemaakt worden. GRCh38.p14 is het ref genoom. daarna het pad naar het vcf file wat er moet worden hernoemd en dan de > waarna het pad komt waar het nieuwe bestand word opgeslagen
-java -Xmx8g -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar -v -stats /students/2024-2025/Thema05/3dconformatieChromatine/annotation/annotated_SRR26980552.html GRCm39 /students/2024-2025/Thema05/3dconformatieChromatine/varscan/hernoemd_variant_calling.vcf > /students/2024-2025/Thema05/3dconformatieChromatine/annotation/annotated_SRR26980552.vcf
+java -Xmx8g -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar -v -stats /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/{}_annotatie.html mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/hernoemd_{}.vcf -threads 50 > /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_{}.vcf'
 ```
-Dit anotatie bestand is nodig voor verdere analyse downstream.
+
+SnpEff is een tool voor het annoteren van varianten. SnpEff voegt analyses toe zoals welke genen worden beïnvloed door de mutaties of welke functionele gevolgen de varianten hebben. Hier wordt ook een HTML-rapport gegenereerd dat statistieken geeft over het annotatieproces. Er worden hier 50 threads gebruikt dit om de stress van het proces te verdelen.
+
+## Resultaten / Visualisatie logboek teamgenoten
+
+![Figuur 13: Resulaten SnpEff](images/clipboard-1549627657.png)
+
+Dit zijn de resultaten uit het logboek van Floris. Uit deze tabellen is te halen dat het grootste deel van de varianten in sample SRR26980549 zijn inserties of een snp (Single-Nucleotide Polymorphism). Deze varianten zijn grotendeel missense of silent. Dit betekent dat wanneer deze mutaties op een exon zitten het problemen kan geven in de expressie van het gen.
+
+Voor verdere analyse kijk naar het logboek van floris.
 
 ## Relfectie - discussie resultaten
+
 Ik heb bevonden dat er niet vroeg genoeg is begonnen met de analyse van de visualisatie, dit is omdat ik nog niet de positie heb kunnen vinden van de spikes uit de grafieken in figuur 6. Daarnaast voor de onderzoeks vraag er zijn wel varianten aanwezig maar ik heb niet kunnen achterhalen of deze nou goed of slechte varianten zijn. Dus ik denk dat het belangrijk is om sneller bezig te gaan met de visualisatie en de visualisatie te analyseren en daarmee weer een nieuwe visualisatie doen voor de interesante dingen die daar uitkomen.
 
-# Referenties
+## Referenties
