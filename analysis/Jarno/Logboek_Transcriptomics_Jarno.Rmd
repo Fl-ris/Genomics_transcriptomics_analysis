@@ -36,7 +36,7 @@ Inlezen van de feature counts data inclusief de metadata collomen
 ```{r}
 # inlezen
 # skip 2 lines met import data
-transcrip_table <- read.delim("/Users/Gebruiker/Desktop/data_transcriptomics/count.out",header = FALSE,skip = 2)
+transcrip_table <- read.delim("/Users/jarnoduiker/Desktop/Transcriptomics_data/count.out",header = FALSE,skip = 2)
 # names vector van floris
 names(transcrip_table) <- c("Gene_id","Chr","Start","End","Strand","Length","SRR21754408","SRR21754418","SRR21754419","SRR21754420","SRR21754421","SRR21754422","SRR21754423")
 #print
@@ -190,6 +190,19 @@ library(DOSE)
 search_kegg_organism('mmu', by='kegg_code')
 
 ```
+
+```{r}
+padj <- resultaat_deseq$padj
+padj[is.na(padj)] <- 1
+ 
+filtered_deseq_result <- rownames(resultaat_deseq)[padj < 0.05]
+```
+ 
+```{r}
+head(filtered_deseq_result)
+```
+
+
 ```{r}
 #hier maak ik een data frame aan waar ik de gen namen in zet en de pvalues ook overneem
 data_kegg <- data.frame(
@@ -206,9 +219,11 @@ gene_symbols <- row.names(deseq_shrink)
 head(gene_symbols)
 ```
 
+
+
 ```{r}
 #hier gebruik ik bitr dit is een Biological Id TRanslator, hiermee vertaal ik mijn gen namen naar de ENTREID die de kegg tools verwachten met de data base van de mmu
-entrez_ids <- bitr(gene_symbols, fromType = "SYMBOL", 
+entrez_ids <- bitr(filtered_deseq_result, fromType = "SYMBOL", 
                    toType = "ENTREZID", 
                    OrgDb = org.Mm.eg.db)
 head(entrez_ids)
@@ -243,7 +258,7 @@ geneID - geeft welke genen bij deze functie werken.
 ```{r}
 #entrez_ids$ENTREID geeft aan de gene de juiste id's mee voor elk gen, orgbd vraagt welke database org.Mm.eg.db is de database van de mus musculus,
 ego <- enrichGO(gene          = entrez_ids$ENTREZID,
-                universe      = names(gene_symbols),
+                universe      = names(entrez_ids$SYMBOL),
                 OrgDb         = org.Mm.eg.db,
                 ont           = "CC",
                 pAdjustMethod = "BH",
@@ -252,6 +267,12 @@ ego <- enrichGO(gene          = entrez_ids$ENTREZID,
         readable      = TRUE)
 head(ego)
 ```
+
+```{r}
+library(enrichplot)
+barplot(ego, showCategory=20) 
+```
+
 
 
 
@@ -269,7 +290,12 @@ kk <- enrichKEGG(gene         = entrez_ids$ENTREZID,
                  organism     = 'mmu',
                  pvalueCutoff = 0.05)
 kk
+
+kk_data_frame <- as.data.frame(kk)
 ```
+
+
+FILTER OP EEN BEPAALDE WAARDE TOT ER EEN TOP 5 UITKOMT DIE GEANALYSEERD KAN WORDEN
 
 
 ```{r}
@@ -283,7 +309,19 @@ head(mkk)
 
 
 ```{r}
-head(count_matrix)
-```
+kk_list_id <- list()
 
+kk_list_id <- kk_data_frame$ID
+
+kk_list_id
+
+```
+```{r}
+#mmu04666: B-celreceptoren
+#mmu04612: B-celactivatie
+#mmu04611: B-celdifferentiatie
+#mmu04670: B-celontwikkeling
+
+browseKEGG(kk, "mmu04666")
+```
 # bibliografi
