@@ -115,6 +115,8 @@ resultaat_deseq
 
 LFC shrinkage object
 
+# LOGFOLD CHANGE MOET IN DE KK_DATAFRAME voor pathview
+Gebruik wich on subset te maken 
 ```{r}
 deseq_shrink <- lfcShrink(deseq, coef = "group_young_vs_old", type = "apeglm")
 deseq_shrink
@@ -202,6 +204,17 @@ filtered_deseq_result <- rownames(resultaat_deseq)[padj < 0.05]
 head(filtered_deseq_result)
 ```
 
+```{r}
+subset_resultaat_deseq <- subset(resultaat_deseq, padj <= 0.05)
+
+```
+
+```{r}
+resultaat_deseq_datafr <- as.data.frame(subset_resultaat_deseq)
+
+resultaat_deseq_datafr
+```
+
 
 ```{r}
 #hier maak ik een data frame aan waar ik de gen namen in zet en de pvalues ook overneem
@@ -223,10 +236,10 @@ head(gene_symbols)
 
 ```{r}
 #hier gebruik ik bitr dit is een Biological Id TRanslator, hiermee vertaal ik mijn gen namen naar de ENTREID die de kegg tools verwachten met de data base van de mmu
-entrez_ids <- bitr(filtered_deseq_result, fromType = "SYMBOL", 
+entrez_ids <- bitr(rownames(resultaat_deseq_datafr), fromType = "SYMBOL", 
                    toType = "ENTREZID", 
                    OrgDb = org.Mm.eg.db)
-head(entrez_ids)
+
 ```
 
 ```{r}
@@ -306,7 +319,7 @@ mkk <- enrichMKEGG(gene = entrez_ids$ENTREZID,
 head(mkk)            
 ```
 
-
+23-10-2024
 
 ```{r}
 kk_list_id <- list()
@@ -322,6 +335,39 @@ kk_list_id
 #mmu04611: B-celdifferentiatie
 #mmu04670: B-celontwikkeling
 
-browseKEGG(kk, "mmu04666")
+browseKEGG(kk, "mmu04611")
 ```
+
+#filteren Count - kk_data_frame
+
+```{r}
+mmu04612_count <- kk_data_frame[grepl("mmu04612", kk_data_frame$ID, ignore.case = TRUE), ]
+mmu04666_count <- kk_data_frame[grepl("mmu04666", kk_data_frame$ID, ignore.case = TRUE), ]
+mmu04611_count <- kk_data_frame[grepl("mmu04611", kk_data_frame$ID, ignore.case = TRUE), ]
+mmu04670_count <- kk_data_frame[grepl("mmu04670", kk_data_frame$ID, ignore.case = TRUE), ]
+
+head(mmu04612_count)
+```
+
+
+```{r}
+library(pathview)
+mmu04612_pathview <- pathview(gene.data  = resultaat_deseq_datafr,
+                     pathway.id = "mmu04612",
+                     species    = "mmu")
+
+mmu04666_pathview <- pathview(gene.data  = resultaat_deseq_datafr,
+                     pathway.id = "mmu04666",
+                     species    = "mmu")
+
+mmu04611_pathview <- pathview(gene.data  = resultaat_deseq_datafr,
+                     pathway.id = "mmu04611",
+                     species    = "mmu")
+
+mmu04670_pathview <- pathview(gene.data  = resultaat_deseq_datafr,
+                     pathway.id = "mmu04670",
+                     species    = "mmu")
+                     
+```
+
 # bibliografi
