@@ -43,12 +43,30 @@ Volgens de website van Cufflinks is StringTie accurater en veel efficiënter.
 
 **De volgende R libraries en commandline tools zijn gebruikt voor de analyse:** Samtools: 1.16.1
 
-```{r, eval=FALSE, warning=FALSE, message=FALSE}
+```{r, eval=T, warning=FALSE, message=FALSE , error=FALSE}
 
 library(tidyverse)
 library(GEOquery)
 library(DESeq2)
+library(EnhancedVolcano)
 
+# Pathview:
+library(pathview)
+library(gage)
+library(gageData)
+
+library(affy)
+library(scales)
+library(pheatmap)
+
+library("pasilla")
+library("tidyverse")
+library("DESeq2")
+library("pheatmap")
+library("RColorBrewer")
+library("apeglm")
+
+library("DEGreport")
 ```
 
  
@@ -56,6 +74,14 @@ library(DESeq2)
 
 De SRA's van de RNA seq worden gedownload met het onderstaande stuk code.
 De gebruikte accention list staat in de github repository.
+
+De eerste stap is het downloaden van de genetische data die verkregen was door het sequencen van de samples.
+Met behulp van de SRA run selector van NCBI is een selectie van SRA's gemaakt die gedownload moeten worden.
+
+Een SRA (Sequence Read Archive) is een gecomprimeerd archief dat de sequencing reads bevat.
+Om deze bestanden te downloaden wordt gebruikt gemaakt van "prefetch", deze commandline tool is onderdeel van de SRA toolkit.
+
+In de volgende stap worden deze bestanden uitgepakt.
 
 ```{bash, eval=FALSE}
 
@@ -102,6 +128,33 @@ pander(setup)
 ```
 
 
+**.SRA bestanden naar .FASTQ omzetten:** \
+De .SRA's zijn nu gedownload maar moeten nog omgezet worden naar een bestandstype waar de volgende tool wat mee kan, een FASTQ bestand. 
+Hier wordt fasterq-dump voor gebruikt:
+Met behulp van fasterq-dump worden de .SRA bestanden uitgepakt.
+
+fasterq-dump maakt ook onderdeel uit van de SRA toolkit en haalt de data uit het .SRA archief naar het FASTQ format.
+
+Een FASTQ bestand bevat tekst met de sequence data, de reads en ook een bijbehorende kwaliteitsscore terwijl een fasta bestand enkel de sequentie data met een header (of meerdere headers + bijbehorende sequenties) bevat. 
+Deze score wordt aangegeven met een ASCII karakter.
+
+Een FASTQ bestand heeft de volgende indeling:
+
+Een header die met "\@" begint gevolgd door een sequentie ID en optioneel een beschrijving wat het bestand bevat.
+Daar onder zitten de sequentie letters.
+
+En daar onder een regel met een "+" karakter.
+Hier onder staat de kwaliteitsscore, deze gaat van ASCII 33 ("!" teken), laagste kwaliteit tot ASCII 126 ("\~" teken).
+
+De kwaliteitsscore wordt ook wel Phred score genoemd.
+Deze score is logaritmisch gerelateerd aan de waarschijnlijkheid dat de "base call" verkeerd is.
+Q = -log(E) waarbij Q de phred score is en E de waarschijnlijkheid van verkeerde base call.
+
+Phred-33 is het meest gebruikt maar Phred-64 bestaat ook.
+Het verschil is dat Phred-33 ge-encodeerd is met met ASCII 33 (!) tot ASCII 126 (\~) terwijl Phred-64 van ASCII 64 (\@) tot ASCII 126 gaat.
+
+Bron: <https://gatk.broadinstitute.org/hc/en-us/articles/360035531872-Phred-scaled-quality-scores>
+
 Hier worden de bestanden uitgepakt op assemblix in onze gedeelde directory. 
 ```{bash, eval=FALSE}
 cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | \
@@ -121,6 +174,35 @@ Vervolgens met met "multiqc ." in de output directory een multiqc rapport gemaak
 
 
 ### Trimmen met Trimmomatic: ### 
+
+De verkregen sequence reads, korte sequenties van, in ons geval 150 bp die corresponderen met een deel van een DNA sequentie.
+Het genoom kan niet in zijn geheel gelezen worden door technische beperkingen van de gebruikte machines (Illumina).
+Namate de read langer wordt is de kans dat er fouten gemaakt worden groter, daarom, mits er genoeg reads zijn die het laaste stuk bevatten, kan er een stuk afgeknipt worden.
+Ook moeten de adapters verwijderd worden.
+
+Adapters zijn korte stukken DNA (ongeveer 80bp) die aan DNA linkers die op het oppervlak van de flow cells vast zitten.
+bron: <https://www.lubio.ch/blog/ngs-adapters>
+
+Voor het trimmen maken we gebruik van Trimmomatic.
+In het onderstaande code blok staan de commando's die uitgevoerd worden.
+TrimmomaticPE is de paired-end versie van Trimmomatic.
+Paired end betekend dat er twee reads zijn die in tegengestelde richting gelezen zijn.
+
+Met -threads 16 worden het aantal treads gespecificeerd, hierdoor kunnen er meerdere bewerkingen parallel uitegevoerd worden.
+
+**De argumenten die we gebruiken voor Trimmomatic zijn:**
+
+**MINLIN:40** Dit betekend dat de minimale lengte van de reads 40 baseparen betreft.
+**SLINDINGWINDOW:4:20** Het eerste nummer 4 specificeert de grootte van de sliding window en het tweede, 20 is de vereiste gemiddelde read kwaliteit binnen het window van 4 basen.
+
+Een sliding window is dat er steeds, in dit geval 4 basen bekeken worden en dat dan een opgeschoven wordt enzovoort. 
+
+**ILLUMINACLIP** is het path naar een bestand dat adapter sequenties bevat voor Illumina adapters.
+**De gebruikte adapter:** TruSeq3-SE.fa:2:30:10 De 2:30:10 betekenen het volgende: 2 is de "seed mismatch", het aantal mismatches dat toegestaan is in een sequentie die een adapter kan zijn.
+30 is de "palindrome clip threshold en 10 is de "simple clip threshold", specificeert hoe accuraat de match tussen de adapter sequentie en de mogelijke adapter in de read.
+
+Bron: <http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf>
+
 ```{bash, eval=FALSE}
 cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
 'TrimmomaticPE -threads 80 ' \
@@ -146,8 +228,27 @@ fastqc -o /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/fa
 Vervolgens met met "multiqc ." in de output directory een multiqc rapport gemaakt van de resultaten van fastqc. 
 
 
-Maken van index voor referentiegenoom om te gebruiken met HIsat2.
-De naam van de index is: hisat2_index.
+### Indexeren van referentiegenoom: ###
+
+Met enkel een fastq bestand met reads is nog niet duidelijk waar in het genoom van het organisme deze reads kwamen.
+Met read mapping worden de reads vergeleken met een bekend genoom, in dit geval het mm39 muis referentiegenoom en worden de reads er tegen aan gelegd zodat hun locatie in het genoom bekend wordt.
+
+Omdat het programma dat gebruikt gaat worden voor het alignen, HIsat2, een geïndexeerde versie van het referentiegenoom nodig heeft moet deze eerst gemaakt worden.
+Dit kan gedaan worden met Hisat2 build.
+
+Het gebruikte referentie genoom is mm39 (GCF_000001635.27).
+In het bestand met het referentiegenoom dat gedownload is (<https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001635.27/>) Zijn twee referentiegenomen aanwezig: GCF_000001635.27 en GCA_000001635.9/.
+Het verschil is dat GCF van Refseq is en GCA van GeneBank.
+
+
+<https://www.ebi.ac.uk/training/online/courses/functional-genomics-ii-common-technologies-and-data-analysis-methods/rna-sequencing/performing-a-rna-seq-experiment/data-analysis/read-mapping-or-alignment/>
+
+bron: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3375638/>
+
+In de onderstaande code chunk wordt het geïndexeerde muisgenoom "hisat2_index" genoemd.
+Daarna worden twee samples (forward read en reverse read) ge-aligned met het zojuist verkregen geïndexeerde referentiegenoom.
+Deze twee bewerkingen worden beiden met HIsat2 uitgevoerd.
+
 ```{bash, eval=FALSE}
 hisat2-build -p 60 /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna hisat2_index
 
@@ -163,6 +264,7 @@ hisat2 -p 80 -x hisat2_index -1 /students/2024-2025/Thema05/3dconformatieChromat
 
 ### Sorteren en indexeren van .sam ###
 
+
 Omzetten van .sam naar .bam:
 ```{bash, eval=FALSE}
 
@@ -174,6 +276,7 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_
 
 
 Index maken:
+
 ```{bash, eval=FALSE}
 cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
 'samtools index -@80 /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/sorted_{}.bam'
@@ -183,7 +286,7 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_
 Sorteren op queryname voor fixmate:
 ```{bash, eval=FALSE}
 cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
-'samtools sort -@80 -O BAM -n  /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/sorted_{}.bam -o /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/sorted2_{}.bam'
+'samtools sort -@80 -O BAM -n  /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/{}.bam -o /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/sorted_{}.bam'
 
 ```
 
@@ -191,10 +294,10 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_
 Samtools fixmate:
 ```{bash, eval=FALSE}
 cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
-'samtools fixmate -m -@80 /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/sorted2_{}.bam /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/fixed_mates_sorted_{}.bam'
+'samtools fixmate -m -@80 /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/sorted_{}.bam /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/fixed_mates_sorted_{}.bam'
 ```
 
-Sorteren op coordinaten, dit is de standaard dus hoeft er geen argument voor meegegven worden.
+Sorteren op coördinaten, dit is de standaard dus hoeft er geen argument voor meegegeven worden.
 Vraag: Waarom zijn de gesorteerde bestanden kleiner dan de niet gesorteerde? 
 ```{bash, eval=FALSE}
 cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
@@ -207,6 +310,10 @@ Duplicaten verwijderen:
 cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | parallel \
 'samtools markdup -@80 -r -s /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/fixed_mates_sorted_coords_{}.bam /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/dedup_{}.bam'
 ```
+
+
+### Exploratory Data Analysis: ###
+
 
 
 Featurecounts:
@@ -223,31 +330,144 @@ featureCounts -T 64 -p --countReadPairs -a /students/2024-2025/Thema05/3dconform
 
 ```
 
-### Visualisatie van featurecounts ###
-Header = True werkte niet... daarom zelf namen gegeven. 
 
-```{r, eval=FALSE}
+**Resultaten van FeatureCounts:**
+
+| Assigned        | 7,478,275 | 11,519,033 | 401,919 | 1,798,783 | 1,034,206 | 1,815,685 | 2,123,117 | 1,559,965 |
+| -----------------: | -----------: | ------------: | ---------: | ------------: | -------------: | -------------: | -------------: | -------------: |
+| Unassigned_Unmapped | 101,569 | 91,957 | 303,147 | 501,918 | 1,900,765 | 2,006,366 | 2,305,552 | 3,153,700 |
+| Unassigned_Read_Type | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Unassigned_Singleton | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Unassigned_MappingQuality | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Unassigned_Chimera | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Unassigned_FragmentLength | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Unassigned_Duplicate | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Unassigned_MultiMapping | 1,278,184 | 1,278,667 | 1,423,585 | 2,444,342 | 1,728,738 | 1,718,869 | 1,868,849 | 1,973,576 |
+| Unassigned_Secondary | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Unassigned_NonSplit | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Unassigned_NoFeatures | 723,982 | 999,001 | 586,719 | 1,284,576 | 424,925 | 574,504 | 569,811 | 744,298 |
+| Unassigned_Overlapping_Length | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Unassigned_Ambiguity | 30,575 | 32,598 | 31,923 | 17,598 | 12,406 | 15,276 | 18,939 | 14,783 |
+
+
+
+
+### Visualisatie van featurecounts ###
+Het van FeatureCounts verkregen .csv bestand kan nu als tabel in R geladen worden. De namen van de samples zijn erg lang en bevatten het gehele pad naar de bestanden, daarom worden de kolomen van de samples met de onderstaande code hernoemd naar de SSR namen. 
+
+```{r, eval=TRUE, warning=FALSE}
 
 #counts <- read.delim(file = "/home/floris/Documenten/Data_set/PRJNA885415/Transcriptomics/featurecounts/featurecounts_output.csv", header = F)
 
-counts = read.csv( "/home/floris/Documenten/Data_set/PRJNA885415/Transcriptomics/featurecounts/featurecounts_output.csv", sep="", head=T, skip=1)
+counts = read.csv( "/home/floris/Documenten/Data_set/PRJNA885415/Transcriptomics/featurecounts/featurecounts_output.csv", row.names = "Geneid", sep="", head=T, skip=1,)
 
 # Geef namen aan de kolomen
-names(counts) <- c("Gene_id", "Chr","Start","End","Strand","Length","SRR21754408","SRR21754418","SRR21754419","SRR21754420","SRR21754421","SRR21754422","SRR21754423")
+names(counts) <- c("Chr","Start","End","Strand","Length","SRR21754408","SRR21754417","SRR21754418","SRR21754419","SRR21754420","SRR21754421","SRR21754422","SRR21754423")
+
+# conflict_prefer("select", "dplyr") is nodig omdat er blijkbaar twee libraries zijn die de functie "select" aanbieden.
+library(conflicted)
+conflict_prefer("select", "dplyr")
+
+counts_df <- counts %>% 
+  select(-c(Chr, Start, End, Strand, Length))
+
+
 
 #counts <- subset(counts, row)
 #counts <- counts[-c(1,2), ]
 
-glimpse(counts)
+glimpse(counts_df)
 ```
 
+
+
+```{r, eval=T}
+colnames <- c("Groep")
+
+coldata <- data.frame(c("SRR21754408","SRR21754417","SRR21754418","SRR21754419","SRR21754420","SRR21754421","SRR21754422","SRR21754423"), c("Jong","Jong","Jong","Jong","Oud","Oud","Oud","Oud"), row.names = 1)
+colnames(coldata) <- colnames
+
+#coldata <- coldata[,c("Groep")]
+
+coldata$Groep <- factor(coldata$Groep)
+
+#coldata$Type <- factor(coldata$Type)
+```
+
+
+
+```{r reads per sample boxplot, eval=T}
+
+counts_long <- counts_df %>%
+  pivot_longer(cols = everything(), 
+               names_to = "sample_naam", 
+               values_to = "reads")
+
+ggplot(data = counts_long, aes(x = sample_naam, y = reads)) +
+  geom_boxplot() + 
+  xlab(" ") +
+  ylab("Aantal reads:") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+```
+
+
+In het volgende codeblok worden de kolommen geselecteerd waarin de jonge en oude muizen staan.
+
+```{r, eval=T}
+
+oude_muizen <- counts_df[,c(5:8)]
+
+jonge_muizen <- counts_df[,c(1:4)]
+```
+
+```{r, eval=T}
+
+# DF met alle rijen waarbij de jonge muizen een coverage hoger dan 0 hebben voor alle samples:
+jonge_muizen_df <- counts[which(counts$SRR21754408 > 0 & counts$SRR21754418 > 0 & counts$SRR21754419 & counts$SRR21754417), ]
+
+# DF met alle rijen waarbij de oude muizen een coverage hoger dan 0 hebben voor alle samples:
+oude_muizen_df <- counts[which(counts$SRR21754420 > 0 & counts$SRR21754421 > 0 & counts$SRR21754422 & counts$SRR21754423 > 0), ]
+
+```
+
+
+In het volgende stuk code is een grafiek weergegeven van alle genen met een hogere expressie dan 0. 
+```{r lengte van genen, eval=T}
+
+ggplot(data = jonge_muizen_df, mapping = aes(x = row.names(jonge_muizen_df) , y = Length)) +
+  geom_bar(stat = "identity") + 
+  xlab(" ") + 
+  ylab("Gene length: (bp)") +
+  theme(axis.text.x = element_blank())
+
+```
+
+```{r, eval=T}
+
+myColors <- hue_pal()(4)
+
+## Plot the log2-transformed data with a 0.1 pseudocount
+plotDensity(log2(counts_df + 0.1), col=rep(myColors, each=3),
+            lty=c(1:ncol(counts_df)), xlab='Log2(count)',
+            main='Expression Distribution')
+
+## Add a legend and vertical line
+legend('topright', names(counts_df), lty=c(1:ncol(counts_df)),
+       col=rep(myColors, each=3))
+abline(v=-1.5, lwd=1, col='red', lty=2)
+```
+
+
+
+
 Het aantal reads met een coverage van meer dan 0 van de jonge muizen: 14315
-```{r}
-length(which(counts$SRR21754408 > 0 & counts$SRR21754418 > 0 & counts$SRR21754419))
+```{r, eval=T}
+length(which(counts$SRR21754408 > 0 & counts$SRR21754418 > 0 & counts$SRR21754419 & counts$SRR21754417 > 0))
 ```
 
 Het aantal reads met een coverage van meer dan 0 van de oude muizen: 15247
-```{r}
+```{r, eval=T}
 length(which(counts$SRR21754420 > 0 & counts$SRR21754421 > 0 & counts$SRR21754422 & counts$SRR21754423 > 0))
 ```
 
@@ -262,38 +482,7 @@ SRR21754418 \
 SRR21754419 \
 
 
-In het volgende codeblok worden de kolomen geselecteerd waarin de jonge en oude muizen staan.
 
-```{r}
-
-oude_muizen <- counts[,c(10,11,12,13)]
-
-# To-do: nog een kolom met jonge_muis data toevoegen.
-jonge_muizen <- counts[,c(7,8,9)]
-```
-
-```{r}
-
-# DF met alle rijen waarbij de jonge muizen een coverage hoger dan 0 hebben voor alle samples:
-jonge_muizen_df <- counts[which(counts$SRR21754408 > 0 & counts$SRR21754418 > 0 & counts$SRR21754419), ]
-
-# DF met alle rijen waarbij de oude muizen een coverage hoger dan 0 hebben voor alle samples:
-oude_muizen_df <- counts[which(counts$SRR21754420 > 0 & counts$SRR21754421 > 0 & counts$SRR21754422 & counts$SRR21754423 > 0), ]
-
-
-```
-
-
-
-```{r lengte van genen, eval=FALSE}
-
-ggplot(data = jonge_muizen_df, mapping = aes(x = Gene_id, y = Length)) +
-  geom_bar(stat = "identity") + 
-  xlab(" ") + 
-  ylab("Length: (bp)") +
-  theme(axis.text.x = element_blank())
-
-```
 
 ### DESeq2 ###
 
@@ -303,31 +492,242 @@ ggplot(data = jonge_muizen_df, mapping = aes(x = Gene_id, y = Length)) +
 Een van de tests zorgt er voor dat er rekening gehouden wordt met de false discovery rate (FDR). Hiervoor is de Benjamini Hockberg compensatie uitgevoerd om hier rekening mee te houden.
 De false discovery rate is het aantal genen in dit geval die ondanks dat ze niet echt differentialy expressed zijn toch zo lijken. Dit zijn dus false positieven. Wanneer de p-waarde bijvoorbeeld 0.01 is en er 4000 genen zijn, zijn er 40 false positieven bij. De kans is namelijk 1% met een p-waarde van 0.01 of lager. 
 
+levels(coldata$Groep) geeft "Jong" als eerste factor, dat betekend dat up- en downregulatie tenopzichte van de jonge groep bepaald zal worden. 
 
+```{r deseq2 test, eval=T}
 
-```{r deseq2 test, eval=F}
-
-dds <- DESeqDataSetFromMatrix(countData = counts,
-                              colData = counts[,jonge_muizen],
-                              design= ~ group)
+dds <- DESeqDataSetFromMatrix(countData = counts_df,
+                              colData = coldata,
+                              design= ~ Groep)
 
 dds <- DESeq(dds)
-resultsNames(dds) # lists the coefficients
-res <- results(dds, name="condition_trt_vs_untrt")
-# or to shrink log fold changes association with condition:
-res <- lfcShrink(dds, coef="condition_trt_vs_untrt", type="apeglm")
-  
+
+resultsNames(dds) # De naam is: Groep_Oud_vs_Jong
+
+res <- results(dds, name="Groep_Oud_vs_Jong")
+
+# Gebruikt lfcschrink om de data met Log2 te transformeren:
+res <- lfcShrink(dds, coef="Groep_Oud_vs_Jong", type="apeglm")
+
+summary(res)
+```
+
+De betekenis van de kolommen van het resultaat van DESeq2:
+```{r, eval=T}
+mcols(res)$description
+```
+
+
+### Visualisatie van Differentially expressed genes: ###
+
+**MA-Plot**
+
+```{r, eval=T}
+plotMA(res, ylim=c(-2,2))
+```
+
+```{r, eval=T}
+plotCounts(dds, gene=which.min(res$padj), intgroup="Groep")
+```
+Visualisatie van het gen met de kleinste p-waarde:
+dat is: Gpnmb.
+```{r min p waarde gene, eval=T}
+counts_df[which.min(res$padj),]
+```
+
+### Plot van relevante genen: ###
+Efb1, pax5 en foxo5
+```{r Ebf1 counts, eval=T}
+d <- plotCounts(dds, gene="Ebf1", intgroup="Groep", 
+                returnData=TRUE)
+ggplot(d, aes(x=Groep, y=count)) + 
+  geom_point(position=position_jitter(w=0.1,h=0)) + 
+  scale_y_log10(breaks=c(25,100,400))
+```
+```{r Pax5 counts, eval=T}
+d <- plotCounts(dds, gene="Pax5", intgroup="Groep", 
+                returnData=TRUE)
+ggplot(d, aes(x=Groep, y=count)) + 
+  geom_point(position=position_jitter(w=0.1,h=0)) + 
+  scale_y_log10(breaks=c(25,100,400))
+```
+```{r, eval=T}
+# Plot gevonden op de website: https://introtogenomics.readthedocs.io/en/latest/2021.11.11.DeseqTutorial.html
+
+vsd <- vst(dds)
+
+#head(assay(vsd), 30)
+
+select <- order(rowMeans(counts(dds,normalized=TRUE)),
+                decreasing=TRUE)[1:10]
+df <- as.data.frame(colData(dds))
+pheatmap(assay(vsd)[select,], annotation_col=df)
+```
+
+
+```{r Euclidean sample distance, eval=T}
+sampledists <- dist(t(assay(vsd)))
+
+# Convert the 'dist' object into a matrix for creating a heatmap
+sampleDistMatrix <- as.matrix(sampledists)
+                         
+pheatmap(sampleDistMatrix, show_colnames = FALSE,
+         annotation_col = coldata, # Gebruikt dezelfde coldata die ook voor DESeq2 gebruikt is.
+         clustering_distance_rows = sampledists,
+         clustering_distance_cols = sampledists,
+         main = "Euclidean Sample Distances")
 ```
 
 
 
+```{r, eval=T}
+library('PoiClaClu')
+# Note: uses the raw-count data, PoissonDistance performs normalization
+# set by the 'type' parameter (uses DESeq)
+pd <- assay(dds)
+poisd <- PoissonDistance( t(pd), type = "deseq")
+# Extract the matrix with distances
+samplePoisDistMatrix <- as.matrix(poisd$dd)
+# Calculate the MDS and get the X- and Y-coordinates
+mdsPoisData <- data.frame( cmdscale(samplePoisDistMatrix) )
+
+# And set some better readable names for the columns
+names(mdsPoisData) <- c('x_coord', 'y_coord')
+```
+
+```{r, eval=F}
+# Separate the annotation factor (as the variable name is used as label)
+
+# Create the plot using ggplot
+ggplot(mdsPoisData, aes(x_coord, y_coord, color = counts_df, label = counts_df)) + 
+  geom_text(size = 4) +
+  ggtitle('Multi Dimensional Scaling') +
+  labs(x = "Poisson Distance", y = "Poisson Distance") +
+  theme_bw()
+```
 
 
-```{r}
-# indices voor kolomen maken voor groepen.
+### Principal component analysis: ###
 
+
+```{r PCA, eval=T}
+plotPCA(vsd, intgroup=c("Groep"))
+```
+
+
+```{r, eval=T}
+degPlot(dds = dds, res = res, n = 6, xs = "Groep")
+```
+
+```{r, eval=T}
+
+
+deseq.volcano <- function(res, datasetName) {
+  return(EnhancedVolcano(res, x = 'log2FoldChange', y = 'padj',
+                         lab=rownames(res),
+                         title = paste(datasetName, "Jonge vs Oude muizen"),
+                         subtitle = bquote(italic('FDR <= 0.05 and absolute FC >= 2')),
+                         # Change text and icon sizes
+                         labSize = 3, pointSize = 1.5, axisLabSize=10, titleLabSize=12,
+                         subtitleLabSize=8, captionLabSize=10,
+                         # Disable legend
+                         legendPosition = "none",
+                         # Set cutoffs
+                         pCutoff = 0.05, FCcutoff = 2))
+}
+
+deseq.volcano(res = res, datasetName = "Volcano plot:")
+
+```
+### Venn diagram: ###
+De volgende test werkt nog niet...
+```{r, eval=FALSE}
+library(ggVennDiagram)
+pval_threshold <- 0.05
+#ipsc.degs <- row.names(res.ipsc.lfc[which(res.ipsc.lfc$padj <= pval_threshold), ])
+overlap_list <- list(res1[which(res1$padj <= 0.05), ], res1[which(res1$padj <= 0.05), ])
+
+ggVennDiagram(overlap_list, set_color = c("darkgreen","forestgreen"),
+              category.names = c("SRR26980549","SRR26980550"),
+              label_alpha=0.7) +
+              scale_fill_gradient(low = "gray", high = "red")
+```
+
+
+
+### Pathview: ###
+Van een aantal relevante pathways zijn afbeeldingen gemaakt, de Kegg pathway codes zijn afkomstig van de volgende website: https://www.genome.jp/kegg-bin/show_organism?menu_type=pathway_maps&org=mmu
+
+
+```{r, eval=F}
+data("paths.mm")
+(head(paths.mm, n=5))
+```
+
+```{r, eval=T}
+pval_threshold <- 0.05
+data(gene.idtype.list); 
+head(gene.idtype.list)
+
+deseq.degs.logfc <- subset(res, padj < pval_threshold, select = log2FoldChange)
 
 
 ```
+**T cell receptor signaling pathway:**
+
+```{r, eval=T, fig.width=10, fig.height=8}
+# 04660  T cell receptor signaling pathway
+
+pathview(gene.data=deseq.degs.logfc,
+        cpd.data=res, 
+        ,gene.idtype = "SYMBOL",
+        pathway.id="04660",
+        species="mmu")
+
+# Om de afbeelding te weergeven in R:
+knitr::include_graphics("mmu04660.pathview.png")
+```
+
+```{r, eval=T, fig.width=10, fig.height=8}
+# 04662  B cell receptor signaling pathway
+
+pathview(gene.data=deseq.degs.logfc,
+        cpd.data=res,
+        ,gene.idtype = "SYMBOL",
+        pathway.id="04662",
+        species="mmu")
+
+# Om de afbeelding te weergeven in R:
+knitr::include_graphics("mmu04662.pathview.png")
+```
+
+04211
+```{r, eval=T, fig.width=10, fig.height=8}
+# 04211
+
+pathview(gene.data=deseq.degs.logfc,
+        cpd.data=res,
+        ,gene.idtype = "SYMBOL",
+        pathway.id="04211",
+        species="mmu")
+
+# Om de afbeelding te weergeven in R:
+knitr::include_graphics("mmu04211.pathview.png")
+```
+04640  Hematopoietic cell lineage
+```{r, eval=T, fig.width=10, fig.height=8}
+# 04640
+
+pathview(gene.data=deseq.degs.logfc,
+        cpd.data=res,
+        ,gene.idtype = "SYMBOL",
+        pathway.id="04640",
+        species="mmu")
+
+# Om de afbeelding te weergeven in R:
+knitr::include_graphics("mmu04640.pathview.png")
+```
+
+
 
 
