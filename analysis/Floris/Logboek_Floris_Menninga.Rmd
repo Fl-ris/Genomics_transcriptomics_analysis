@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 bibliography: Logboek_Floris_Menninga.bib
 link-citations: true
 output:
-  html_document:
+  pdf_document:
     toc: yes
     toc_depth: '2'
   bookdown::pdf_document2:
@@ -14,7 +14,7 @@ output:
     fig_caption: true
     includes:  
         in_header: include_tex_header.tex
-  pdf_document:
+  html_document:
     toc: yes
     toc_depth: '2'
   word_document:
@@ -95,6 +95,21 @@ Daarna worden deze .SRA's uitgepakt met behulp van fasterq-dump.
 De nieuw verkregen fastq bestanden kunnen nu op kwaliteit gecontroleerd worden met fastqc, hierna worden ze getrimmed met trimmomatic en wordt de kwaliteit nogmaals bekeken.
 Duplicaten kunnen verwijderd worden.
 
+De software versies/liberaries die gebruitk zijn: 
+(Deze tabel is gemaakt door Jarno)
+
+| Tool | Referentie | Versie | Waarom |
+|------|------------|---------|--------|
+| Featurecounts | https://academic.oup.com/bioinformatics/article/30/7/923/232889?searchresult=1 | | Featurecounts is een zeer efficiënt algemeen "read" samenvattingsprogramma dat mapped reads telt voor genomische kenmerken zoals genen, exonen, promotor, genlichamen, genomische bins en chromosomale locaties. het kan worden gebruikt om zowel RNA-seq als genomische DNA-seq leesbewerkingen te tellen |
+| FastQC | https://www.bioinformatics.babraham.ac.uk/projects/fastqc/ | 0.11.9 | FastQC wordt gebruikt om de kwaliteit te checken van de rauwe data, hier uit is te zien of de data gelijk te gebruiken is of dat deze moet worden getrimmed. De trimmer kan ook afgesteld worden op basis van de fastqc. |
+| freebayes | https://github.com/freebayes/freebayes | 1.3.6 - linux versie | freebayes is een haplotype gebaseerde gen variant detector, ontworpen om kleine polymorfismes te detecteren, SNP's, inserties en deleties in het bijzonder. Dit programma gebruikt .BAM bestanden met een Phred+33 encoding. |
+| seqtk | https://github.com/lh3/seqtk | | seqtk wordt gebruikt voor het proceseren van sequences in het FASTA of FASTQ formaat. het "seamlessly parses" beide FASTA en FASTQ welke dan ook optimaal compressed wordt door gzip |
+| Trimmomatic | https://github.com/usadellab/Trimmomatic | 0.39 | Trimmomatic wordt gebruikt om de data op te schonen nadat dez uit FastQC komt. Deze haalt de slechte kwaliteit paren af van de streng waardoor een hoge kwaliteit RNA- of DNA-streng overblijft die gebruikt kan worden. |
+| bwa mem2 | https://github.com/bwa-mem2/bwa-mem2?tab=readme-ov-file | 2.2.1 | Bwa mem2 wordt gebruikt om DNA en RNA reads te alignen tegen een gekozen referentie genoom. |
+| Samtools | https://www.htslib.org | 1.16.1 | samtools is een set van "utilities" dat alignments in de SAM, Bam en CRAM formatten kan manipuleren. het kan veranderen tussen de formats, sorteren, samenvoegen en indexen, ook kan het "reads" snel vinden in elke regio |
+| R | https://www.r-project.org | 4.4.1 | R is de code taal die gebruikt wordt om alle statistieken testen te doen en tevens de visualisatie van de data die komt uit het onderzoek |
+| R-studio | https://posit.co | 2023.12.1+402 | R studio is het programma wat wordt gebruikt als IDE voor R |
+| NCBI-GEO | https://www.ncbi.nlm.nih.gov/geo/ | | NCBI-GEO is gebruikt om het originele onderzoek te vinden waar dit onderzoek inspiratie vanaf neemt |
 
 ### Log: ###
 
@@ -800,7 +815,7 @@ Nu er een bestand is dat alle varianten die de vier replicaten gemeen hebben bev
 ```
 
 
-```{r venn diagram test, eval=FALSE}
+```{r venn diagram test, eval=T}
 
 # Test venn diagram:
 
@@ -845,15 +860,8 @@ ggVennDiagram(overlap_list, set_color = c("darkgreen","forestgreen","lightgreen"
 ```
 
 Het bovenstaande Venn diagram weergeeft de overlap tussen varianten in de vier biologische replicaten. Maar 9% van de varianten komen overeen tussen de vier samples. Daarnaast heeft SRR26980552 de meeste mutaties die de overige samples niet hebben. 
+In het logboek van Storm staat een Grange object met variant informatie.
 
-Test:
-```{r, eval=FALSE}
-test <- unlist(strsplit(SRR26980549_vcf$V8,";"))
-
-test2 <- separate_rows(SRR26980549_vcf, V8, sep = ";")
-
-```
-Overige visualisaties staan in het logboek van Jarno.
 
 
 ## **Discussie:** ##
@@ -861,4 +869,4 @@ Omdat de DNA-seq data niet gebruikt was in het originele onderzoek kunnen we de 
 Daarnaast was het isec vcf bestand nog niet benut, al is het Venn diagram wel een visuele intersect tussen de samples. 
 
 
-## **referenties**
+## **referenties** ##

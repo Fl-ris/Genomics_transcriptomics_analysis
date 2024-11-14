@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.10.20)  20 OCT 2024 20:52
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.10.20)  14 NOV 2024 23:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -503,116 +503,127 @@ LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
 
 {/home/floris/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/floris/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}]
 
-[2]
+[2] [3]
 
-[3]
-Underfull \hbox (badness 10000) in paragraph at lines 422--428
+[4]
+
+[5]
+
+[6]
+Underfull \hbox (badness 10000) in paragraph at lines 488--494
 
  []
 
-
-
-[4]
-LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 482.
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 548.
 (/home/floris/.TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
 File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 
-[5{/home/floris/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
-Underfull \hbox (badness 10000) in paragraph at lines 525--526
+[7{/home/floris/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
+Underfull \hbox (badness 10000) in paragraph at lines 591--592
 [][]$\T1/lmr/m/n/10 https : / / www . ebi . ac . uk / training / online / courses / functional -[] genomics -[] ii -[] common -[] technologies -[] and -[] data -[]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 525--526
+Underfull \hbox (badness 10000) in paragraph at lines 591--592
 \T1/lmr/m/n/10 analysis -[] methods / rna -[] sequencing / performing -[] a -[] rna -[] seq -[] experiment / data -[] analysis / read -[] mapping -[] or -[]
  []
-
-
-
-[6]
-
-LaTeX Warning: Citation `ref-16' on page 7 undefined on input line 641.
-
-
-
-[7]
-
-LaTeX Warning: Citation `ref-n' on page 8 undefined on input line 682.
 
 
 
 [8]
 
 [9]
-Overfull \hbox (3.4388pt too wide) in paragraph at lines 823--825
-[]\T1/lmr/m/n/10 De .vcf's zijn nu gefil-terd en fil-tered_variant_SRRnummer ge-noemd zoals: fil-terd_variant_SRR26980549.vcf. 
- []
+
+LaTeX Warning: Citation `ref-16' on page 10 undefined on input line 707.
+
+
+LaTeX Warning: Citation `ref-n' on page 10 undefined on input line 748.
+
+
 
 [10]
 
 [11]
-Overfull \hbox (25.13283pt too wide) in paragraph at lines 977--979
-[]\T1/lmr/m/n/10 De vol-gende be-standen zijn gegenereerd na het uitvo-eren van snpEff build: snpEff_genes.txt snpEff_summary.html
+Overfull \hbox (3.4388pt too wide) in paragraph at lines 889--891
+[]\T1/lmr/m/n/10 De .vcf's zijn nu gefil-terd en fil-tered_variant_SRRnummer ge-noemd zoals: fil-terd_variant_SRR26980549.vcf. 
  []
 
 
 
 [12]
-</home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980549_annotatie.png, id=134, 469.755pt x 883.3pt>
+
+[13]
+Overfull \hbox (25.13283pt too wide) in paragraph at lines 1043--1045
+[]\T1/lmr/m/n/10 De vol-gende be-standen zijn gegenereerd na het uitvo-eren van snpEff build: snpEff_genes.txt snpEff_summary.html
+ []
+
+
+
+[14]
+
+[15]
+</home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980549_annotatie.png, id=166, 469.755pt x 883.3pt>
 File: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980549_annotatie.png Graphic file (type png)
 <use /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980549_annotatie.png>
-Package pdftex.def Info: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980549_annotatie.png  used on input line 1141.
+Package pdftex.def Info: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980549_annotatie.png  used on input line 1207.
 (pdftex.def)             Requested size: 345.92882pt x 650.46443pt.
 
 
-[13]
+[16]
 
-[14 </home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980549_annotatie.png>]
-</home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980550_annotatie.png, id=147, 514.92375pt x 887.315pt>
+[17 </home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980549_annotatie.png>]
+</home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980550_annotatie.png, id=177, 514.92375pt x 887.315pt>
 File: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980550_annotatie.png Graphic file (type png)
 <use /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980550_annotatie.png>
-Package pdftex.def Info: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980550_annotatie.png  used on input line 1159.
+Package pdftex.def Info: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980550_annotatie.png  used on input line 1225.
 (pdftex.def)             Requested size: 377.45477pt x 650.4289pt.
 
 
-[15]
-</home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980551_annotatie.png, id=153, 469.755pt x 883.3pt>
+[18]
+</home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980551_annotatie.png, id=183, 469.755pt x 883.3pt>
 File: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980551_annotatie.png Graphic file (type png)
 <use /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980551_annotatie.png>
-Package pdftex.def Info: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980551_annotatie.png  used on input line 1164.
+Package pdftex.def Info: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980551_annotatie.png  used on input line 1230.
 (pdftex.def)             Requested size: 345.92882pt x 650.46443pt.
 
-LaTeX Warning: Float too large for page by 23.97885pt on input line 1166.
+LaTeX Warning: Float too large for page by 23.97885pt on input line 1232.
 
 
 
-[16 </home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980550_annotatie.png>]
-</home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980552_annotatie.png, id=159, 469.755pt x 883.3pt>
+[19 </home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980550_annotatie.png>]
+</home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980552_annotatie.png, id=190, 469.755pt x 883.3pt>
 File: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980552_annotatie.png Graphic file (type png)
 <use /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980552_annotatie.png>
-Package pdftex.def Info: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980552_annotatie.png  used on input line 1170.
+Package pdftex.def Info: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980552_annotatie.png  used on input line 1236.
 (pdftex.def)             Requested size: 345.92882pt x 650.46443pt.
 
-LaTeX Warning: Float too large for page by 23.97885pt on input line 1172.
+LaTeX Warning: Float too large for page by 23.97885pt on input line 1238.
 
-
-
-[17]
-
-[18 </home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980551_annotatie.png>]
-
-[19 </home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980552_annotatie.png>]
-<Logboek_Floris_Menninga_files/figure-latex/unnamed-chunk-30-1.pdf, id=179, 469.755pt x 325.215pt>
-File: Logboek_Floris_Menninga_files/figure-latex/unnamed-chunk-30-1.pdf Graphic file (type pdf)
-<use Logboek_Floris_Menninga_files/figure-latex/unnamed-chunk-30-1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_files/figure-latex/unnamed-chunk-30-1.pdf  used on input line 1248.
+<Logboek_Floris_Menninga_files/figure-latex/venn diagram test-1.pdf, id=191, 469.755pt x 325.215pt>
+File: Logboek_Floris_Menninga_files/figure-latex/venn diagram test-1.pdf Graphic file (type pdf)
+<use Logboek_Floris_Menninga_files/figure-latex/venn diagram test-1.pdf>
+Package pdftex.def Info: Logboek_Floris_Menninga_files/figure-latex/venn diagram test-1.pdf  used on input line 1280.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[20 <./Logboek_Floris_Menninga_files/figure-latex/unnamed-chunk-30-1.pdf>]
+[20]
 
-[21] (./Logboek_Floris_Menninga.aux)
+[21 </home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980551_annotatie.png>]
+
+[22 </home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/SRR26980552_annotatie.png>]
+<Logboek_Floris_Menninga_files/figure-latex/unnamed-chunk-30-1.pdf, id=210, 469.755pt x 325.215pt>
+File: Logboek_Floris_Menninga_files/figure-latex/unnamed-chunk-30-1.pdf Graphic file (type pdf)
+<use Logboek_Floris_Menninga_files/figure-latex/unnamed-chunk-30-1.pdf>
+Package pdftex.def Info: Logboek_Floris_Menninga_files/figure-latex/unnamed-chunk-30-1.pdf  used on input line 1316.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+
+
+[23 <./Logboek_Floris_Menninga_files/figure-latex/venn diagram test-1.pdf>]
+
+[24 <./Logboek_Floris_Menninga_files/figure-latex/unnamed-chunk-30-1.pdf>]
+
+[25] (./Logboek_Floris_Menninga.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-09-10>
@@ -622,18 +633,18 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 12121 strings out of 475539
- 188364 string characters out of 5777352
- 590354 words of memory out of 5000000
- 34513 multiletter control sequences out of 15000+600000
+ 12134 strings out of 475539
+ 188939 string characters out of 5777352
+ 596423 words of memory out of 5000000
+ 34521 multiletter control sequences out of 15000+600000
  609641 words of font info for 80 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  89i,7n,93p,691b,585s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on Logboek_Floris_Menninga.pdf (21 pages, 553127 bytes).
+Output written on Logboek_Floris_Menninga.pdf (25 pages, 569709 bytes).
 PDF statistics:
- 289 PDF objects out of 1000 (max. 8388607)
- 233 compressed objects within 3 object streams
- 57 named destinations out of 1000 (max. 500000)
- 98 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 335 PDF objects out of 1000 (max. 8388607)
+ 272 compressed objects within 3 object streams
+ 62 named destinations out of 1000 (max. 500000)
+ 103 words of extra memory for PDF output out of 10000 (max. 10000000)
 
