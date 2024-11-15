@@ -5,18 +5,18 @@ date: "`r Sys.Date()`"
 bibliography: Logboek_Floris_Menninga.bib
 link-citations: true
 output:
-  pdf_document:
+  html_document:
     toc: yes
-    toc_depth: '2'
+    toc_depth: '5'
   bookdown::pdf_document2:
     keep_tex: false    
     toc: false      
     fig_caption: true
     includes:  
         in_header: include_tex_header.tex
-  html_document:
+  pdf_document:
     toc: yes
-    toc_depth: '5'
+    toc_depth: '2'
   word_document:
     toc: yes
     toc_depth: '2'
@@ -25,8 +25,54 @@ editor_options:
     wrap: sentence
 ---
 
-### **Workflow (Transcriptomics):** ###
+### **Inleiding:**
 
+Het gekozen artikel: (@chromatine_conf) (<https://pubmed.ncbi.nlm.nih.gov/38866970/>) heeft betrekking tot de verandering in 3d conformatie van chromatine die leiden tot verminderde expressie van het gen Ebf1.
+Uit het onderzoek bleek de reden voor deze vermindering migratie van genen naar het B compartiment te zijn, hier liggen stukken chromatine die niet op dat moment tot transcriptie hoeven te komen.
+Het onderzoek is uitgevoerd op voorloper- B-cellen van muizen.
+Deze cellen hebben het gen Ebf1 nodig om te differentiëren van hematopoetische stamcellen naar uitgerijpte B cellen.
+Als dit gen minder tot expressie komt kunnen deze B cellen meer eigenschappen van de voorloper cel hebben.
+Voor dit onderzoek wordt de expressie van een aantal genen die later bescreven worden vergeleken tussen twee groepen muizen: oude en jonge muizen.
+
+<hr>
+
+### Het onderzoek en achtergrond informatie:
+
+Het doel van het originele onderzoek (@chromatine_conf) was om te achterhalen of verschil is in gen expressie van onder andere ebf1 tussen oude en jonge muizen.
+(verminderde interactie tussen ebf1 promoter en zijn enhancers)
+
+Als het blijkt dat er varianten van deze genen aanwezig zijn kan het verschil in expressie tussen de muizen die gebruikt zijn in het onderzoek niet alleen toegewezen worden aan de factoren waar naar getest wordt, de invloed van veroudering op de expressie.
+Dan zou het ook kunnen komen door mutaties van deze genen.
+
+Er is DNA sequentie data beschikbaar van rag2(-/-) muizen.
+Daarom kan er niet gekeken worden naar mutaties in het rag2 gen omdat deze niet meer aanwezig is.
+
+Rag2 knockout muizen zijn niet in staat om uitgerijpte T en B lymfocyten te maken.
+(@RAG-2-deficient_mice)
+
+Het gen Ebf1 (Early B-cell factor 1) is een gen dat bijdraagt aan de differentiatie van voorloper b cellen.
+(@EBF1)
+
+De reden dat gekozen is voor dit gen is dat het resultaat van een verminderde expressie zichtbaar gemaakt kan worden door functieverlies van B cellen.
+Samen met PAX5 werken deze genen aan de uitrijping van hematopoetische stam cellen.
+Functieverlies van PAX5 leidt tot accumulatie van snel proliferende lymfoblasten die niet meer normale differentiatie kunnen ondergaan.
+Ook is PAX5 een tumorsuppressor gen maar dat is niet van invloed op dit onderzoek.
+(@PAX5)
+
+**Verschillen tussen het originele onderzoek en dat van ons:** De onderzoekers van het artikel hebben een verouderd muis referentiegenoom gebruikt, (mm10) deze vervangen we door mm39.
+Dit is de niewste versie en wordt later in dit verslag uitgebereid beschreven.
+
+### Workflow (Transcriptomics):
+
+Korte samenvatting van het orginele onderzoek: - Invloed van leeftijd op ruimtelijke chromatine veranderingen en de invloed hiervan op de expressie van PAX5, Ebf1 en FOXO1.
+- Verschil in gen expressie ebf1 tussen oude en jonge muizen.
+(verminderde interactie tussen ebf1 promoter en zijn enhancers) - Verminderde ebf1 expressie leidt tot functieverlies B cellen.
+- Verplaatsing van het ebf1 gen van compartiment A naar B.
+
+Experimentele opzet: RNA-seq:\
+- Voorloper B-cellen\
+- Twee groepen (jong: 100–110 weken en oud: 8–12 weken)\
+- Vier muizen per groep\
 Net zoals in het originele artikel beschreven was wordt read mapping uitgevoerd met het FASTQ bestand van elk van de samples.
 
 Met het .SAM bestand dat verkregen is werd daarna met FeatureCounts en RSEM de gen expressie gekwantificeerd.
@@ -36,60 +82,73 @@ FeatureCounts gebruikt namelijk het .SAM (of .BAM) bestand en telt hoeveel reads
 RSEM kan hier ook voor gebruikt worden maar is complexer om te gebruiken dan FeatureCounts.
 
 Dit kan daarna gevisualiseerd worden met R in een box-plot, viool-plot, heatmap, MA-plot etc.
-Ook was er in het artikel gebruik gemaakt van "Cufflinks", deze gaan we vervangen door "StringTie".
-Volgens de website van Cufflinks is StringTie accurater en veel efficiënter.
 
-**De volgende R libraries en commandline tools zijn gebruikt voor de analyse:**
-Alle geladen libraries zijn verkregen met het R commando: "(.packages())"
+1.  Kwaliteitscontrole (FastQC)
+2.  Trimmen met Trimmomatic
+3.  Kwaliteitscontrole na trimmen (FastQC)
+4.  Read mapping met HISAT2 (input: fastQ, output: SAM bestand)
+5.  Sorteren en indexen (input: .sam, ouput: .bam)
+6.  FeatureCounts gebruiken om de gen expressie te kwantificeren
+7.  RSEM gebruiken voor uitgebreidere FeatureCounts (optioneel)
+8.  Visualiseren (in de volgende dia besproken...)
 
-| Package | Version |
-|---------|---------|
-| PoiClaClu | 1.0.2.1 |
-| conflicted | 1.2.0 |
-| DEGreport | 1.40.1 |
-| apeglm | 1.26.1 |
-| pasilla | 1.32.0 |
-| DEXSeq | 1.50.0 |
-| RColorBrewer | 1.1.3 |
-| AnnotationDbi | 1.66.0 |
-| BiocParallel | 1.38.0 |
-| pheatmap | 1.0.12 |
-| scales | 1.3.0 |
-| affy | 1.82.0 |
-| gageData | 2.42.0 |
-| gage | 2.54.0 |
-| pathview | 1.44.0 |
-| EnhancedVolcano | 1.22.0 |
-| ggrepel | 0.9.6 |
-| DESeq2 | 1.44.0 |
-| SummarizedExperiment | 1.34.0 |
-| MatrixGenerics | 1.16.0 |
-| matrixStats | 1.4.1 |
-| GenomicRanges | 1.56.2 |
-| GenomeInfoDb | 1.40.1 |
-| IRanges | 2.38.1 |
-| S4Vectors | 0.42.1 |
-| stats4 | 4.4.2 |
-| GEOquery | 2.72.0 |
-| Biobase | 2.64.0 |
-| BiocGenerics | 0.50.0 |
-| lubridate | 1.9.3 |
-| forcats | 1.0.0 |
-| stringr | 1.5.1 |
-| dplyr | 1.1.4 |
-| purrr | 1.0.2 |
-| readr | 2.1.5 |
-| tidyr | 1.3.1 |
-| tibble | 3.2.1 |
-| ggplot2 | 3.5.1 |
-| tidyverse | 2.0.0 |
-| stats | 4.4.2 |
-| graphics | 4.4.2 |
-| grDevices | 4.4.2 |
-| utils | 4.4.2 |
-| datasets | 4.4.2 |
-| methods | 4.4.2 |
-| base | 4.4.2 |
+Dimensiereductie om verschil tussen groepen zichtbaar te maken: - PCA tussen de twee groepen
+
+Dit onderzoek tracht de volgende onderzoeksvraag te beantwoorden: Is er een expressieverschil van Ebf1, Pax5 en Foxo1 tussen de jonge en oude muizen?
+
+### Gebruikte libraries:
+
+De volgende R libraries en commandline tools zijn gebruikt voor de analyse.
+Alle geladen libraries voor dit project zijn verkregen met het R commando: "(.packages())"
+
+| Package              | Version |
+|----------------------|---------|
+| PoiClaClu            | 1.0.2.1 |
+| conflicted           | 1.2.0   |
+| DEGreport            | 1.40.1  |
+| apeglm               | 1.26.1  |
+| pasilla              | 1.32.0  |
+| DEXSeq               | 1.50.0  |
+| RColorBrewer         | 1.1.3   |
+| AnnotationDbi        | 1.66.0  |
+| BiocParallel         | 1.38.0  |
+| pheatmap             | 1.0.12  |
+| scales               | 1.3.0   |
+| affy                 | 1.82.0  |
+| gageData             | 2.42.0  |
+| gage                 | 2.54.0  |
+| pathview             | 1.44.0  |
+| EnhancedVolcano      | 1.22.0  |
+| ggrepel              | 0.9.6   |
+| DESeq2               | 1.44.0  |
+| SummarizedExperiment | 1.34.0  |
+| MatrixGenerics       | 1.16.0  |
+| matrixStats          | 1.4.1   |
+| GenomicRanges        | 1.56.2  |
+| GenomeInfoDb         | 1.40.1  |
+| IRanges              | 2.38.1  |
+| S4Vectors            | 0.42.1  |
+| stats4               | 4.4.2   |
+| GEOquery             | 2.72.0  |
+| Biobase              | 2.64.0  |
+| BiocGenerics         | 0.50.0  |
+| lubridate            | 1.9.3   |
+| forcats              | 1.0.0   |
+| stringr              | 1.5.1   |
+| dplyr                | 1.1.4   |
+| purrr                | 1.0.2   |
+| readr                | 2.1.5   |
+| tidyr                | 1.3.1   |
+| tibble               | 3.2.1   |
+| ggplot2              | 3.5.1   |
+| tidyverse            | 2.0.0   |
+| stats                | 4.4.2   |
+| graphics             | 4.4.2   |
+| grDevices            | 4.4.2   |
+| utils                | 4.4.2   |
+| datasets             | 4.4.2   |
+| methods              | 4.4.2   |
+| base                 | 4.4.2   |
 
 ```{r, eval=T, warning=FALSE, message=FALSE , error=FALSE}
 
@@ -114,8 +173,9 @@ library(apeglm)
 library(DEGreport)
 ```
 
-20-10-2024: 
-### SRA's downloaden (Transcriptomics): ###
+20-10-2024:
+
+\### SRA's downloaden (Transcriptomics): \###
 
 De SRA's van de RNA seq worden gedownload met het onderstaande stuk code.
 De gebruikte accention list staat in de github repository.
@@ -134,7 +194,7 @@ prefetch $(</students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/
 --output-directory "/students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/" --max-size 200G
 ```
 
-### Gebruikte samples: ### 
+### Gebruikte samples:
 
 Er zijn twee groepen, oude muizen van 100 tot 110 weken oud en jonge muizen van 8 tot 10 weken oud.
 Deze twee groepen hebben allebei vier replicaten.
@@ -201,6 +261,7 @@ Met een phred score van 40 is dit: P = 10\^(-40/10) = 0.0001% In andere woorden:
 Bron: <https://gatk.broadinstitute.org/hc/en-us/articles/360035531872-Phred-scaled-quality-scores>
 
 Hier worden de bestanden uitgepakt op assemblix in onze gedeelde directory:
+
 ```{bash, eval=FALSE}
 cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_list_transcriptomics.txt | \
   parallel fasterq-dump -O /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/FASTQ {}
@@ -256,14 +317,16 @@ Paired end betekend dat er twee reads zijn die in tegengestelde richting gelezen
 
 Met -threads 16 worden het aantal treads gespecificeerd, hierdoor kunnen er meerdere bewerkingen parallel uitegevoerd worden.
 
-**De argumenten die we gebruiken voor Trimmomatic zijn:**
+De argumenten die we gebruiken voor Trimmomatic zijn:
 
 **MINLIN:40** Dit betekend dat de minimale lengte van de reads 40 baseparen betreft.
+
 **SLINDINGWINDOW:4:20** Het eerste nummer 4 specificeert de grootte van de sliding window en het tweede, 20 is de vereiste gemiddelde read kwaliteit binnen het window van 4 basen.
 
 Een sliding window is dat er steeds, in dit geval 4 basen bekeken worden en dat dan een opgeschoven wordt enzovoort.
 
 **ILLUMINACLIP** is het path naar een bestand dat adapter sequenties bevat voor Illumina adapters.
+
 **De gebruikte adapter:** TruSeq3-SE.fa:2:30:10 De 2:30:10 betekenen het volgende: 2 is de "seed mismatch", het aantal mismatches dat toegestaan is in een sequentie die een adapter kan zijn.
 30 is de "palindrome clip threshold en 10 is de "simple clip threshold", specificeert hoe accuraat de match tussen de adapter sequentie en de mogelijke adapter in de read.
 
@@ -283,7 +346,7 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_
     'SLIDINGWINDOW:4:20'
 ```
 
-### Kwaliteitscontrole met fastqc / multiqc: ###
+### Kwaliteitscontrole met fastqc / multiqc:
 
 Na het trimmen: Het volgende commando is uitgevoerd in de trimmomatic_output/paired/ directory.
 
@@ -296,11 +359,9 @@ Vervolgens weer met "multiqc ." in de output directory een multiqc rapport gemaa
 
 ![Na_trimmen_general_stats](/home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_general_stats.png "Na_trimmen_general_stats")
 
-
 ![Na trimmen seq kwaliteit](/home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/NaTrimmen_transcriptomics.png "Na trimmen seq kwaliteit")
 
-![Na trimmen GC content](/home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_gc.png "Na trimmen GC content")
-De kwaliteit van de data lijkt voldoende te zijn, voor meer informatie zie logboek Ivar, Storm en Jarno.
+![Na trimmen GC content](/home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_gc.png "Na trimmen GC content") De kwaliteit van de data lijkt voldoende te zijn, voor meer informatie zie logboek Ivar, Storm en Jarno.
 
 ### Indexeren van referentiegenoom:
 
@@ -404,7 +465,9 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/SRA/Acc_
 'samtools markdup -@80 -r -s /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/fixed_mates_sorted_coords_{}.bam /students/2024-2025/Thema05/3dconformatieChromatine/transcriptomics/samtools_output/dedup_{}.bam'
 ```
 
-13 oktober 2024 **FeatureCounts:**
+13 oktober 2024
+
+**FeatureCounts:**
 
 Om te tellen hoeveel reads er voor elke "feature" is, deze features kunnen bijvoorbeeld genen of exonen zijn.
 Het doel van deze analyse is om de gen expressie te kwantificeren.
@@ -447,7 +510,7 @@ featureCounts -T 64 -p --countReadPairs -a /students/2024-2025/Thema05/3dconform
 ### Visualisatie van featurecounts
 
 Het van FeatureCounts verkregen .csv bestand kan nu als tabel in R geladen worden.
-De namen van de samples zijn erg lang en bevatten het gehele pad naar de bestanden, daarom worden de kolomen van de samples met de onderstaande code hernoemd naar de SSR namen.
+De namen van de samples zijn erg lang en bevatten het gehele pad naar de bestanden, daarom worden de kolommen van de samples met de onderstaande code hernoemd naar de SSR namen.
 
 ```{r, eval=TRUE, warning=FALSE}
 
@@ -473,7 +536,7 @@ counts_df <- counts %>%
 head(counts_df)
 ```
 
-**Dataframe voor DESeq2** Om later DESeq2 uit te voeren moet de data in een beplaald formaat staan.
+**Dataframe voor DESeq2** Om later DESeq2 uit te voeren moet de data in een bepaald formaat staan.
 Het dataframe coldata bevat voor alle samples wat hun "treatment" is, in het geval van dit ondezoek zijn er twee groepen: Jonge muizen en oude muizen.
 Hiertussen moet dus een expressie verschil aangetoond worden, of juist afwezigheid van verschil als er geen verschil in expressie tussen de twee groepen is.
 
@@ -487,7 +550,7 @@ coldata$Groep <- factor(coldata$Groep)
 
 ```
 
-### **Readcount:**\*
+### Readcount: ###
 
 Op de serie onderstaande boxplots zijn aantallen reads afgebeeld per sample.
 Om met ggplot hier een mooie grafiek van te maken moest pivot_longer gebruikt worden om een kolom te maken met samples en een kolom met read aantallen.
@@ -611,6 +674,7 @@ Hiervoor is de Benjamini Hockberg compensatie uitgevoerd om hier rekening mee te
 De false discovery rate is het aantal genen in dit geval die ondanks dat ze niet echt differentialy expressed zijn toch zo lijken.
 Dit zijn dus false positieven.
 Wanneer de p-waarde bijvoorbeeld 0.01 is en er 4000 genen zijn, zijn er 40 false positieven bij.
+
 De kans is namelijk 1% met een p-waarde van 0.01 of lager.
 Als er geen rekening gehouden zou worden met de false discovery rate zou het betekenen dat wanneer er veel individuele tests uitgevoerd worden (bijvoorbeeld t-tests), er ook veel false positieven bij zitten omdat de kas daarop groter wordt hoe meer tests uitgevoerd worden.
 
@@ -648,7 +712,9 @@ mcols(res)$description
 
 ### Visualisatie van Differentially expressed genes:
 
-**MA-Plot** Een MA-plot visualiseert de relatie tussen de log ratio en de gemiddelde expressie waarden.
+**MA-Plot:**
+
+Een MA-plot visualiseert de relatie tussen de log ratio en de gemiddelde expressie waarden.
 Op de x-as wordt het gemiddelde expressie level voor alle samples (van beide groepen) weergeven.
 deze counts zijn eerst genormaliseerd.
 Een van de redenen dat normalisatie nodig is, is omdat grote genen meer kans hebben dat er meer reads binnen vallen.
@@ -697,7 +763,9 @@ ggplot(d, aes(x=Groep, y=count)) +
   scale_y_log10(breaks=c(25,100,400))
 ```
 
-**Pax5:** Pax5 is een transcriptiefactor die enkel in B-cellen tot expressie komt.
+**Pax5:**
+
+Pax5 is een transcriptiefactor die enkel in B-cellen tot expressie komt.
 In vroege stadia van B-cellen, zoals de pro-b cellen die gesequenced zijn voor dit onderzoek is Pax5 upregulated, wanneer de b-cel uitgerijpt is tot een plasma cel is dit expressie level weer verlaagd.
 Dit is geen verklaring voor het expressieverschil tussen jonge en oude muizen omdat er in elk levensstadium proliferatie van B-cellen plaats vindt.
 Bron: <https://www.sciencedirect.com/science/article/abs/pii/B978141605766600025X>
@@ -714,7 +782,9 @@ ggplot(d, aes(x=Groep, y=count)) +
   scale_y_log10(breaks=c(25,100,400))
 ```
 
-**Wapl** Wings apart-like protein homolog (WAPL) is een gen dat resulteert in een eiwit dat betrokken is bij loslaten van Cohesine van chromatine.
+**Wapl:**
+
+Wings apart-like protein homolog (WAPL) is een gen dat resulteert in een eiwit dat betrokken is bij loslaten van Cohesine van chromatine.
 De mate van expresse van Wapl heeft dus ook invloed op de conformatie van chomatine, dit was een centraal concept bij het originele onderzoek.
 Naarmate de muizen verouderen verhoogt de expressie van Wapl en veranderd de 3d conformatie van het chromatine hier door.
 Mijn vermoeden is dat het chromatine dat Wapl bevat van cel compartiment B naar A migreert.
@@ -771,7 +841,7 @@ pheatmap(sampleDistMatrix, show_colnames = FALSE,
          main = "Euclidean Sample Distances")
 ```
 
-**Niet werkende test:**
+Nog niet werkende test:
 
 ```{r, eval=T}
 library('PoiClaClu')
@@ -813,11 +883,17 @@ plotPCA(vsd, intgroup=c("Groep"))
 ```
 
 De degPlot() function weergeeft volgens de documentatie enkele "top genen"
+
 ```{r, eval=T}
 degPlot(dds = dds, res = res, n = 6, xs = "Groep")
 ```
-### Volcano plot ###
-Een volcano plot weergeeft alle genen maar enkel de genen die statistisch significant zijn en een hoge fold change hebben worden rood gekleurd. De genen die wel statistisch significant zijn maar geen significante fold change hebben zijn blauw gekleurd. Daarnaast zijn alle genen die geen statistisch significante p-waarde hebben en ook geen significante fold change hebben grijs gekleurd. De -log10(p-waarde) is op de y-as weergeven en op de x-as staat de log2(fold change). 
+
+### Volcano plot
+
+Een volcano plot weergeeft alle genen maar enkel de genen die statistisch significant zijn en een hoge fold change hebben worden rood gekleurd.
+De genen die wel statistisch significant zijn maar geen significante fold change hebben zijn blauw gekleurd.
+Daarnaast zijn alle genen die geen statistisch significante p-waarde hebben en ook geen significante fold change hebben grijs gekleurd.
+De -log10(p-waarde) is op de y-as weergeven en op de x-as staat de log2(fold change).
 
 ```{r, eval=T}
 
@@ -840,27 +916,17 @@ deseq.volcano(res = res, datasetName = "Volcano plot:")
 
 ```
 
-### Venn diagram:
+het volcano plot weergeeft onderandere de uitschieter Gpnmb, hiervan is ook het verschil tussen de groepen gevisualiseerd.
+(Chunk 30)
 
-De volgende test werkt nog niet...
+### Pathview:
 
-```{r, eval=FALSE}
-library(ggVennDiagram)
-pval_threshold <- 0.05
-#ipsc.degs <- row.names(res.ipsc.lfc[which(res.ipsc.lfc$padj <= pval_threshold), ])
-overlap_list <- list(res[which(res$padj <= 0.05), ], res[which(res$padj <= 0.05), ])
-
-ggVennDiagram(overlap_list, set_color = c("darkgreen","forestgreen"),
-              category.names = c("SRR26980549","SRR26980550"),
-              label_alpha=0.7) +
-              scale_fill_gradient(low = "gray", high = "red")
-```
-
-### Pathview: ###
-
-Wanneer er veel DEGs zijn is het moeilijk om dit te visualiseren en nuttige informatie uit de verkregen plots te halen. Vaak hebben de genen invloed op elkaar, dit is zichtbaar te maken met een pathway analyse. Hier wordt gebruik gemaakt van pathview. 
-Een pathway is een serie moleculaire interacties die van elkaar afhankelijk zijn. Dit betekend ook dat als er aan het begin van een pathway iets verkeerd gaat alle stappen er achter niet meer uitgevoerd kunnen worden. 
-Er zijn een aantal pathways uitgekozen die mogelijk invloed hebben factoren die onderzocht zijn in het orginele onderzoek. 
+Wanneer er veel DEGs zijn is het moeilijk om dit te visualiseren en nuttige informatie uit de verkregen plots te halen.
+Vaak hebben de genen invloed op elkaar, dit is zichtbaar te maken met een pathway analyse.
+Hier wordt gebruik gemaakt van pathview.
+Een pathway is een serie moleculaire interacties die van elkaar afhankelijk zijn.
+Dit betekend ook dat als er aan het begin van een pathway iets verkeerd gaat alle stappen er achter niet meer uitgevoerd kunnen worden.
+Er zijn een aantal pathways uitgekozen die mogelijk invloed hebben factoren die onderzocht zijn in het orginele onderzoek.
 
 Van een aantal relevante pathways zijn afbeeldingen gemaakt, de Kegg pathway codes zijn afkomstig van de volgende website: <https://www.genome.jp/kegg-bin/show_organism?menu_type=pathway_maps&org=mmu>
 
@@ -875,8 +941,9 @@ In de DESeq2 analyse, de groep met jongen muizen is als referentiegroep genomen,
 Dit zelfde geld voor groen gekleurde genen, deze zijn downregulated in de oude muizen vergeleken met de jonge muizen.
 
 **B cell receptor signaling pathway:**
-Omdat de sequence dat afkomstig is van B-cellen is het 
-B cell receptor pathway extreem relevant, enkele surface receptors zoals de CDs worden gebruikt als marker om achter het ontwikkelstadium van de b-cel te komen. Wanneer er grote expressie verschillen zijn tussen de jonge en oude groep er er meer voorloper-b-cellen aanwezig zijn bij een van de groepen kan dit verklaard worden door expressie verschillen van de genen die verantwoordelijk zijn voor het maken van de receptoreiwitten die als marker gebruikt worden. 
+
+Omdat de sequence dat afkomstig is van B-cellen is het B cell receptor pathway extreem relevant, enkele surface receptors zoals de CDs worden gebruikt als marker om achter het ontwikkelstadium van de b-cel te komen.
+Wanneer er grote expressie verschillen zijn tussen de jonge en oude groep er er meer voorloper-b-cellen aanwezig zijn bij een van de groepen kan dit verklaard worden door expressie verschillen van de genen die verantwoordelijk zijn voor het maken van de receptoreiwitten die als marker gebruikt worden.
 
 ```{r, eval=T, fig.width=10, fig.height=8}
 # 04662  B cell receptor signaling pathway
@@ -892,7 +959,12 @@ knitr::include_graphics("mmu04662.pathview.png")
 ```
 
 **T cell receptor signaling pathway:**
-Er is overlap tussen de surface eiwitten van B- en T-lymfocyten. Dus ondanks dat de gesequencede cellen B-cellen zijn en geen T-cellen is het volgende pathway ook interesant.
+
+Er is overlap tussen de surface eiwitten van B- en T-lymfocyten.
+Dus ondanks dat de gesequencede cellen B-cellen zijn en geen T-cellen is het volgende pathway ook interesant.
+Op de onderstaande pathway afbeelding is downregulatie van CD19 zichtbaar in oude muizen tegenover de jong muizen.
+Dit is een transmembraan glycoproteine die betrokken is bij de ontwikkeling van B-cellen.
+
 ```{r, eval=T, fig.width=10, fig.height=8}
 # 04660  T cell receptor signaling pathway
 
@@ -905,10 +977,14 @@ pathview(gene.data=deseq.degs.logfc,
 # Om de afbeelding te weergeven in R:
 knitr::include_graphics("mmu04660.pathview.png")
 ```
-**Longevity regulating pathway**
-De twee groepen die vergeleken worden zijn jonge en oude muizen, daarom is het longevity pathway dat enkele genen weergeeft die betrokken zijn bij het verouderingsproces ook belangrijk. Niet alle genen die betrokken zijn bij dit proces zijn hierop afgebeeld omdat het niet bekend is welke genen verantwoordelijk zijn. 
-Foxo is downregulated in de oude muizengroep tegenover de jonge groep. Van dit gen is bekend dat het levensduur gerelateerd is. 
-Bron: https://cellandbioscience.biomedcentral.com/articles/10.1186/s13578-021-00700-7
+
+**Longevity regulating pathway:**
+
+De twee groepen die vergeleken worden zijn jonge en oude muizen, daarom is het longevity pathway dat enkele genen weergeeft die betrokken zijn bij het verouderingsproces ook belangrijk.
+Niet alle genen die betrokken zijn bij dit proces zijn hierop afgebeeld omdat het niet bekend is welke genen verantwoordelijk zijn.
+Foxo is downregulated in de oude muizengroep tegenover de jonge groep.
+Van dit gen is bekend dat het levensduur gerelateerd is.
+Bron: <https://cellandbioscience.biomedcentral.com/articles/10.1186/s13578-021-00700-7>
 
 ```{r, eval=T, fig.width=10, fig.height=8}
 # 04211
@@ -923,8 +999,7 @@ pathview(gene.data=deseq.degs.logfc,
 knitr::include_graphics("mmu04211.pathview.png")
 ```
 
-Longevity regulating pathway - multiple species:
-Een vergelijkbaar pathway die een overzicht geeft tussen longegevity pathways tussen verschillende organismes.
+Longevity regulating pathway - multiple species: Een vergelijkbaar pathway die een overzicht geeft tussen longegevity pathways tussen verschillende organismes.
 
 ```{r, eval=T, fig.width=10, fig.height=8}
 # 04213
@@ -939,10 +1014,10 @@ pathview(gene.data=deseq.degs.logfc,
 knitr::include_graphics("mmu04213.pathview.png")
 ```
 
+**Hematopoietic cell lineage:**
 
+Omdat B-cellen uit hematopoëtische cellen voortkwamen, en de voorloper B-cellen die hiervoor gebruikt zijn nog dichter in de buurt van deze hematopoëtische stamcellen zijn is het volgende pathway ook interessant: Weer is CD19 upregulated in de jongere muizen wat overeenkomt met de bestaande literatuur: Bron: <https://pmc.ncbi.nlm.nih.gov/articles/PMC3814412/>
 
-**Hematopoietic cell lineage**
-Omdat B-cellen uit hematopoëtische cellen voortkwamen, en de voorloper B-cellen die hiervoor gebruikt zijn nog dichter in de buurt van deze hematopoëtische stamcellen zijn is het volgende pathway ook interessant: 
 ```{r, eval=T, fig.width=10, fig.height=8}
 # 04640
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.10.20)  14 NOV 2024 23:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.10.20)  15 NOV 2024 17:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -484,353 +484,349 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \tf@toc=\write4
 \openout4 = `Logboek_Floris_Menninga_Transcriptomics.toc'.
 
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 166.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 166.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 166.
+
+
 [1
 
-{/home/floris/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/floris/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 244.
+{/home/floris/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/floris/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}] [2]
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 339.
 (/home/floris/.TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 245.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 340.
 
 
-[2]
-Underfull \hbox (badness 10000) in paragraph at lines 298--299
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 300--304
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 395--396
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 305--310
+Underfull \hbox (badness 10000) in paragraph at lines 397--401
 
  []
 
-LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 320.
+
+Underfull \hbox (badness 10000) in paragraph at lines 402--407
+
+ []
+
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 417.
 (/home/floris/.TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
 File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 
-[3{/home/floris/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 369.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 369.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 369.
-
-
-[4]
+[4{/home/floris/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
 
 [5]
-</home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_general_stats.png, id=45, 2176.13pt x 766.865pt>
+
+[6]
+</home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_general_stats.png, id=69, 2176.13pt x 766.865pt>
 File: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_general_stats.png Graphic file (type png)
 <use /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_general_stats.png>
-Package pdftex.def Info: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_general_stats.png  used on input line 508.
+Package pdftex.def Info: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_general_stats.png  used on input line 609.
 (pdftex.def)             Requested size: 469.75153pt x 165.53973pt.
-</home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/NaTrimmen_transcriptomics.png, id=47, 2176.13pt x 766.865pt>
+</home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/NaTrimmen_transcriptomics.png, id=71, 2176.13pt x 766.865pt>
 File: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/NaTrimmen_transcriptomics.png Graphic file (type png)
 <use /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/NaTrimmen_transcriptomics.png>
-Package pdftex.def Info: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/NaTrimmen_transcriptomics.png  used on input line 514.
+Package pdftex.def Info: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/NaTrimmen_transcriptomics.png  used on input line 615.
 (pdftex.def)             Requested size: 469.75153pt x 165.53973pt.
-</home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_gc.png, id=48, 2176.13pt x 766.865pt>
+</home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_gc.png, id=72, 2176.13pt x 766.865pt>
 File: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_gc.png Graphic file (type png)
 <use /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_gc.png>
-Package pdftex.def Info: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_gc.png  used on input line 518.
+Package pdftex.def Info: /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_gc.png  used on input line 619.
 (pdftex.def)             Requested size: 469.75153pt x 165.53973pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 518--521
+Underfull \hbox (badness 10000) in paragraph at lines 619--622
 [][]
  []
 
 
 
-[6 </home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_general_stats.png> </home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/NaTrimmen_transcriptomics.png> </home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_gc.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 542--543
+[7 </home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_general_stats.png> </home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/Na_trimmen_gc.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 643--644
 [][]$\T1/lmr/m/n/10 https : / / www . ebi . ac . uk / training / online / courses / functional -[] genomics -[] ii -[] common -[] technologies -[] and -[] data -[]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 542--543
+Underfull \hbox (badness 10000) in paragraph at lines 643--644
 \T1/lmr/m/n/10 analysis -[] methods / rna -[] sequencing / performing -[] a -[] rna -[] seq -[] experiment / data -[] analysis / read -[] mapping -[] or -[]
  []
 
 
 
-[7]
+[8 </home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris/Data/NaTrimmen_transcriptomics.png>]
 
-LaTeX Warning: Citation `ref-n' on page 8 undefined on input line 643.
+LaTeX Warning: Citation `ref-n' on page 9 undefined on input line 744.
 
 
 
-[8]
-Overfull \hbox (4.03162pt too wide) in paragraph at lines 713--714
+[9]
+Overfull \hbox (4.03162pt too wide) in paragraph at lines 816--817
  []\T1/lmr/m/n/10 11,519,033
  []
 
 
-Overfull \hbox (63.0311pt too wide) in paragraph at lines 731--731
+Overfull \hbox (63.0311pt too wide) in paragraph at lines 834--834
  []|\T1/lmr/m/n/10 Unassigned_Unmapped|
  []
 
 
-Overfull \hbox (67.6148pt too wide) in paragraph at lines 733--733
+Overfull \hbox (67.6148pt too wide) in paragraph at lines 836--836
  []|\T1/lmr/m/n/10 Unassigned_Read_Type|
  []
 
 
-Overfull \hbox (55.80934pt too wide) in paragraph at lines 734--734
+Overfull \hbox (55.80934pt too wide) in paragraph at lines 837--837
  []|\T1/lmr/m/n/10 Unassigned_Singleton|
  []
 
 
-Overfull \hbox (86.64326pt too wide) in paragraph at lines 735--735
+Overfull \hbox (86.64326pt too wide) in paragraph at lines 838--838
  []|\T1/lmr/m/n/10 Unassigned_MappingQuality|
  []
 
 
-Overfull \hbox (52.50325pt too wide) in paragraph at lines 736--736
+Overfull \hbox (52.50325pt too wide) in paragraph at lines 839--839
  []|\T1/lmr/m/n/10 Unassigned_Chimera|
  []
 
 
-Overfull \hbox (87.50386pt too wide) in paragraph at lines 737--737
+Overfull \hbox (87.50386pt too wide) in paragraph at lines 840--840
  []|\T1/lmr/m/n/10 Unassigned_FragmentLength|
  []
 
 
-Overfull \hbox (57.33736pt too wide) in paragraph at lines 738--738
+Overfull \hbox (57.33736pt too wide) in paragraph at lines 841--841
  []|\T1/lmr/m/n/10 Unassigned_Duplicate|
  []
 
 
-Overfull \hbox (78.03207pt too wide) in paragraph at lines 739--739
+Overfull \hbox (78.03207pt too wide) in paragraph at lines 842--842
  []|\T1/lmr/m/n/10 Unassigned_MultiMapping|
  []
 
 
-Overfull \hbox (60.00398pt too wide) in paragraph at lines 741--741
+Overfull \hbox (60.00398pt too wide) in paragraph at lines 844--844
  []|\T1/lmr/m/n/10 Unassigned_Secondary|
  []
 
 
-Overfull \hbox (53.86484pt too wide) in paragraph at lines 742--742
+Overfull \hbox (53.86484pt too wide) in paragraph at lines 845--845
  []|\T1/lmr/m/n/10 Unassigned_NonSplit|
  []
 
 
-Overfull \hbox (64.64314pt too wide) in paragraph at lines 743--743
+Overfull \hbox (64.64314pt too wide) in paragraph at lines 846--846
  []|\T1/lmr/m/n/10 Unassigned_NoFeatures|
  []
 
 
-Overfull \hbox (106.8097pt too wide) in paragraph at lines 745--745
+Overfull \hbox (106.8097pt too wide) in paragraph at lines 848--848
  []|\T1/lmr/m/n/10 Unassigned_Overlapping_Length|
  []
 
 
-Overfull \hbox (61.36475pt too wide) in paragraph at lines 746--746
+Overfull \hbox (61.36475pt too wide) in paragraph at lines 849--849
  []|\T1/lmr/m/n/10 Unassigned_Ambiguity|
  []
 
 
 
-[9]
-<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/reads per sample boxplot-1.pdf, id=84, 469.755pt x 325.215pt>
-File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/reads per sample boxplot-1.pdf Graphic file (type pdf)
-<use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/reads per sample boxplot-1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/reads per sample boxplot-1.pdf  used on input line 848.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-
-
 [10]
 
-[11 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/reads per sample boxplot-1.pdf>]
-<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen jong -1.pdf, id=99, 469.755pt x 325.215pt>
+[11]
+<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/reads per sample boxplot-1.pdf, id=114, 469.755pt x 325.215pt>
+File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/reads per sample boxplot-1.pdf Graphic file (type pdf)
+<use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/reads per sample boxplot-1.pdf>
+Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/reads per sample boxplot-1.pdf  used on input line 951.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+
+
+[12 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/reads per sample boxplot-1.pdf>]
+<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen jong -1.pdf, id=124, 469.755pt x 325.215pt>
 File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen jong -1.pdf Graphic file (type pdf)
 <use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen jong -1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen jong -1.pdf  used on input line 902.
+Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen jong -1.pdf  used on input line 1005.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen oud-1.pdf, id=100, 469.755pt x 325.215pt>
+
+
+[13 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen jong -1.pdf>]
+<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen oud-1.pdf, id=135, 469.755pt x 325.215pt>
 File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen oud-1.pdf Graphic file (type pdf)
 <use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen oud-1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen oud-1.pdf  used on input line 917.
+Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen oud-1.pdf  used on input line 1020.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-
-
-[12 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen jong -1.pdf>]
 
 LaTeX Font Warning: Font shape `T1/lmtt/bx/it' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/sl' tried instead on input line 926.
+(Font)              Font shape `T1/lmtt/b/sl' tried instead on input line 1029.
 
-<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-21-1.pdf, id=110, 469.755pt x 325.215pt>
+<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-21-1.pdf, id=136, 469.755pt x 325.215pt>
 File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-21-1.pdf Graphic file (type pdf)
 <use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-21-1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-21-1.pdf  used on input line 938.
+Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-21-1.pdf  used on input line 1041.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[13 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen oud-1.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 986--987
+[14 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/lengte van genen oud-1.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 1089--1090
 
  []
 
 
 
-[14 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-21-1.pdf>]
+[15 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-21-1.pdf>]
 
-[15]
-<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-25-1.pdf, id=138, 469.755pt x 325.215pt>
+[16]
+<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-25-1.pdf, id=164, 469.755pt x 325.215pt>
 File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-25-1.pdf Graphic file (type pdf)
 <use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-25-1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-25-1.pdf  used on input line 1090.
+Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-25-1.pdf  used on input line 1196.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[16 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-25-1.pdf>]
-<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-26-1.pdf, id=152, 469.755pt x 325.215pt>
+[17 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-25-1.pdf>]
+<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-26-1.pdf, id=177, 469.755pt x 325.215pt>
 File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-26-1.pdf Graphic file (type pdf)
 <use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-26-1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-26-1.pdf  used on input line 1118.
+Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-26-1.pdf  used on input line 1224.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[17 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-26-1.pdf>]
-<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Ebf1 counts-1.pdf, id=165, 469.755pt x 325.215pt>
+[18 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-26-1.pdf>]
+<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Ebf1 counts-1.pdf, id=190, 469.755pt x 325.215pt>
 File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Ebf1 counts-1.pdf Graphic file (type pdf)
 <use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Ebf1 counts-1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Ebf1 counts-1.pdf  used on input line 1160.
+Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Ebf1 counts-1.pdf  used on input line 1266.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Pax5 counts-1.pdf, id=168, 469.755pt x 325.215pt>
+
+
+[19 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Ebf1 counts-1.pdf>]
+<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Pax5 counts-1.pdf, id=203, 469.755pt x 325.215pt>
 File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Pax5 counts-1.pdf Graphic file (type pdf)
 <use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Pax5 counts-1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Pax5 counts-1.pdf  used on input line 1187.
+Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Pax5 counts-1.pdf  used on input line 1294.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-
-
-[18 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Ebf1 counts-1.pdf>]
-<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Wapl counts-1.pdf, id=181, 469.755pt x 325.215pt>
+<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Wapl counts-1.pdf, id=205, 469.755pt x 325.215pt>
 File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Wapl counts-1.pdf Graphic file (type pdf)
 <use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Wapl counts-1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Wapl counts-1.pdf  used on input line 1219.
+Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Wapl counts-1.pdf  used on input line 1328.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[19 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Pax5 counts-1.pdf>]
-<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-27-1.pdf, id=192, 469.755pt x 325.215pt>
+[20 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Pax5 counts-1.pdf>]
+<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-27-1.pdf, id=215, 469.755pt x 325.215pt>
 File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-27-1.pdf Graphic file (type pdf)
 <use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-27-1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-27-1.pdf  used on input line 1241.
+Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-27-1.pdf  used on input line 1350.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[20 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Wapl counts-1.pdf>]
-<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Euclidean sample distance-1.pdf, id=203, 469.755pt x 325.215pt>
+[21 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Wapl counts-1.pdf>]
+<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Euclidean sample distance-1.pdf, id=226, 469.755pt x 325.215pt>
 File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Euclidean sample distance-1.pdf Graphic file (type pdf)
 <use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Euclidean sample distance-1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Euclidean sample distance-1.pdf  used on input line 1268.
+Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Euclidean sample distance-1.pdf  used on input line 1377.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[21 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-27-1.pdf>]
+[22 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-27-1.pdf>]
 
-[22 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Euclidean sample distance-1.pdf>]
-<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/PCA-1.pdf, id=226, 469.755pt x 325.215pt>
+[23 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/Euclidean sample distance-1.pdf>]
+<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/PCA-1.pdf, id=249, 469.755pt x 325.215pt>
 File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/PCA-1.pdf Graphic file (type pdf)
 <use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/PCA-1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/PCA-1.pdf  used on input line 1327.
+Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/PCA-1.pdf  used on input line 1436.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-30-1.pdf, id=227, 469.755pt x 325.215pt>
+<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-30-1.pdf, id=250, 469.755pt x 325.215pt>
 File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-30-1.pdf Graphic file (type pdf)
 <use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-30-1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-30-1.pdf  used on input line 1350.
+Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-30-1.pdf  used on input line 1459.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1350--1359
-[][]
- []
 
-
-
-[23 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/PCA-1.pdf>]
-<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-31-1.pdf, id=238, 469.755pt x 325.215pt>
+[24 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/PCA-1.pdf>]
+<Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-31-1.pdf, id=261, 469.755pt x 325.215pt>
 File: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-31-1.pdf Graphic file (type pdf)
 <use Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-31-1.pdf>
-Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-31-1.pdf  used on input line 1380.
+Package pdftex.def Info: Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-31-1.pdf  used on input line 1491.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[24 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-30-1.pdf>]
+[25 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-30-1.pdf>]
 
-[25 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-31-1.pdf>]
-Overfull \hbox (118.24327pt too wide) in paragraph at lines 1486--1486
+[26 <./Logboek_Floris_Menninga_Transcriptomics_files/figure-latex/unnamed-chunk-31-1.pdf>]
+Overfull \hbox (118.24327pt too wide) in paragraph at lines 1583--1583
 []\T1/lmtt/m/n/10 ## Info: Working in directory /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris[] 
  []
 
-<mmu04662.pathview.png, id=273, 282.5757pt x 183.8067pt>
+<mmu04662.pathview.png, id=297, 282.5757pt x 183.8067pt>
 File: mmu04662.pathview.png Graphic file (type png)
 <use mmu04662.pathview.png>
-Package pdftex.def Info: mmu04662.pathview.png  used on input line 1499.
+Package pdftex.def Info: mmu04662.pathview.png  used on input line 1596.
 (pdftex.def)             Requested size: 282.58792pt x 183.81465pt.
 
 
-[26]
-Overfull \hbox (118.24327pt too wide) in paragraph at lines 1542--1542
+[27 <./mmu04662.pathview.png (PNG copy)>]
+Overfull \hbox (118.24327pt too wide) in paragraph at lines 1643--1643
 []\T1/lmtt/m/n/10 ## Info: Working in directory /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris[] 
  []
 
-<mmu04660.pathview.png, id=280, 307.1475pt x 224.5188pt>
+<mmu04660.pathview.png, id=302, 307.1475pt x 224.5188pt>
 File: mmu04660.pathview.png Graphic file (type png)
 <use mmu04660.pathview.png>
-Package pdftex.def Info: mmu04660.pathview.png  used on input line 1555.
+Package pdftex.def Info: mmu04660.pathview.png  used on input line 1656.
 (pdftex.def)             Requested size: 307.14674pt x 224.51823pt.
 
 
-[27 <./mmu04662.pathview.png (PNG copy)>]
-Overfull \hbox (118.24327pt too wide) in paragraph at lines 1601--1601
+[28 <./mmu04660.pathview.png (PNG copy)>]
+Overfull \hbox (118.24327pt too wide) in paragraph at lines 1705--1705
 []\T1/lmtt/m/n/10 ## Info: Working in directory /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris[] 
  []
 
-<mmu04211.pathview.png, id=287, 342.3189pt x 216.3282pt>
+<mmu04211.pathview.png, id=308, 342.3189pt x 216.3282pt>
 File: mmu04211.pathview.png Graphic file (type png)
 <use mmu04211.pathview.png>
-Package pdftex.def Info: mmu04211.pathview.png  used on input line 1614.
+Package pdftex.def Info: mmu04211.pathview.png  used on input line 1718.
 (pdftex.def)             Requested size: 342.33893pt x 216.34087pt.
 
 
-[28 <./mmu04660.pathview.png (PNG copy)>]
-Overfull \hbox (118.24327pt too wide) in paragraph at lines 1656--1656
+[29 <./mmu04211.pathview.png (PNG copy)>]
+Overfull \hbox (118.24327pt too wide) in paragraph at lines 1760--1760
 []\T1/lmtt/m/n/10 ## Info: Working in directory /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris[] 
  []
 
-<mmu04213.pathview.png, id=292, 364.7226pt x 253.6677pt>
+<mmu04213.pathview.png, id=313, 364.7226pt x 253.6677pt>
 File: mmu04213.pathview.png Graphic file (type png)
 <use mmu04213.pathview.png>
-Package pdftex.def Info: mmu04213.pathview.png  used on input line 1669.
+Package pdftex.def Info: mmu04213.pathview.png  used on input line 1773.
 (pdftex.def)             Requested size: 364.73282pt x 253.6748pt.
 
 
-[29 <./mmu04211.pathview.png (PNG copy)>]
-Overfull \hbox (118.24327pt too wide) in paragraph at lines 1702--1702
+[30 <./mmu04213.pathview.png (PNG copy)>]
+Overfull \hbox (118.24327pt too wide) in paragraph at lines 1810--1810
 []\T1/lmtt/m/n/10 ## Info: Working in directory /home/floris/Documenten/git_repo/Genomics_transcriptomics_analysis/analysis/Floris[] 
  []
 
-<mmu04640.pathview.png, id=297, 313.17pt x 443.7378pt>
+<mmu04640.pathview.png, id=319, 313.17pt x 443.7378pt>
 File: mmu04640.pathview.png Graphic file (type png)
 <use mmu04640.pathview.png>
-Package pdftex.def Info: mmu04640.pathview.png  used on input line 1715.
+Package pdftex.def Info: mmu04640.pathview.png  used on input line 1823.
 (pdftex.def)             Requested size: 313.17877pt x 443.75024pt.
 
 
-[30 <./mmu04213.pathview.png (PNG copy)>]
+[31]
 
-[31 <./mmu04640.pathview.png (PNG copy)>]
+[32 <./mmu04640.pathview.png (PNG copy)>]
 
-[32] (./Logboek_Floris_Menninga_Transcriptomics.aux)
+[33] (./Logboek_Floris_Menninga_Transcriptomics.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-09-10>
@@ -840,18 +836,18 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 12252 strings out of 475539
- 197605 string characters out of 5777352
- 609708 words of memory out of 5000000
- 34639 multiletter control sequences out of 15000+600000
+ 12273 strings out of 475539
+ 197906 string characters out of 5777352
+ 609889 words of memory out of 5000000
+ 34646 multiletter control sequences out of 15000+600000
  607270 words of font info for 81 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 89i,7n,93p,818b,591s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 89i,7n,93p,818b,587s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtko10.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></home/floris/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on Logboek_Floris_Menninga_Transcriptomics.pdf (32 pages, 4569586 bytes).
+Output written on Logboek_Floris_Menninga_Transcriptomics.pdf (33 pages, 4573683 bytes).
 PDF statistics:
- 379 PDF objects out of 1000 (max. 8388607)
- 281 compressed objects within 3 object streams
- 60 named destinations out of 1000 (max. 500000)
+ 410 PDF objects out of 1000 (max. 8388607)
+ 310 compressed objects within 4 object streams
+ 74 named destinations out of 1000 (max. 500000)
  111 words of extra memory for PDF output out of 10000 (max. 10000000)
 
