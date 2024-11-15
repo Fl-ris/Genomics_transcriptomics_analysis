@@ -369,78 +369,19 @@ beinvloeden”</p>
 </div>
 <div id="library-chunk" class="section level1">
 <h1>Library chunk</h1>
-<pre class="r"><code>library(&quot;fastqcr&quot;)</code></pre>
-<pre><code>## Warning: package &#39;fastqcr&#39; was built under R version 4.4.1</code></pre>
-<pre class="r"><code>library(&quot;ggVennDiagram&quot;)</code></pre>
-<pre><code>## Warning: package &#39;ggVennDiagram&#39; was built under R version 4.4.1</code></pre>
-<pre class="r"><code>library(&quot;ggplot2&quot;)
-library(&quot;GenomicRanges&quot;)</code></pre>
-<pre><code>## Loading required package: stats4</code></pre>
-<pre><code>## Loading required package: BiocGenerics</code></pre>
-<pre><code>## 
-## Attaching package: &#39;BiocGenerics&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     IQR, mad, sd, var, xtabs</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     anyDuplicated, aperm, append, as.data.frame, basename, cbind,
-##     colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
-##     get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
-##     match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
-##     Position, rank, rbind, Reduce, rownames, sapply, setdiff, table,
-##     tapply, union, unique, unsplit, which.max, which.min</code></pre>
-<pre><code>## Loading required package: S4Vectors</code></pre>
-<pre><code>## Warning: package &#39;S4Vectors&#39; was built under R version 4.4.1</code></pre>
-<pre><code>## 
-## Attaching package: &#39;S4Vectors&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:utils&#39;:
-## 
-##     findMatches</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     expand.grid, I, unname</code></pre>
-<pre><code>## Loading required package: IRanges</code></pre>
-<pre><code>## Warning: package &#39;IRanges&#39; was built under R version 4.4.1</code></pre>
-<pre><code>## 
-## Attaching package: &#39;IRanges&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:grDevices&#39;:
-## 
-##     windows</code></pre>
-<pre><code>## Loading required package: GenomeInfoDb</code></pre>
-<pre class="r"><code>library(&quot;dplyr&quot;)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:GenomicRanges&#39;:
-## 
-##     intersect, setdiff, union</code></pre>
-<pre><code>## The following object is masked from &#39;package:GenomeInfoDb&#39;:
-## 
-##     intersect</code></pre>
-<pre><code>## The following objects are masked from &#39;package:IRanges&#39;:
-## 
-##     collapse, desc, intersect, setdiff, slice, union</code></pre>
-<pre><code>## The following objects are masked from &#39;package:S4Vectors&#39;:
-## 
-##     first, intersect, rename, setdiff, setequal, union</code></pre>
-<pre><code>## The following objects are masked from &#39;package:BiocGenerics&#39;:
-## 
-##     combine, intersect, setdiff, union</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>library(&quot;tidyr&quot;)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;tidyr&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:S4Vectors&#39;:
-## 
-##     expand</code></pre>
-<pre><code>## The following object is masked from &#39;package:ggVennDiagram&#39;:
-## 
-##     unite</code></pre>
+<pre class="r"><code># fastqc analyse
+library(&quot;fastqcr&quot;)
+# GGplot add on voor Venn diagrammen
+library(&quot;ggVennDiagram&quot;)
+# GGplot voor het maken van plotjes
+library(&quot;ggplot2&quot;)
+# Bioconducter packages
+library(&quot;GenomicRanges&quot;)
+# Data modificatie packages
+library(&quot;dplyr&quot;)
+library(&quot;tidyr&quot;)</code></pre>
+<p>Versies fastqcr v0.1.3 ggVennDiagram v1.5.2 ggplot2 v3.5.1
+GenomicRanges 1.56.1 dplyr 1.1.4 tidyr 1.3.1 R versie 4.4.0</p>
 </div>
 <div id="week-1-introductie-en-data-downloaden" class="section level1">
 <h1>Week 1 introductie en data downloaden</h1>
@@ -502,6 +443,14 @@ toolkit[3]. We hebben hier voor gekozen omdat dit geadviseerd werd door
 Ronald en Marcel met als beredenering dat deze tool de ondersteunde
 manier is van onder andere NCBI om je data op een efficiënte manier te
 downloaden en uit te pakken.</p>
+<p>Eerst hebben wij hier een zogeheten accesion lijst gemaakt waarin de
+SRA codes van onze gekozen samples in zitten. Dit is een text bestand
+zonder header waar de SRA codes inzitten. Het nut hiervan is dat we een
+lijst hebben waar de prefetch tool over heen kan loopen om zo alle
+bestanden voor ons te downloaden.</p>
+<p>In de code hieronder word de prefetch tool gebruikt om de ruwe data
+te downloaden dit wordt gedaan met de megegeven accesion lijst. uitput
+folder is /students/2024-2025/Thema05/3Dchromatine/SRA</p>
 <pre class="bash"><code>export PATH=&quot;/home/floris/Documenten/Applicaties/sratoolkit.3.1.1-ubuntu64/bin/:$PATH&quot;
 
 cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA/
@@ -540,6 +489,11 @@ hierboven vermeld en in teams map onderzoek. SRA files in de map
 <p>Na de groepenpresentaties hebben wij we gezamenlijk de genomics data
 uitgepakt met de tool fasterq-dump van de SRA toolkit[1] via floris zijn
 laptop.</p>
+<p>In de code hieronder word de accesion list gebruikt (in de laatste
+comment) voor het parallel commando dat voor elk sample in de lijst
+fasterq-dump runt. de sample word megegeven door de {} in de code. De
+output hiervan komt in de map
+/students/2024-2025/Thema05/3Dchromatine/FastQ</p>
 <pre class="bash"><code># Eerst nieuwe map maken voor fastq
 # Locale test: (niet op de assemblix server) 
 cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
@@ -565,6 +519,10 @@ sequenties die over-gerepresenteerd zijn maar dat is alleen voor
 sequenties die in de eerste 100,000 sequenties van het bestand
 voorkomen. en dus door een groter bestand te genereren kan dit procces
 beter getest worden voordat de echte dataset dit analyseerd. (<a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/8%20Duplicate%20Sequences.html" class="uri">https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/8%20Duplicate%20Sequences.html</a>)</p>
+<p>In de code hieronder wordt met seqkit een subset gemaakt. hiervoor
+word van het eerste sample de forward[ _1 ] en de reverse[ _2 ] een
+subset gemaakt met -n (hoeveelheid sequenties). daarna volg de code
+alsvolgt: input_sample.fastq &gt; subset_naam_sample.fastq</p>
 <pre class="r"><code>cd /run/media/floris/FLORIS_3/DATA_SETS/3D_Chromatine_Conformatie/DNA/SRA
 
 seqkit head -n 1000000 SRR26980527_1.fastq &gt; subset_SRR26980527_1.fastq
@@ -627,7 +585,13 @@ sequenties van de read.</p>
 </div>
 <div id="fastqc-en-multiqc-run" class="section level3">
 <h3>FastQC en MultiQC run</h3>
-<p>Hieronder het automation script voor fastqc run in de fastq map</p>
+<p>Hieronder het automation script voor fastqc run in de fastq map. de
+outputs van deze tools zijn html bestanden en een directory met de
+inhoud van deze bestanden. Eerst word de working directory verplaatst
+naar de fastq map, en daarna word met de fq.dir optie fastqc op alle
+fastq bestanden gerunt in de fastq map. de output hiervan komt door
+qc.dir in de fastqc outputmap terecht en de fastqc.path is het pad naar
+de ge-instaleerde fastqc tool.</p>
 <pre class="r"><code># Set working directory naar de map met fastq bestanden
 setwd(&quot;/students/2024-2025/Thema05/3dconformatieChromatine/fastq&quot;)
 (x = getwd())
@@ -635,7 +599,9 @@ setwd(&quot;/students/2024-2025/Thema05/3dconformatieChromatine/fastq&quot;)
 # fq.dir is de input map, qc.dir is de output map
 # fastqc.path is het pad naar het fastqc programma[1]
 fastqc(fq.dir = x, qc.dir = &quot;/students/2024-2025/Thema05/3dconformatieChromatine/fastqc_output/&quot;, fastqc.path = &quot;/usr/bin/fastqc&quot;, threads = 100)</code></pre>
-<p>MultiQC command</p>
+<p>MultiQC command verander de working directory naar de fastqc output
+map en met (multiqc .) word met alle fastqc resultaten een
+overzichtelijk multicq bestand gegenereerd in dezelfde map.</p>
 <pre class="bash"><code># Verander current working directory naar de fastqc output map
 pwd
 cd ../
@@ -735,10 +701,17 @@ In ons geval is de nieuwe NovaSeq 6000 gebruikt. Zoals het lijkt zijn de
 standaard adapters hiervoor niet veranderd. (<a href="https://www.researchgate.net/post/Have_Illumina_adapter_sequences_changed_for_NovaSeq_6000" class="uri">https://www.researchgate.net/post/Have_Illumina_adapter_sequences_changed_for_NovaSeq_6000</a>)</p>
 <p>threads -80 hoeveelheid instructies die gestuurd kunnen worden naar
 de CPU’s.</p>
+<p>Met de samples in accesion list word hier de trimmomatic parralel op
+uitgevoerd. voor de input en uitput bestanden word het hele pad gebruikt
+met een {} op de plek van de sample namen voor de samples. dit word
+aangevult met _nummer1/2.fastq voor forward en reverse reads bij de
+input bestanden en _outputnaam en type voor de output bestanden.</p>
+<p>De input en uitput bestanden zijn bijde van het type .fastq</p>
 <p>Trimmomatic command het orginele commando bestaad uit: TrimmomaticPE
-voor paired end, threads, input bestand forward, input bestand reverse,
-paired output_1 , unpaired output_1, paired output_2, unpaired output_2,
-opties</p>
+voor paired end, threads voor hoeveelheid opdrachten die je aan de
+cpu/server megeeft, input bestand forward(.fastq), input bestand
+reverse(.fastq), paired output_1(.fastq) , unpaired output_1, paired
+output_2, unpaired output_2, opties</p>
 <pre class="bash"><code># parralel runnen op de SraAcc list zodat er maar 1 run is per sample en deze gepaard blijven
 # doormiddel van {}_1 en {}_2
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | \
@@ -897,26 +870,98 @@ genoemd.</p>
 </div>
 <div id="code-van-floris" class="section level4">
 <h4>Code van Floris</h4>
+</div>
+<div id="bwa-mem2" class="section level4">
+<h4>BWA-mem2</h4>
+<p>Het eerste commando in dit code blok is voor het indexeren van het
+referentie genoom hiervoor hebben wij het mm39 GCF genoom gebruikt (<a href="https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001635.27/" class="uri">https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001635.27/</a>)
+omdat errors voorkomt bij de snipeff anotatie later vanwege de
+chromosoom namen.</p>
+<p>Met het parralel word er over de accesion list heen geloopt en het
+volgende commando gerunt [pad bwmem2/bwa-mem2 mem] [-t 50[threads
+optie]] [referentie_bestand] [{}_forward bestand] [{}_reverse bestand]
+[&gt;] [{}.sam] (&amp; optioneel voor het commando om op de achtergrond
+te runnen)</p>
+<p>Hieruit komt een .sam bestand dat bestaad uit een header sectie en
+een alignment sectie, de aligment sectie is een tabel met informatie
+over de alignemt. (<a href="https://en.wikipedia.org/wiki/SAM_(file_format)" class="uri">https://en.wikipedia.org/wiki/SAM_(file_format)</a>)</p>
+<pre class="bash"><code># Het indexeren van het referentiegenoom met bwa-mem2. 
+/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 index -p GCF_ref /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna
+
+# Voorbeeld aligning:
+bwa-mem2 mem ref.fa read1.fq read2.fq &gt; aln-pe.sam
+
+# Align sample SRR26980549_1.fastq (deel 1 en 2) met het referentiegenoom mm39 muis. 
+./bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 50 GCF_ref fastq/SRR26980549_1.fastq fastq/SRR26980549_2.fastq &gt; aligned_SRR26980549.sam &amp;
+
+# Test met parallel: 
+#cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel #&#39;bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 50 GCF_ref fastq/{}_1.fastq #fastq/{}_2.fastq &gt; BWA_aligned_output/aligned_{}.sam&#39; &amp;
+
+# Parallel met volledig pad naar alle bestanden:
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;/students/2024-2025/Thema05/3dconformatieChromatine/bwa_mem2/bwa-mem2-2.2.1_x64-linux/bwa-mem2 mem -t 50 GCF_ref /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_forward_paired.fastq /students/2024-2025/Thema05/3dconformatieChromatine/Trimmomatic_output/paired/{}_rev_paired.fastq &gt; /students/2024-2025/Thema05/3dconformatieChromatine/mapping/{}.sam&#39; &amp;
+</code></pre>
+<div id="samtools" class="section level5">
+<h5>Samtools</h5>
+<p>Samtools[8] is een tool dat gebruikt word voor het aanpassen van .sam
+bestanden zoals sorteren en converteren naar een ander bestands type.
+Wij gebruiken deze tool als voorbereiding op de varriant calling
+hierna.</p>
+<div id="herhalende-argumenten" class="section level6">
+<h6>Herhalende argumenten</h6>
+<p>De @ en -treads zijn treads argumented die herhaald worden in de
+samtools code blokken. Ook word er gewerkt vanuit een parralel functie
+met de accesion list zoals hierboven ook gedaan word.</p>
+</div>
+</div>
+<div id="converteren-sam-naar-bam" class="section level5">
+<h5>Converteren sam naar bam</h5>
+<p>De code hieronder sorteert de samfile en converteerd deze naar het
+type .bam bestand. .bam is hetzelfde soort bestandstype als .sam alleen
+dan binair gecomprimeerd. met het argument -n word het op readnaam
+gesorteerd.</p>
 <pre class="bash"><code># Voor een enkel sample:
 samtools sort -@40 -n -O BAM -o aligned_sorted_SRR26980549.bam aligned_SRR26980549.sam
 
 # Met parallel:
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;samtools sort -@40 -n -O BAM -o samtools_output/aligned_sorted_{}.bam BWA_aligned_output/aligned_{}.sam &#39; &amp;</code></pre>
+</div>
+<div id="fixmate-markeringen" class="section level5">
+<h5>Fixmate markeringen</h5>
+<p>De code hieronder voegt een markering score toe aan de reads. dit is
+nodig omdat we met paired end sequencing werken en de forward en reverse
+reads niet altijd gepaard zijn of het gepaarde read niet aan de
+kwaliteits eisen voldoet. Dit is nodig voor de markduplicates later.</p>
 <pre class="bash"><code># Voor een enkel sample:
 samtools fixmate -m --threads 40 aligned_sorted_SRR26980549.bam \ fixed_mates_aligned_sorted_SRR26980549.bam
 
 # Met parallel:
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;samtools fixmate -m --threads 40 samtools_output/aligned_sorted_{}.bam samtools_output/fixed_mates_aligned_sorted_{}.bam&#39; &amp;</code></pre>
+</div>
+<div id="de-sortering" class="section level5">
+<h5>2de sortering</h5>
+<p>In de code hieronder word het bestand nogmaal gesorteed ditmaal op
+coördinaten dit is nodig voor de mark duplicates.</p>
 <pre class="bash"><code># Voor een enkel sample:
 samtools sort -@80 -o sorted_coordinates_SRR26980549.bam \ fixed_mates_aligned_sorted_SRR26980549.bam
 
 # Met parallel:
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;samtools sort -@80 -o samtools_output/sorted_coordinates_{}.bam samtools_output/fixed_mates_aligned_sorted_{}.bam&#39; &amp;</code></pre>
+</div>
+<div id="markduplicates" class="section level5">
+<h5>Markduplicates</h5>
+<p>In de code hieronder worden de duplicaten gemarkeerd en verwijdert.
+-r argument is voor het verwijderen van de duplicaten -s argument is
+voor het maken van een statistiek rapport over de markduplicates
+acties</p>
 <pre class="bash"><code># Voor een enkel sample:
 samtools markdup -r -s sorted_coordinates_SRR26980549.bam dedup_SRR26980549.bam
 
 # Met parallel:
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel  &#39;samtools markdup -@80 -r -s samtools_output/sorted_coordinates_{}.bam samtools_output/dedup_{}.bam&#39; &amp;</code></pre>
+</div>
+<div id="indexering" class="section level5">
+<h5>Indexering</h5>
+<p>Met de code hieronder word een index .bai bestand gemaakt.</p>
 <pre class="bash"><code># Voor een enkel sample:
 samtools index -@80 dedup_SRR26980549.bam dedup_SRR26980549.bai  &amp;
 
@@ -924,57 +969,66 @@ samtools index -@80 dedup_SRR26980549.bam dedup_SRR26980549.bai  &amp;
 cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;samtools index -@80 samtools_output/dedup_{}.bam samtools_output/dedup_{}.bai&#39; &amp;</code></pre>
 </div>
 </div>
-<div id="freebayes-variant-calling-nog-uitbreiden" class="section level3">
-<h3>Freebayes variant calling * nog uitbreiden</h3>
+</div>
+<div id="freebayes-variant-calling" class="section level3">
+<h3>Freebayes variant calling</h3>
 <p>Voor een voledige uitleg van Freebayes[7] variant calling zie het
 logboek van Jarno en Floris.</p>
+<div id="freebayes-tool" class="section level4">
+<h4>Freebayes tool</h4>
+<p>Wij hebben voor Freebayes gekozen omdat dit een snellere en minder
+complexe variant calling tool is dan GATK, GATK werd ook afgeraden door
+de docenten vanwege de complexiteit en documentatie van deze tool.
+Freebayes heeft in vergelijking tot andere varscan en lofraq een hogere
+kans op het vinden van varianten maar ook een hogere kans op vals
+positieven. (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6234735/" class="uri">https://pmc.ncbi.nlm.nih.gov/articles/PMC6234735/</a>)</p>
+</div>
 <div id="variant-calling-uitleg" class="section level4">
 <h4>Variant calling uitleg</h4>
 <p>Variant calling is het proces van het vinden van varianten op een
 positie in het genoom op basis van de hoeveelheid reads en de referentie
 positie.</p>
 <p>De exacte parameters van Freebayes staat niet in hun handleiding maar
-uit de lessen van Bio-informatica thema5(<a href="https://rwedema.github.io/NGS-Genetics/mapping.html" class="uri">https://rwedema.github.io/NGS-Genetics/mapping.html</a>) kan
+uit de lessen van Bio-informatica Thema5(<a href="https://rwedema.github.io/NGS-Genetics/mapping.html" class="uri">https://rwedema.github.io/NGS-Genetics/mapping.html</a>) kan
 ik er van uit gaan dat een variant minstens een covarige van 20 reads
 nodig heeft om geclassificeerd te worden als variant. Onder 20 reads is
 het namelijk lastig om het statistisch te verantwoorden dat het een
-varriant is of een technische fout.</p>
+variant is of een technische fout.</p>
 </div>
-<div id="variant-anotatie-uitleg-nog-uitbreiden" class="section level4">
-<h4>Variant anotatie uitleg *nog uitbreiden</h4>
-<p>annotatie is metadata t #### SNPeff *nog uitbreiden</p>
+<div id="variant-anotatie-uitleg" class="section level4">
+<h4>Variant anotatie uitleg</h4>
+<p>Variant annotatie is de actie van metadata en effect voorspellingen
+aan de gevonden varianten toe te voegen. Dit word gedaan doormiddel van
+de varianten door een database te halen bij elke variant informatie toe
+te voegen aan het bestand.</p>
+</div>
+<div id="snpeff" class="section level4">
+<h4>SNPeff</h4>
+<p>Wij hebben voor snpeff gekozen vanwege de hoeveelheid genomen die
+deze database heeft. Ook zijn de resultaten gelijkwaardig aan andere
+annotatie tools, al word het door andere tools anders beschreven.(<a href="https://pubmed.ncbi.nlm.nih.gov/28122645/" class="uri">https://pubmed.ncbi.nlm.nih.gov/28122645/</a>)</p>
 </div>
 <div id="floris-zijn-code" class="section level4">
 <h4>Floris zijn code</h4>
-<pre class="bash"><code># Voor een bestand:
-/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
- -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_SRR26980549.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f &quot;QUAL &gt; 30&quot; &gt; filtered_SRR26980549.vcf
- 
- 
-# Met parallel: 
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
- -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna samtools_output/dedup_{}.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f &quot;QUAL &gt; 30&quot; &gt; variant_calling/filtered_{}.vcf&#39; &amp;
- 
- # Variant calling zonder direct te filteren:
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
- -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna samtools_output/dedup_{}.bam &gt; variant_calling/variants{}.vcf&#39; &amp;</code></pre>
-<pre class="bash"><code># Voor een bestand:
-/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
- -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna dedup_SRR26980549.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f &quot;QUAL &gt; 30&quot; &gt; filtered_SRR26980549.vcf
- 
- 
-# Met parallel: 
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
- -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna samtools_output/dedup_{}.bam | /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -f &quot;QUAL &gt; 30&quot; &gt; variant_calling/filtered_{}.vcf&#39; &amp;
- 
- # Variant calling zonder direct te filteren:
-cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;/students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static \
- -f /students/2024-2025/Thema05/3dconformatieChromatine/Mapping_ref/ncbi_dataset/ncbi_dataset/data/GCA_000001635.9/GCA_000001635.9_GRCm39_genomic.fna samtools_output/dedup_{}.bam &gt; variant_calling/variants{}.vcf&#39; &amp;</code></pre>
+<div id="indexering-referentie-genoom" class="section level5">
+<h5>Indexering referentie genoom</h5>
+<p>hieronder word het referentie genoom ge indexeert.</p>
 <pre class="bash"><code>samtools faidx GCA_000001635.9_GRCm39_genomic.fna</code></pre>
+<p>in de 2 code blokken hieronder freebayes -&gt; referentie database
+-&gt; inputfile.bam -&gt; outputfile.vcf</p>
 <pre class="bash"><code># Test voor een enkel .bam bestand: 
 /students/2024-2025/Thema05/3dconformatieChromatine/freebayes/freebayes-1.3.6-linux-amd64-static -f GCA_000001635.9_GRCm39_genomic.fna \ /students/2024-2025/Thema05/3dconformatieChromatine/aligned_sorted_SRR26980549.bam &gt; \ /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_test.vcf</code></pre>
-<pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;java -jar /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -I variant_calling/variants{}.vcf --minQualScore 30 --outputVcf variant_calling/filterd_variant_{}.vcf&#39;</code></pre>
+<p>–minQualScore 30 minimale kwaliteit score argument –outputvcf output
+argument</p>
+<pre class="bash"><code># parralel
+cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;java -jar /students/2024-2025/Thema05/3dconformatieChromatine/vcffilter/vcffilter-assembly-0.2.jar -I variant_calling/variants{}.vcf --minQualScore 30 --outputVcf variant_calling/filterd_variant_{}.vcf&#39;</code></pre>
+<p>In het codeblok hieronder word samtools gebruikt om de bam files naar
+bed files te converteren. dit word gedaan voor de leesbaarheid zodat je
+het kan gebruiken in een eventuele R analyse</p>
 <pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;bamToBed -i dedup_{}.bam &gt; dedeup_{}.bed&#39;</code></pre>
+<p>In de code hieronder zouden de varianten genanoteerd moeten worden
+maar in ons geval gaf dit een error dus heeft floris handmatig een
+database gemaakt van het mm39 genoom.</p>
 <pre class="bash"><code># Test:
 /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff.jar mm39 filtered_variants.vcf &gt; annotated_variants.vcf
 
@@ -983,6 +1037,9 @@ cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | par
 
 # Alleen het isec .vcf bestand:
 java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf &gt; /students/2024-2025/Thema05/3dconformatieChromatine/annotated_isec.vcf</code></pre>
+<p>In de code hieronder word de database gedownload. Na de download
+moeten de genomic en protein bestanden hernoemt worden naar sequences.fa
+en protein.fa .</p>
 <pre class="bash"><code># Navigeer naar de directory waar de databases opgeslagen worden. 
 cd snpEff/snpEff/data/
 
@@ -1004,18 +1061,52 @@ wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/635/GCF_000001635.27_G
 # Hernoem bestand GCF_000001635.27_GRCm39_genomic.fna.gz --&gt; sequences.fa
 
 # Hernoem bestand GCF_000001635.27_GRCm39_protein.faa.gz --&gt; protein.fa</code></pre>
+<p>In de code hieronder word de database gemaakt. -gtf22 arugment is
+voor de versienummer -nodownload is om te verkomen dat hij de database
+probeerd te downloaden van het internet -v is verbose dit print alles
+wat er gebeurt naar het scherm. Dit argument is voor het debuggen en
+heeft geen functie ernaast. mm39 is de naam van het config bestand deze
+bestond al in de snpeff directory</p>
 <pre class="bash"><code>java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar build -gtf22 -nodownload -v  mm39</code></pre>
+<p>aan de hand van de tabel( <a href="https://www.ncbi.nlm.nih.gov/grc/mouse/data" class="uri">https://www.ncbi.nlm.nih.gov/grc/mouse/data</a>) de
+chromosoom namen van de vcf file(GeneBank) naar vcf file(Refseq)</p>
+<p>comprimeren met bgzip zodat dit tabix geindexeert kan worden</p>
 <pre class="bash"><code>bgzip -c /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf &gt; /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf.gz</code></pre>
+<p>indexatie isec zipfile</p>
 <pre class="bash"><code>tabix -p vcf /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf.gz</code></pre>
+<p>Hernoemen van de chrosomen met bcftools op basis van bovenstaande
+tabel(link)</p>
 <pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel \
 &#39;bcftools annotate --rename-chrs /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/names.txt /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/filterd_variant_{}.vcf.gz &gt; /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/hernoemd_{}.vcf&#39;</code></pre>
-<pre class="bash"><code>java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar -v -stats /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/SRR26980549_annotatie.html mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/hernoemd_SRR26980549.vcf &gt; /students/2024-2025/Thema05/3dconformatieChromatine/annotated_SRR26980549.vcf</code></pre>
+</div>
+<div id="annotatie" class="section level5">
+<h5>Annotatie</h5>
+<p>Hieronder word snpeff aangeroepen argument -Xmx80g is voor het
+maximaal gebruikte geheugen argument -stats voor de generatie van een
+html bestand met statestiek over de annotatie daarna de input file ,
+threads, &gt; outputfile</p>
 <pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel \
 &#39;java -Xmx80G -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar -v -stats /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/{}_annotatie.html mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/hernoemd_{}.vcf -threads 50 &gt; /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/annotated_{}.vcf&#39;</code></pre>
+</div>
+<div id="maken-van-isec" class="section level5">
+<h5>Maken van Isec</h5>
+<p>Een Isec bestand is een vcf bestand met alleen maar de varrianten die
+in alle replicaten voorkomen. het doel was om dit later in een analyse
+te gebruiken maar dit is niet gebeurt het nut van een isec bestand is
+het bekijken van mutatie die alleen in de gedeelde vcf files zitten te
+analyseren om zo de willekeurige mutaties eruit te filteren.</p>
+<p>Vcf files comprimeren voor tabix indexatie</p>
 <pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;bgzip annotated_{}.vcf&#39;</code></pre>
+<p>tabix indexatie</p>
 <pre class="bash"><code>cat /students/2024-2025/Thema05/3dconformatieChromatine/SRA/SraAccList.csv | parallel &#39;tabix -p vcf annotated_{}.vcf.gz&#39;</code></pre>
+<p>bcftools isec generatie argument -c all is voor het opgeven dat
+alleen de varrianten die gedeelt worden in alle opgegeven bestanden
+worden bewaart in het output bestand.</p>
 <pre class="bash"><code>bcftools isec -c all annotated_SRR26980549.vcf annotated_SRR26980550.vcf annotated_SRR26980551.vcf annotated_SRR26980552.vcf &gt; isec.vcf</code></pre>
+<p>Annotatie op de Isec file dit is omdat dit bestand geen metadata
+had</p>
 <pre class="bash"><code>java -jar /students/2024-2025/Thema05/3dconformatieChromatine/snpEff/snpEff/snpEff.jar -v -stats /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec_annotatie.html mm39 /students/2024-2025/Thema05/3dconformatieChromatine/variant_calling/isec.vcf &gt; /students/2024-2025/Thema05/3dconformatieChromatine/annotated_isec.vcf</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -1169,7 +1260,7 @@ heeft, vermoedelijk komt dit door een setting in freebayes.</p>
 <h2>Vrijdag</h2>
 <p>Het doel van vandaag was verder werken aan de pca analyse. maar naar
 overleg met marcel is besloten dat een pca mischien iets te ambitieus is
-en voorlopig gedowngrade word naar een Venn diagram</p>
+en voorlopig vervangen word naar een Venn diagram</p>
 <div id="venn-diagram" class="section level3">
 <h3>Venn diagram</h3>
 <pre class="r"><code>new_col_549 &lt;- paste(as.character(ssr_549_an$POS), ssr_549_an$ALT, sep = &quot;-&quot;)
@@ -1202,13 +1293,14 @@ significante hoeveelheid mutatie’s hebben.</p>
 </div>
 <div id="bibliografie" class="section level1">
 <h1>bibliografie</h1>
-<p>[1]Fastqc Versie 0.12 <a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/" class="uri">https://www.bioinformatics.babraham.ac.uk/projects/fastqc/</a></p>
+<p>[1]Fastqc Versie 0.12 (R package v 0.1.3) <a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/" class="uri">https://www.bioinformatics.babraham.ac.uk/projects/fastqc/</a></p>
 <p>[2]Trimmomatic Versie 0.39 <a href="http://www.usadellab.org/cms/?page=trimmomatic" class="uri">http://www.usadellab.org/cms/?page=trimmomatic</a></p>
 <p>[3]SRA Toolkit Versie 3.1.1 <a href="https://github.com/ncbi/sra-tools/wiki/08.-prefetch-and-fasterq-dump" class="uri">https://github.com/ncbi/sra-tools/wiki/08.-prefetch-and-fasterq-dump</a></p>
-<p>[4]Seqtk Versie ? <a href="https://github.com/lh3/seqtk" class="uri">https://github.com/lh3/seqtk</a></p>
-<p>[5]MultiQC Versie ? <a href="https://multiqc.info/" class="uri">https://multiqc.info/</a></p>
-<p>[6]BWA-mem2 Versie ? <a href="https://github.com/bwa-mem2/bwa-mem2" class="uri">https://github.com/bwa-mem2/bwa-mem2</a></p>
-<p>[7]Freebayes versie ? <a href="https://github.com/freebayes/freebayes" class="uri">https://github.com/freebayes/freebayes</a></p>
+<p>[4]Seqtk Versie 1.4 <a href="https://github.com/lh3/seqtk" class="uri">https://github.com/lh3/seqtk</a></p>
+<p>[5]MultiQC Versie 1.25 <a href="https://multiqc.info/" class="uri">https://multiqc.info/</a></p>
+<p>[6]BWA-mem2 Versie 2.2.1 <a href="https://github.com/bwa-mem2/bwa-mem2" class="uri">https://github.com/bwa-mem2/bwa-mem2</a></p>
+<p>[7]Freebayes versie 1.3.6-linux versie <a href="https://github.com/freebayes/freebayes" class="uri">https://github.com/freebayes/freebayes</a></p>
+<p>[8]Samtools versie 1.16.1 <a href="https://www.htslib.org/" class="uri">https://www.htslib.org/</a></p>
 </div>
 
 
